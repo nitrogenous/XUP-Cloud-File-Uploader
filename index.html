@@ -88,13 +88,14 @@
                 $("#upload").change(function (e) {
                     e.preventDefault();
                     var formdata = new FormData();
-                    var file = document.querySelector("#upload").files[0];
+                    var file = document.getElementById("upload").files[0];
                     var access_token = document.getElementById("accesskey");
                     formdata.append("qid",qid);
                     formdata.append("file", file);
                     // formdata.append("clouds", clouds);
                     formdata.append("formid",form_id);
                     // formdata.append("accesstoken",access_token);
+                    console.log("weıu");
                     $.ajax({
                         type: "POST",
                         url: "save.php",
@@ -119,19 +120,23 @@
                             }
                             return xhr;
                         },
-                        success: function (sccss) {
+                        success: function (sccss) {     
                             console.log(sccss);
                         }
                     });
                     
                 });
-                    // JFCustomWidget.subscribe("submit", function (formId) {
-                        // console.log("CLOUD-LINK-HERE");
-                        
-                    // })
                 })  
             })
-        JFCustomWidget.sendSubmit("AAAAAAAAAAAAAAAAAAAA!!!!!!");
+        JFCustomWidget.subscribe("submit", function (formId) {
+            var formdata = new FormData();
+            var qid =  JFCustomWidget.getWidgetSetting("qid");
+            var file = document.getElementById('upload').value.split(/(\\|\/)/g).pop();
+            var result = {};
+            result.valid = true;
+            result.value = file;
+            JFCustomWidget.sendSubmit(result);
+        });
 
         function empty(input)
         {
