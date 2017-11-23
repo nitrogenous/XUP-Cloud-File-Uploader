@@ -8,6 +8,6 @@ while ($worker->work());
 
 function toprakDbxUpload($job)
 {
-	echo "wololo!";
+	echo $job;
 	return "test success";	
 }
