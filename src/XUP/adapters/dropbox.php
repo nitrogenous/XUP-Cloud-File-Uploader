@@ -47,8 +47,7 @@ class Dropbox extends XUP {
 	public function upload($formid,$qid,$file,$params) {
 		$client = new GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
-		$client->setCompleteCallback("success");
-		// $client->addTask("toprakDbxUpload",)
+		$client->doBackground("toprakDbxUpload","path");
 	}
 	public function test() {
 		return $this->value . ":✔";
