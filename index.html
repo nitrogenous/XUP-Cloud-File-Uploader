@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="jquery-3.2.1.min.js"></script>
+    <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+    <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
+    <script src="utils.js"></script>
+    <title>XUP File Uploader</title>
+</head>
+<body>
+    <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
+        <input type="file" name="upload" id="upload" >
+        <input type="hidden" id="hidden" value="">
+        <progress value="0" max="100" id="progressbar"></progress>
+        <input type="hidden" name="key" id="key" value="" >
+    </form>
+    <div id="qid"> </div>
+    <div id="text"><h3>Please check your integrations!</h3></div>
+    <script type="text/javascript">
+        document.getElementById("upload").disabled = true;
+        JFCustomWidget.subscribe("ready", function (formId) {
+            $(document).ready(function(){
+                var status;
+                var formdata = new FormData();
+                var qid = JFCustomWidget.getWidgetSetting("qid");
+                var clouds = JFCustomWidget.getWidgetSetting("clouds");
+                var form_id = formId["formID"];
+                document.getElementById("hidden").value = form_id;
+                formdata.append("formid", form_id);
+                formdata.append("clouds", clouds);
+                formdata.append("qid",qid);
+                formdata.append("action", "check");
+                $.ajax({
+                    type: "POST",
+                    url: "database.php",
+                    enctype: "multipart/form-data",
+                    data: formdata,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (sccss) {
+                        console.log(sccss);
+                        document.getElementById("hidden").value = sccss;
+                    }
+                });
+                var status = JSON.parse(document.getElementById("hidden").value); 
+                if((clouds.toLowerCase()).indexOf("dropbox") != -1)
+                { 
+                    if(status.Dropbox != true)
+                    {
+                        console.log("321");
+                        var client_id = "9pdfdpjr2pnqzmo";
+                        var dbx = new Dropbox({clientId: client_id});
+                        var authUrl = dbx.getAuthenticationUrl("https://toprak.jotform.pro/Adapter/oauth.html"); 
+                        var AuthWindow = window.open(authUrl,"AuthWindow",'location=0,status=0,width=800,height=400');
+                        $("#key").change(function(){
+                            key = document.getElementById("key").value;
+                            var formdata = new FormData();
+                            var form_id = formId["formID"];
+                            formdata.append("qid",qid);
+                            formdata.append("value","dropbox");
+                            formdata.append("key",key);
+                            formdata.append("formid", form_id);
+                            formdata.append("clouds", clouds);
+                            formdata.append("action", "save");
+                            $.ajax({
+                                type: "POST",
+                                url: "database.php",
+                                enctype: "multipart/form-data",
+                                data: formdata,
+                                async: false,
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                success: function (sccss) {
+                                    console.log(sccss);
+                                    document.getElementById("hidden").value = sccss;
+                                }
+                            });
+                            AuthWindow.close();
+                            enable(clouds,status.value);
+                        }) 
+                    }
+                }
+                enable(clouds,status.value)
+                $("#upload").change(function (e) {
+                    e.preventDefault();
+                    var formdata = new FormData();
+                    var file = document.querySelector("#upload").files[0];
+                    var access_token = document.getElementById("accesskey");
+                    formdata.append("qid",qid);
+                    formdata.append("file", file);
+                    // formdata.append("clouds", clouds);
+                    formdata.append("formid",form_id);
+                    // formdata.append("accesstoken",access_token);
+                    $.ajax({
+                        type: "POST",
+                        url: "save.php",
+                        enctype: "multipart/form-data",
+                        data: formdata,
+                        cache: false,
+                        // async: false,
+                        contentType: false,
+                        processData: false,
+                        xhr: function () {
+                            var xhr = $.ajaxSettings.xhr();
+                            if (xhr.upload) {   
+                                xhr.upload.addEventListener("progress", function (e) {
+                                    var percent = 0;
+                                    var position = e.loaded || e.position;
+                                    var total = e.total;
+                                    if (e.lengthComputable) {
+                                        percent = Math.ceil(position / total * 100);
+                                    }
+                                    $("#progressbar").attr("value", percent);
+                                }, true);
+                            }
+                            return xhr;
+                        },
+                        success: function (sccss) {
+                            console.log(sccss);
+                        }
+                    });
+
+                    //     // JFCustomWidget.sendSubmit("Wololo"); 
+                    // JFCustomWidget.subscribe("submit", function (formId) {
+                    //     return("CLOUD-LINK-HERE");
+                    // })
+                });
+            })  
+})
+
+function empty(input)
+{
+    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+function enable(cloud,status){
+    if((((cloud.toLowerCase()).indexOf("dropbox") != -1) || ((cloud.toLowerCase()).indexOf("amazon") != -1)) && status != false)
+    {
+        document.getElementById("upload").disabled = false;
+        document.getElementById("text").innerHTML = "";
+    }
+}
+</script>
+</body>
+</html> 

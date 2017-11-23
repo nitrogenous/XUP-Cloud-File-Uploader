@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Oauth</title>
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+	<script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
+	<script src="utils.js"></script>
+</head>
+<body onload="load();">
+	<center> You can close this page. </center>
+	<form action="database.php" method="POST" enctype="multipart/form-data" id="key">
+		<input type="hidden" id="key" value="">
+	</form>
+	<script type="text/javascript">
+		function load() {
+			window.opener.document.getElementById("key").value = utils.parseQueryString(window.location.hash).access_token;	
+			document.getElementById("key").value = utils.parseQueryString(window.location.hash).access_token;	
+			window.opener.$("#key").trigger("change");
+			var key = document.getElementById("key").value;
+			var formdata = new FormData();
+			formdata.append("dbxkey",key);
+			$.ajax({
+				type: "POST",
+				url: "database.php",
+				enctype: "multipart/form-data",
+				data: formdata,
+				async: false,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function (sccss) {
+					console.log(sccss);
+
+				}
+			});
+			$("#key").trigger("change");
+
+		}
+	</script>
+</body>
+</html>
