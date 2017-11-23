@@ -100,7 +100,7 @@ if(realpath($file_path) !== true)
 {
 	if(file_exists($file_path) !== true)
 	{
-		mkdir($file_path, fileperms(__DIR__),true);
+		mkdir($file_path, 777,true);
 	}
 }
 
@@ -136,6 +136,7 @@ foreach ($_FILES as $key => $value) {
 			exit(json_encode(array("succes"=>false,"error"=>"mime_content_type(filename)")));	
 		}
 
+		chmod($file_path. DIRECTORY_SEPARATOR .$file_name, 0777);
 		header("HTTP/1.1 200");
 		die(json_encode(array("succes"=>true,"error"=>null)));			
 	}
