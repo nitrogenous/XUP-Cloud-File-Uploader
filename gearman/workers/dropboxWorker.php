@@ -6,8 +6,7 @@ $worker->addFunction("toprakDBX", "toprakDbxUpload");
 
 while ($worker->work());
 
-function toprakDbxUpload($job)
-{
-	
+function toprakDbxUpload($job) {
+	echo $job->workload();
 	return "test success";	
 }

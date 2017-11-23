@@ -44,15 +44,11 @@ class Dropbox extends XUP {
 	public function remove($formid,$qid) {
 		return false;
 	}
-	public function upload($formid,$qid,$file,$params) {
-		try {
+	public function upload($formid,$qid,$key,$file) {
+			$params = json_encode(array("formid" => $formid,"qid" => $qid, "key" => $key, "file" => $file));
 			$client = new \GearmanClient();
 			$client->addServer("127.0.0.1","4730");	
-			$client->doBackground("toprakDBX","path");
-			
-		} catch (Exception $e) {
-			var_dump($e->getMessage());
-		}
+			$client->doBackground("toprakDBX",$params);
 	}
 	public function test() {
 		return $this->value . ":✔";
