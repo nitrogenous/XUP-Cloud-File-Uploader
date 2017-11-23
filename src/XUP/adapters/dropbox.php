@@ -49,6 +49,7 @@ class Dropbox extends XUP {
 			$client = new \GearmanClient();
 			$client->addServer("127.0.0.1","4730");	
 			$client->doBackground("toprakDBX",$params);
+			return $client->returnCode();
 	}
 	public function test() {
 		return $this->value . ":✔";

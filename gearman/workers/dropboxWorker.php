@@ -7,6 +7,7 @@ $worker->addFunction("toprakDBX", "toprakDbxUpload");
 while ($worker->work());
 
 function toprakDbxUpload($job) {
-	echo $job->workload();
-	return "test success";	
+	$params = json_decode($job->workload());
+	echo $params["formid"];
+	return $job->workload();;	
 }
