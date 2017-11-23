@@ -21,10 +21,10 @@ class XUP
 	}	
 
 	public function remove($formid,$qid) {
-		return false;
+		return null;
 	}
 
-	public function upload($formid,$qid,$key,$file) {
+	public function upload($formid,$qid,$file) {
 		return null;
 	}
 
@@ -32,4 +32,7 @@ class XUP
 		return "class:✔";
 	}
 
+	public function get($formid,$qid){
+		return null;
+	}
 }

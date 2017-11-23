@@ -130,8 +130,26 @@
             })
         JFCustomWidget.subscribe("submit", function (formId) {
             var formdata = new FormData();
+            var form_id = formId["formID"];
             var qid =  JFCustomWidget.getWidgetSetting("qid");
             var file = document.getElementById('upload').value.split(/(\\|\/)/g).pop();
+            formdata.append("formid", form_id);
+            formdata.append("qid", qid);
+            formdata.append("file",file);
+            formdata.append("action","upload");
+            $.ajax({
+               type: "POST",
+                url: "database.php",
+                enctype: "multipart/form-data",
+                data: formdata,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (sccss) {
+                    console.log(sccss);
+                }
+            })
             var result = {};
             result.valid = true;
             result.value = file;
