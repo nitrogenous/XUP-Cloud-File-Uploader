@@ -123,33 +123,34 @@
                             console.log(sccss);
                         }
                     });
-
-                    //     // JFCustomWidget.sendSubmit("Wololo"); 
-                    // JFCustomWidget.subscribe("submit", function (formId) {
-                    //     return("CLOUD-LINK-HERE");
-                    // })
+                    
                 });
-            })  
-})
+                    // JFCustomWidget.subscribe("submit", function (formId) {
+                        // console.log("CLOUD-LINK-HERE");
+                        
+                    // })
+                })  
+            })
+        JFCustomWidget.sendSubmit("AAAAAAAAAAAAAAAAAAAA!!!!!!");
 
-function empty(input)
-{
-    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-function enable(cloud,status){
-    if((((cloud.toLowerCase()).indexOf("dropbox") != -1) || ((cloud.toLowerCase()).indexOf("amazon") != -1)) && status != false)
-    {
-        document.getElementById("upload").disabled = false;
-        document.getElementById("text").innerHTML = "";
-    }
-}
-</script>
+        function empty(input)
+        {
+            if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        function enable(cloud,status){
+            if((((cloud.toLowerCase()).indexOf("dropbox") != -1) || ((cloud.toLowerCase()).indexOf("amazon") != -1)) && status != false)
+            {
+                document.getElementById("upload").disabled = false;
+                document.getElementById("text").innerHTML = "";
+            }
+        }
+    </script>
 </body>
 </html> 

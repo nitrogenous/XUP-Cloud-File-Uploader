@@ -18,10 +18,10 @@ function toprakDbxUpload($job) {
 	$client = new Client($token);
 	$adapter = new DropboxAdapter($client);
 	$filesystem = new Filesystem($adapter);
-	// $path = DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $adapter;
+	$path = DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $file;
 
-	$stream = fopen("/tmp/72912031423950/questionid3/72912031423950.jpg","r+");
-	$filesystem->writeStream("72912031423950.jpg",$stream);
+	$stream = fopen($path,"r+");
+	$filesystem->writeStream($file,$stream);
 	fclose($stream);
 
 	return $job->workload();;	

@@ -115,18 +115,20 @@ foreach ($_FILES as $key => $value) {
 	
 
 	$chars = range("a","z");
-	foreach ($chars as $char)
-	{
-		if(stripos($file_name, $char))
-		{
-			break;
+	$numbers= range("0","9");
+
+	foreach ($chars as $char){
+		if(stripos($file_name, $char)){
+			break;		
 		}
-		else
-		{
-			$tmp = explode(".", $file_name);
-			$extension = ".".end($tmp);
-			$file_name = $formid.$extension;
-			break;
+		else{
+			foreach ($numbers as $number) {
+				if(stripos($file_name, $number)){
+					$tmp = explode(".", $file_name);
+					$extension = ".".end($tmp);
+					$file_name = $formid.$extension;
+				}
+			}
 		}
 	}
 	
