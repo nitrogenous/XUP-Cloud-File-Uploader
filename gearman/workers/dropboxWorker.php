@@ -22,7 +22,6 @@ function toprakDbxUpload($job) {
 
 	$stream = fopen($path,"r+");
 	$filesystem->writeStream($file,$stream);
-	fclose($stream);
-
-	return $job->workload();;	
+	fclose($stream);	
+	return $job->workload();
 }
