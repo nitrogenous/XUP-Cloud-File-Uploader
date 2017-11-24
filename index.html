@@ -14,6 +14,7 @@
         <input type="hidden" id="hidden" value="">
         <progress value="0" max="100" id="progressbar"></progress>
         <input type="hidden" name="key" id="key" value="" >
+        <input type="hidden" id="formid">
     </form>
     <div id="qid"> </div>
     <div id="text"><h3>Please check your integrations!</h3></div>
@@ -26,9 +27,10 @@
                 var qid = JFCustomWidget.getWidgetSetting("qid");
                 var clouds = JFCustomWidget.getWidgetSetting("clouds");
                 var form_id = formId["formID"];
-                document.getElementById("hidden").value = form_id;
+                document.getElementById("formid").value = form_id;
+                console.log(document.getElementById("formid").value);
                 formdata.append("formid", form_id);
-                formdata.append("clouds", clouds);
+                formdata.append("clouds", clouds); 
                 formdata.append("qid",qid);
                 formdata.append("action", "check");
                 $.ajax({
@@ -95,7 +97,6 @@
                     // formdata.append("clouds", clouds);
                     formdata.append("formid",form_id);
                     // formdata.append("accesstoken",access_token);
-                    console.log("weıu");
                     $.ajax({
                         type: "POST",
                         url: "save.php",
@@ -127,15 +128,21 @@
                     
                 });
                 })  
-            })
+        })
         JFCustomWidget.subscribe("submit", function (formId) {
+            var result = {};
+            result.valid = true;
+            result.value = file;
             var formdata = new FormData();
-            var form_id = formId["formID"];
+            var form_id = document.getElementById("formid").value;
+            console.log(form_id);
             var qid =  JFCustomWidget.getWidgetSetting("qid");
+            var clouds = JFCustomWidget.getWidgetSetting("clouds");
             var file = document.getElementById('upload').value.split(/(\\|\/)/g).pop();
-            formdata.append("formid", form_id);
             formdata.append("qid", qid);
             formdata.append("file",file);
+            formdata.append("clouds", clouds);
+            formdata.append("formid", form_id);
             formdata.append("action","upload");
             $.ajax({
                type: "POST",
@@ -148,14 +155,10 @@
                 processData: false,
                 success: function (sccss) {
                     console.log(sccss);
+                    JFCustomWidget.sendSubmit(result);
                 }
             })
-            var result = {};
-            result.valid = true;
-            result.value = file;
-            JFCustomWidget.sendSubmit(result);
         });
-
         function empty(input)
         {
             if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)

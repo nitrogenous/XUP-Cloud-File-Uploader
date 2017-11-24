@@ -94,11 +94,14 @@ $formid = injection($_POST["formid"]);
 $qid = injection($_POST["qid"]);
 $path = DIRECTORY_SEPARATOR . "tmp"; 
 $file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,"questionid".$qid));
+
 if(realpath($file_path) !== true)
 {
 	if(file_exists($file_path) !== true)
 	{
-		mkdir($file_path, 777,true);
+		$asd = mkdir($file_path, 0777, true);
+		var_dump($asd);
+		die();
 	}
 }
 foreach ($_FILES as $key => $value) {
@@ -137,7 +140,7 @@ foreach ($_FILES as $key => $value) {
 		die(json_encode(array("succes"=>true,"error"=>null)));			
 	}
 	else{
-		var_dump($file_tmp_name . $file_name .$file_path);
+		var_dump($_FILES[$key]["tmp_name"] . " AA " . $file_name . " AA ".$file_path);
 		header("HTTP/1.1 500");
 		die(json_encode(array("succes"=>false,"error"=>"Internal Server Error!")));
 	}

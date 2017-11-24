@@ -12,13 +12,15 @@ while ($worker->work());
 
 function toprakDbxUpload($job) {
 	$params = (array)json_decode($job->workload());
-	$token = $params["key"];
+	var_dump($params);
+	$token = (string)$params["key"];
 	$formid = $params["formid"];
 	$file = $params["file"];
+	$qid = $params["qid"];
 	$client = new Client($token);
 	$adapter = new DropboxAdapter($client);
 	$filesystem = new Filesystem($adapter);
-	$path = DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $file;
+	$path = DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . "questionid".$qid . DIRECTORY_SEPARATOR . $file;
 
 	$stream = fopen($path,"r+");
 	$filesystem->writeStream($file,$stream);
