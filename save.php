@@ -100,8 +100,6 @@ if(realpath($file_path) !== true)
 	if(file_exists($file_path) !== true)
 	{
 		$asd = mkdir($file_path, 0777, true);
-		var_dump($asd);
-		die();
 	}
 }
 foreach ($_FILES as $key => $value) {
