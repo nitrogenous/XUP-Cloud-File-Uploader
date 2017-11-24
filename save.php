@@ -90,10 +90,11 @@ function mime($str)
 		}
 	}
 }
+$folder = date("h-m-s d-m-y");
 $formid = injection($_POST["formid"]);
 $qid = injection($_POST["qid"]);
 $path = DIRECTORY_SEPARATOR . "tmp"; 
-$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,"questionid".$qid));
+$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder,"questionid".$qid));
 
 if(realpath($file_path) !== true)
 {
@@ -135,7 +136,7 @@ foreach ($_FILES as $key => $value) {
 		}
 		chmod($file_path. DIRECTORY_SEPARATOR .$file_name, 0777);
 		header("HTTP/1.1 200");
-		die(json_encode(array("succes"=>true,"error"=>null)));			
+		die(json_encode(array("succes"=>true,"folder" => $folder,"error"=>null)));			
 	}
 	else{
 		var_dump($_FILES[$key]["tmp_name"] . " AA " . $file_name . " AA ".$file_path);

@@ -15,6 +15,7 @@
         <progress value="0" max="100" id="progressbar"></progress>
         <input type="hidden" name="key" id="key" value="" >
         <input type="hidden" id="formid">
+        <input type="hidden" id="folder">
     </form>
     <div id="qid"> </div>
     <div id="text"><h3>Please check your integrations!</h3></div>
@@ -123,6 +124,10 @@
                         },
                         success: function (sccss) {     
                             console.log(sccss);
+                            document.getElementById("folder").value = sccss; 
+                            var folder = JSON.parse(document.getElementById("folder").value);
+                            document.getElementById("folder").value = folder["folder"];
+                            console.log(document.getElementById("folder").value);
                         }
                     });
                     
@@ -136,6 +141,7 @@
             var formdata = new FormData();
             var form_id = document.getElementById("formid").value;
             console.log(form_id);
+            var folder = document.getElementById("folder").value;
             var qid =  JFCustomWidget.getWidgetSetting("qid");
             var clouds = JFCustomWidget.getWidgetSetting("clouds");
             var file = document.getElementById('upload').value.split(/(\\|\/)/g).pop();
@@ -143,6 +149,7 @@
             formdata.append("file",file);
             formdata.append("clouds", clouds);
             formdata.append("formid", form_id);
+            formdata.append("folder",folder);
             formdata.append("action","upload");
             $.ajax({
                type: "POST",

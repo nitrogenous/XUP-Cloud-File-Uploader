@@ -24,7 +24,7 @@ class XUP
 		return null;
 	}
 
-	public function upload($formid,$qid,$file) {
+	public function upload($formid,$folder,$qid,$file) {
 		return null;
 	}
 

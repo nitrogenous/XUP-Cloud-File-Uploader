@@ -17,13 +17,16 @@ function toprakDbxUpload($job) {
 	$formid = $params["formid"];
 	$file = $params["file"];
 	$qid = $params["qid"];
+	$folder = $params["folder"];
 	$client = new Client($token);
 	$adapter = new DropboxAdapter($client);
 	$filesystem = new Filesystem($adapter);
-	$path = DIRECTORY_SEPARATOR . "tmp" . DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . "questionid".$qid . DIRECTORY_SEPARATOR . $file;
+	$base_path = DIRECTORY_SEPARATOR . "tmp";
+	$path = DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. "questionid".$qid . DIRECTORY_SEPARATOR . $file;
+	var_dump($path);
 
-	$stream = fopen($path,"r+");
-	$filesystem->writeStream($file,$stream);
+	$stream = fopen($base_path.$path,"r+");
+	$filesystem->putStream($path,$stream);
 	fclose($stream);	
 	return $job->workload();
 }
