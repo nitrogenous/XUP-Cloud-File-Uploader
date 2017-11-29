@@ -72,4 +72,14 @@ class Drive extends XUP {
 			return false;
 		};
 	}
+
+	public function decode($code) {
+		// $client = new Google_Client();
+		// $client->setAuthConfig("client_secrets.json");
+		// $client->setAccessType("offline");
+		// $client->setIncludeGrantedScopes(true);
+		// $client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
+		// $client->setRedirectUri("https://".$_SERVER["HTTP_HOST"]."/oauth2callback.php")
+		return null;
+	}
 }

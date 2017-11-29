@@ -72,4 +72,9 @@ class Dropbox extends XUP {
 			return false;
 		};
 	}
+
+	public function decode($code) {
+		return null;
+	}
+
 }

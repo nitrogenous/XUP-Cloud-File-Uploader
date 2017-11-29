@@ -35,4 +35,8 @@ class XUP
 	public function get($formid,$qid){
 		return null;
 	}
+
+	public function decode($code){
+		return null;
+	}
 }
