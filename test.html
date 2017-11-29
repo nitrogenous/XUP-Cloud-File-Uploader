@@ -138,8 +138,7 @@
        */
       function handleAuthClick(event) {
         gapi.auth2.getAuthInstance().signIn();
-        ga = gapi.auth2.getAuthInstance();
-         ga.grantOfflineAccess({
+        gapi.auth2.getAuthInstance().grantOfflineAccess({
                     scope: 'https://www.googleapis.com/auth/drive'
                 }).then(function(resp) {
                     console.log(resp);
