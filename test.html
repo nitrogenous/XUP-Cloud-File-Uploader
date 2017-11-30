@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>Google Drive API Test</title>
+	<script src="jquery-3.2.1.min.js"></script>
+    <script src="utils.js"></script>
 </head>
 <body>
 	<button id="sign-in">Sign In</button>
@@ -38,7 +40,23 @@
 			function handleAuthClick(event) {
 				gapi.auth2.getAuthInstance().signIn();
 				gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
+					code = JSON.stringify(code);
 					console.log(code);
+					var formdata = new FormData();
+					formdata.append("code",code);
+					$.ajax({
+						type: "POST",
+						url: "test.php",
+						enctype: "multipart/form-data",
+						data: formdata,
+						async: false,
+						cache: false,
+						contentType: false,
+						processData: false,
+						success: function (sccss) {
+							console.log(sccss);
+						}
+					});
 				});
 			}
 
