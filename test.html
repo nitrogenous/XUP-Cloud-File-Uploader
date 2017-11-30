@@ -41,7 +41,7 @@
 				gapi.auth2.getAuthInstance().signIn();
 				gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
 					code = JSON.stringify(code);
-					console.log(code);
+					// console.log(code);
 					var formdata = new FormData();
 					formdata.append("code",code);
 					$.ajax({
