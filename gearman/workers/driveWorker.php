@@ -6,11 +6,11 @@ use Spatie\FlysystemDropbox\DropboxAdapter;
 
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");
-$worker->addFunction("toprakDBX", "toprakDbxUpload");
+$worker->addFunction("toprakDrive", "toprakDriveUpload");
 
 while ($worker->work());
 
-function toprakDbxUpload($job) {
+function toprakDriveUpload($job) {
 	$params = (array)json_decode($job->workload());
 	var_dump($params);
 	$token = (string)$params["key"];

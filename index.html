@@ -23,6 +23,7 @@
         document.getElementById("upload").disabled = true;
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
+                // this.onload=function(){};handleClientLoad();
                 var status;
                 var formdata = new FormData();
                 var qid = JFCustomWidget.getWidgetSetting("qid");
@@ -62,12 +63,12 @@
                             key = document.getElementById("key").value;
                             var formdata = new FormData();
                             var form_id = formId["formID"];
+                            formdata.append("action", "save");
                             formdata.append("qid",qid);
                             formdata.append("value","dropbox");
                             formdata.append("key",key);
                             formdata.append("formid", form_id);
                             formdata.append("clouds", clouds);
-                            formdata.append("action", "save");
                             $.ajax({
                                 type: "POST",
                                 url: "database.php",
@@ -87,7 +88,73 @@
                         }) 
                     }
                 }
-                enable(clouds,status.value)
+                if((clouds.toLowerCase()).indexOf("drive") !=  -1)
+                {
+                    if(status.Drive != true)
+                    {
+                        this.onload=function(){};handleClientLoad();
+                        var key = "AIzaSyAbodyJck6jBlV4oV9A3-E6xdMvf3JsdDg";
+                        var client = "424058548993-sbd0hd1dflne6507emj91gad1pf9bebc.apps.googleusercontent.com";
+                        var discovery = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+                        var scopes = "https://www.googleapis.com/auth/drive";
+
+                        function handleClientLoad() {
+                            gapi.load("client:auth2",initClient);
+                        }
+
+                        function initClient() {
+                            gapi.client.init({
+                                apiKey: key,
+                                clientId: client,
+                                discoveryDocs: discovery,
+                                scope: scopes
+                            }).then(function (){
+                                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+                                updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                                handleAuthClick();
+                            });
+
+                        }
+                        function updateSigninStatus(isSignedIn) {
+                            if (isSignedIn) {
+                                console.log("signed");
+                            }
+                            else
+                            {
+                                console.log("error");
+                            }
+                        }
+                        function handleAuthClick() {
+                            console.log("handleAuthClick");
+                            gapi.auth2.getAuthInstance().signIn();
+                            gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
+                                key = JSON.stringify(code);
+                                var formdata = new FormData();
+                                var form_id = formId["formID"];
+                                formdata.append("qid",qid);
+                                formdata.append("value","drive");
+                                formdata.append("key",key);
+                                formdata.append("formid", form_id);
+                                formdata.append("clouds", clouds);
+                                formdata.append("action", "save");
+                                $.ajax({
+                                    type: "POST",
+                                    url: "database.php",
+                                    enctype: "multipart/form-data",
+                                    data: formdata,
+                                    async: false,
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    success: function(sccss){
+                                        console.log(sccss);
+                                    }
+                                });
+                            })
+                        }    
+                    }
+                }
+                enable(clouds,status.value) 
                 $("#upload").change(function (e) {
                     e.preventDefault();
                     var formdata = new FormData();
@@ -184,6 +251,9 @@
                 document.getElementById("text").innerHTML = "";
             }
         }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+        >
     </script>
 </body>
 </html> 

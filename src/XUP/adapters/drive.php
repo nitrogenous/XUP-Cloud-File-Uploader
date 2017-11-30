@@ -6,8 +6,7 @@ class Drive extends XUP {
 	protected 	$key;
 	protected	$status;
 	protected 	$con;
-	protected 	$access;
-	protected 	$refresh;
+	protected 	$token;
 	function __construct() {	
 		$this->value = strtolower((new \ReflectionClass($this))->getShortName());
 	}
@@ -29,7 +28,7 @@ class Drive extends XUP {
 	}
 	public function save($formid,$qid,$key) {
 		$this->tokens($key);
-		$tokens = json_encode(array("acces_token" => $this->accesss,"refresh_token" => $this->refresh));
+		$tokens = $this->token;
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
 		}
@@ -78,7 +77,7 @@ class Drive extends XUP {
 	}
 
 	public function tokens($str) {
-		require_once __DIR__.'/vendor/autoload.php';
+		require_once '/www/v3/toprak/Adapter/vendor/autoload.php';
 		$code = explode('"',$str);
 		$del = array('"',"{","}","code",":");
 		do{
@@ -88,16 +87,15 @@ class Drive extends XUP {
 		}
 		while($old !== $code);
 		$code = implode($code);
-		$client = new Google_Client();
+		$client = new \Google_Client();
 		$client->setAuthConfig("client_secrets.json");
-		$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY); 
+		$client->addScope(\Google_Service_Drive::DRIVE_METADATA_READONLY); 
 		$client->setRedirectUri("https://toprak.jotform.pro"); 
 		$client->setAccessType("offline");
 		$client->setApprovalPrompt("force");
 		$client->setIncludeGrantedScopes(true);
 		$client->authenticate($code);
-		$tokens = $client->getAccessToken($code);
-		$this->access = $tokens["access_token"];
-		$this->refresh = $tokens["refresh_token"];
+		$resp = $client->getAccessToken($code);
+		$this->token = json_encode(array("acces_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
 	}
 }

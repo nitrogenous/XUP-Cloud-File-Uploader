@@ -19,10 +19,10 @@ $client->setIncludeGrantedScopes(true);
 $authenticate = $client->authenticate($code);
 $access = $client->getAccessToken($code);
 var_dump($access);
-// if($client->isAccesTokenExpired())
-// {
-// $refresh = $client->refreshToken("1/sCLILMDOxVDsEDSNo2KNfjvTw2ed0T3KPrqBoKh9OxY");
-// }
+if($client->isAccessTokenExpired())
+{
+	$refresh = $client->refreshToken("1/sCLILMDOxVDsEDSNo2KNfjvTw2ed0T3KPrqBoKh9OxY");
+}
 $service = new Google_Service_Drive($client);
 $client->setAccessToken($access["access_token"]);
 $file = new Google_Service_Drive_DriveFile();
