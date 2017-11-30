@@ -1,9 +1,6 @@
 <?
 require_once __DIR__.'/vendor/autoload.php';
 
-
-// session_start();
-
 $code = explode('"',$_POST["code"]);
 $del = array('"',"{","}","code",":");
 do{
@@ -14,7 +11,12 @@ do{
 while($old !== $code);
 $code = implode($code);
 $client = new Google_Client();
-$client->authenticate($code);
-$client->getAccessToken();
-$redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/';
-header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+$client->setAuthConfig("client_secrets.json");
+$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY); 
+$client->setRedirectUri("https://toprak.jotform.pro"); 
+$client->setAccessType("offline");
+$client->setApprovalPrompt("force");
+$client->setIncludeGrantedScopes(true); 
+$authenticate = $client->authenticate($code);
+$access = $client->getAccessToken($code);
+var_dump($access["access_token"],"\n",$access["refresh_token"]);
