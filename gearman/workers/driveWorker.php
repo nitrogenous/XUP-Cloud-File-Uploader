@@ -13,6 +13,16 @@ while ($worker->work());
 function toprakDriveUpload($job) {
 	$params = (array)json_decode($job->workload());
 	var_dump($params);
+
+	$client = new \Google_Client();
+	$client->setAuthConfig("client_secrets.json");
+	$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
+	$client->setRedirectUri("")
+
+
+
+
+
 	$token = (string)$params["key"];
 	$formid = $params["formid"];
 	$file = $params["file"];
