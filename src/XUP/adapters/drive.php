@@ -6,6 +6,8 @@ class Drive extends XUP {
 	protected 	$key;
 	protected	$status;
 	protected 	$con;
+	protected 	$access;
+	protected 	$refresh;
 	function __construct() {	
 		$this->value = strtolower((new \ReflectionClass($this))->getShortName());
 	}
@@ -26,12 +28,14 @@ class Drive extends XUP {
 		}
 	}
 	public function save($formid,$qid,$key) {
+		$this->tokens($key);
+		$tokens = json_encode(array("acces_token" => $this->accesss,"refresh_token" => $this->refresh));
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
 		}
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$formid = mysqli_real_escape_string($con,$formid);
-		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".$this->value."','".mysqli_real_escape_string($con,$key)."')";
+		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".$this->value."','".mysqli_real_escape_string($con,$tokens)."')";
 		$result = mysqli_query($con,$sql);
 		mysqli_close($con);
 		if ($result == true) {
@@ -73,13 +77,27 @@ class Drive extends XUP {
 		};
 	}
 
-	public function decode($code) {
-		// $client = new Google_Client();
-		// $client->setAuthConfig("client_secrets.json");
-		// $client->setAccessType("offline");
-		// $client->setIncludeGrantedScopes(true);
-		// $client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
-		// $client->setRedirectUri("https://".$_SERVER["HTTP_HOST"]."/oauth2callback.php")
-		return null;
+	public function tokens($str) {
+		require_once __DIR__.'/vendor/autoload.php';
+		$code = explode('"',$str);
+		$del = array('"',"{","}","code",":");
+		do{
+			$old = $code;
+			$code = str_replace($del,"",$code);
+			$code = array_filter($code);
+		}
+		while($old !== $code);
+		$code = implode($code);
+		$client = new Google_Client();
+		$client->setAuthConfig("client_secrets.json");
+		$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY); 
+		$client->setRedirectUri("https://toprak.jotform.pro"); 
+		$client->setAccessType("offline");
+		$client->setApprovalPrompt("force");
+		$client->setIncludeGrantedScopes(true);
+		$client->authenticate($code);
+		$tokens = $client->getAccessToken($code);
+		$this->access = $tokens["access_token"];
+		$this->refresh = $tokens["refresh_token"];
 	}
 }

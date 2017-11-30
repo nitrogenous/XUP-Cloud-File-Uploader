@@ -73,7 +73,7 @@ class Dropbox extends XUP {
 		};
 	}
 
-	public function decode($code) {
+	public function tokens($code) {
 		return null;
 	}
 

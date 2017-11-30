@@ -4,10 +4,7 @@ namespace XUP\Uploader;
 
 
 class XUP
-{	
-
-	public $this;
-
+{		
 	function __construct() {
 		return null;
 	}
@@ -36,7 +33,7 @@ class XUP
 		return null;
 	}
 
-	public function decode($code){
+	public function tokens($code){
 		return null;
 	}
 }
