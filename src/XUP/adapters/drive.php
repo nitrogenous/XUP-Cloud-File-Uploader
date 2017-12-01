@@ -5,8 +5,6 @@ class Drive extends XUP {
 	protected	$value;
 	protected 	$key;
 	protected	$status;
-	protected 	$con;
-	protected 	$token;
 	function __construct() {	
 		$this->value = strtolower((new \ReflectionClass($this))->getShortName());
 	}
@@ -27,7 +25,6 @@ class Drive extends XUP {
 		}
 	}
 	public function save($formid,$qid,$key) {
-		$this->tokens($key);
 		$tokens = $this->token;
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
@@ -66,7 +63,6 @@ class Drive extends XUP {
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()){
 			$this->key = $row['key'];
-			echo $this->key;
 			mysqli_close($con);
 			return $row['key'];;
 			}
@@ -75,8 +71,7 @@ class Drive extends XUP {
 			return false;
 		};
 	}
-
-	public function tokens($str) {
+	public function tokens($formid,$qid,$auth) {
 		require_once '/www/v3/toprak/Adapter/vendor/autoload.php';
 		$code = explode('"',$str);
 		$del = array('"',"{","}","code",":");
@@ -96,6 +91,7 @@ class Drive extends XUP {
 		$client->setIncludeGrantedScopes(true);
 		$client->authenticate($code);
 		$resp = $client->getAccessToken($code);
-		$this->token = json_encode(array("acces_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
+		$tokens = json_encode(array("acces_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
 	}
+	$this->save($formid,$qid,$tokens);
 }

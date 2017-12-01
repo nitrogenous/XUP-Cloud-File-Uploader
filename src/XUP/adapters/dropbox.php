@@ -5,7 +5,6 @@ class Dropbox extends XUP {
 	protected	$value;
 	protected 	$key;
 	protected	$status;
-	protected 	$con;
 	function __construct() {	
 		$this->value = strtolower((new \ReflectionClass($this))->getShortName());
 	}
@@ -50,7 +49,7 @@ class Dropbox extends XUP {
 		$params = json_encode(array("formid" => $formid,"folder"=>$folder,"qid" => $qid, "key" => $this->key, "file" => $file));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
-		$client->doBackground("toprakDBX",$params);
+		$client->doBackground("toprakDrive",$params);
 		return $client->returnCode();
 	}
 	public function test() {
@@ -63,7 +62,6 @@ class Dropbox extends XUP {
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()){
 				$this->key = $row['key'];
-				echo $this->key;
 				mysqli_close($con);
 				return $row['key'];;
 			}
@@ -73,7 +71,7 @@ class Dropbox extends XUP {
 		};
 	}
 
-	public function tokens($code) {
+	public function tokens($formid,$qid,$auth) {
 		return null;
 	}
 

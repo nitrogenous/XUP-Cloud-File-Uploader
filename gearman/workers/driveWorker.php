@@ -1,8 +1,7 @@
 <?php
-require_once("/www/v3/toprak/Adapter". DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
-use  League\Flysystem\Filesystem;
-use Spatie\Dropbox\Client;
-use Spatie\FlysystemDropbox\DropboxAdapter;
+require_once("/www/v3/toprak/src/XUP/adapters/drive.php");
+
+use XUP\FileUploader\Drive;
 
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");
@@ -12,6 +11,11 @@ while ($worker->work());
 
 function toprakDriveUpload($job) {
 	$params = (array)json_decode($job->workload());
+	$tokens = (array)json_decode($params["key"]);
+	$formid = $params["formid"];
+	$file = $params["file"];
+	$qid = $params["qid"];
+	$folder = $params["folder"];
 	var_dump($params);
 
 	$client = new \Google_Client();
@@ -21,14 +25,16 @@ function toprakDriveUpload($job) {
 	$client->setAccessType("offline");
 	$client->setApprovalPrompt("force");
 	$client->setIncludeGrantedScopes(true);
-	$client->setAccessToken($code);
-	
+	$client->setAccessToken((string)$tokens["access_token"]);
+	if($client->isAccessTokenExpired())
+	{
+		$refresh = $client->refreshToken((string)$tokes["refresh_token"]);
+		$drive = new \Drive();
+		$drive->save($formid,$qid,json_encode(array("access_token" => (string)$tokens["access_token"],"refresh_token" => (string)$tokens["refresh_token"]));
+		echo "Key Updated";
+	}
 
-	$token = (string)$params["key"];
-	$formid = $params["formid"];
-	$file = $params["file"];
-	$qid = $params["qid"];
-	$folder = $params["folder"];
+
 	$client = new Client($token);
 	$adapter = new DropboxAdapter($client);
 	$filesystem = new Filesystem($adapter);

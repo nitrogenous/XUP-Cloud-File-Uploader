@@ -33,7 +33,7 @@ class XUP
 		return null;
 	}
 
-	public function tokens($code){
+	public function tokens($formid,$qid,$auth){
 		return null;
 	}
 }
