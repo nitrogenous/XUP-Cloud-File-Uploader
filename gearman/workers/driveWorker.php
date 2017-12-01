@@ -17,11 +17,12 @@ function toprakDriveUpload($job) {
 	$client = new \Google_Client();
 	$client->setAuthConfig("client_secrets.json");
 	$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
-	$client->setRedirectUri("")
-
-
-
-
+	$client->setRedirectUri("https://toprak.jotform.pro/Adapter/index.html");
+	$client->setAccessType("offline");
+	$client->setApprovalPrompt("force");
+	$client->setIncludeGrantedScopes(true);
+	$client->setAccessToken($code);
+	
 
 	$token = (string)$params["key"];
 	$formid = $params["formid"];

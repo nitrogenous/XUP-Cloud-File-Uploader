@@ -3,7 +3,7 @@
 <head>
 	<title>Google Drive API Test</title>
 	<script src="jquery-3.2.1.min.js"></script>
-    <script src="utils.js"></script>
+	<script src="utils.js"></script>
 </head>
 <body>
 	<button id="sign-in">Sign In</button>
@@ -30,18 +30,18 @@
 			});
 
 		}
-			function updateSigninStatus(isSignedIn) {
-				if (isSignedIn) {
-					console.log("Signed In");
-				}
-				else {
-					document.getElementById("content").innerHTML = "An Error Has Occured While Signing In";
-				}
+		function updateSigninStatus(isSignedIn) {
+			if (isSignedIn) {
+				console.log("Signed In");
 			}
-			function handleAuthClick(event) {
-				gapi.auth2.getAuthInstance().signIn();
-				gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
-					code = JSON.stringify(code);
+			else {
+				document.getElementById("content").innerHTML = "An Error Has Occured While Signing In";
+			}
+		}
+		function handleAuthClick(event) {
+			gapi.auth2.getAuthInstance().signIn();
+			gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
+				code = JSON.stringify(code);
 					// console.log(code);
 					var formdata = new FormData();
 					formdata.append("code",code);
@@ -59,12 +59,12 @@
 						}
 					});
 				});
-			}
+		}
 
 	</script>
 	<script async defer src="https://apis.google.com/js/api.js"
 	onload="this.onload=function(){};handleClientLoad()"
 	onreadystatechange="if (this.readyState === 'complete') this.onload()">
-	</script>
+</script>
 </body>
 </html>

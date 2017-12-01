@@ -46,12 +46,12 @@ class Dropbox extends XUP {
 		return false;
 	}
 	public function upload($formid,$folder,$qid,$file) {
-			$this->get($formid,$qid);
-			$params = json_encode(array("formid" => $formid,"folder"=>$folder,"qid" => $qid, "key" => $this->key, "file" => $file));
-			$client = new \GearmanClient();
-			$client->addServer("127.0.0.1","4730");	
-			$client->doBackground("toprakDBX",$params);
-			return $client->returnCode();
+		$this->get($formid,$qid);
+		$params = json_encode(array("formid" => $formid,"folder"=>$folder,"qid" => $qid, "key" => $this->key, "file" => $file));
+		$client = new \GearmanClient();
+		$client->addServer("127.0.0.1","4730");	
+		$client->doBackground("toprakDBX",$params);
+		return $client->returnCode();
 	}
 	public function test() {
 		return $this->value . ":✔";
@@ -59,13 +59,13 @@ class Dropbox extends XUP {
 	public function get($formid,$qid){
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$sql = "SELECT `key` FROM `widget_access_keys` WHERE formId = $formid AND questionId = $qid";
-		$result = mysqli_query($con,$sql);
+		$result = mysqli_query($con,$sql); 
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()){
-			$this->key = $row['key'];
-			echo $this->key;
-			mysqli_close($con);
-			return $row['key'];;
+				$this->key = $row['key'];
+				echo $this->key;
+				mysqli_close($con);
+				return $row['key'];;
 			}
 		}
 		else{
