@@ -1,7 +1,10 @@
 <?php
-require_once("/www/v3/toprak/src/XUP/adapters/drive.php");
+require_once("/www/v3/toprak/Adapter/src/XUP/main.php");
+require_once("/www/v3/toprak/Adapter/vendor/autoload.php");
+require_once("/www/v3/toprak/Adapter/src/XUP/adapters/drive.php");
 
-use XUP\FileUploader\Drive;
+use XUP\Uploader\Main;
+use XUP\Uploader\Drive;
 
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");
@@ -16,34 +19,35 @@ function toprakDriveUpload($job) {
 	$file = $params["file"];
 	$qid = $params["qid"];
 	$folder = $params["folder"];
-	var_dump($params);
-
-	$client = new \Google_Client();
-	$client->setAuthConfig("client_secrets.json");
-	$client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
-	$client->setRedirectUri("https://toprak.jotform.pro/Adapter/index.html");
-	$client->setAccessType("offline");
-	$client->setApprovalPrompt("force");
-	$client->setIncludeGrantedScopes(true);
-	$client->setAccessToken((string)$tokens["access_token"]);
-	if($client->isAccessTokenExpired())
-	{
-		$refresh = $client->refreshToken((string)$tokes["refresh_token"]);
-		$drive = new \Drive();
-		$drive->save($formid,$qid,json_encode(array("access_token" => (string)$tokens["access_token"],"refresh_token" => (string)$tokens["refresh_token"]));
-		echo "Key Updated";
-	}
-
-
-	$client = new Client($token);
-	$adapter = new DropboxAdapter($client);
-	$filesystem = new Filesystem($adapter);
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path = DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. "questionid".$qid . DIRECTORY_SEPARATOR . $file;
-	var_dump($path);
+	var_dump($params,"\n\n\n",$tokens);
+ 
 
-	$stream = fopen($base_path.$path,"r+");
-	$filesystem->putStream($path,$stream);
-	fclose($stream);	
+	$client = new Google_Client();
+	$client->setAuthConfig("client_secrets.json");
+	$client->setSubject($file);
+	$client->setScopes(["https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata"]);
+	$client->setApplicationName("XUP_File_Uploader");
+	$client->Authenticate("4/Qkb_ayXJvR6dn_fNi1dx2vL47gWyETPf3EquFhdFIDU");
+
+	$client->setAccessToken((string)$tokens["access_token"]);
+	// if($client->isAccessTokenExpired())
+	// {
+	// 	$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
+	// 	$drive = new Drive();
+	// 	$drive->save($formid,$qid,json_encode(array("access_token" => (string)$tokens["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));
+	// 	$client->setAccessToken((string)$tokens["access_token"]);
+	// 	echo "Key Updated";
+	// }
+	$service = new Google_Service_Drive($client);
+	$gfile = new Google_Service_Drive_DriveFile();
+	$result = $service->files->create($gfile,array(
+		"data" =>file_get_contents($base_path.$path),
+		"mimeType" => "application/octet-stream",
+		"uploadType" => "media"));
+	var_dump($result);
+
+
 	return $job->workload();
 }

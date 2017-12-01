@@ -58,7 +58,7 @@ class Drive extends XUP {
 	}
 	public function get($formid,$qid){
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
-		$sql = "SELECT `key` FROM `widget_access_keys` WHERE formId = $formid AND questionId = $qid";
+		$sql = "SELECT `key` FROM `widget_access_keys` WHERE formId = $formid AND questionId = $qid AND value = '".$this->value."'";
 		$result = mysqli_query($con,$sql);
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()){
@@ -91,7 +91,7 @@ class Drive extends XUP {
 		$client->setIncludeGrantedScopes(true);
 		$client->authenticate($code);
 		$resp = $client->getAccessToken($code);
-		$tokens = json_encode(array("acces_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
+		$tokens = json_encode(array("access_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
+		$this->save($formid,$qid,$tokens);
 	}
-	$this->save($formid,$qid,$tokens);
 }
