@@ -205,7 +205,7 @@
         JFCustomWidget.subscribe("submit", function (formId) {
             var result = {};
             result.valid = true;
-            result.value = file;
+            // result.value = file;
             var formdata = new FormData();
             var form_id = document.getElementById("formid").value;
             console.log(form_id);
@@ -230,7 +230,8 @@
                 processData: false,
                 success: function (sccss) {
                     console.log(sccss);
-                    JFCustomWidget.sendSubmit(sccss);
+                    result.value = sccss;
+                    JFCustomWidget.sendSubmit(result );
                 }
             })
         });
