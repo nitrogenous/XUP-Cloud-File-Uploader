@@ -30,7 +30,7 @@ class Drive extends XUP {
 		}
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$formid = mysqli_real_escape_string($con,$formid);
-		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".mysqli_real_escape_string($con,$this->value)."','".mysqli_real_escape_string($con,$key)."')";
+		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".mysqli_real_escape_string($con,$this->value)."','".$key."')";
 		$result = mysqli_query($con,$sql);
 		mysqli_close($con);
 		if ($result == true) {
