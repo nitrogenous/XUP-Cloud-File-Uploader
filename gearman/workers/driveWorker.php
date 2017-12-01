@@ -27,9 +27,9 @@ function toprakDriveUpload($job) {
 	$client = new Google_Client();
 	$client->setAuthConfig("client_secrets.json");
 	$client->setSubject($file);
-	$client->setScopes(["https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata"]);
+	$client->setScopes(["https://www.googleapis.com/auth/drive"]);
 	$client->setApplicationName("XUP_File_Uploader");
-	$client->Authenticate("4/Qkb_ayXJvR6dn_fNi1dx2vL47gWyETPf3EquFhdFIDU");
+	//client->Authenticate("4/Qkb_ayXJvR6dn_fNi1dx2vL47gWyETPf3EquFhdFIDU");
 
 	$client->setAccessToken((string)$tokens["access_token"]);
 	// if($client->isAccessTokenExpired())
@@ -45,7 +45,7 @@ function toprakDriveUpload($job) {
 	$result = $service->files->create($gfile,array(
 		"data" =>file_get_contents($base_path.$path),
 		"mimeType" => "application/octet-stream",
-		"uploadType" => "media"));
+		"uploadType" => "media"				));
 	var_dump($result);
 
 

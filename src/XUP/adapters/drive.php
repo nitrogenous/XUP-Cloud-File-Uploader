@@ -25,13 +25,12 @@ class Drive extends XUP {
 		}
 	}
 	public function save($formid,$qid,$key) {
-		$tokens = $this->token;
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
 		}
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$formid = mysqli_real_escape_string($con,$formid);
-		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".$this->value."','".mysqli_real_escape_string($con,$tokens)."')";
+		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".mysqli_real_escape_string($con,$this->value)."','".mysqli_real_escape_string($con,$key)."')";
 		$result = mysqli_query($con,$sql);
 		mysqli_close($con);
 		if ($result == true) {
@@ -73,7 +72,7 @@ class Drive extends XUP {
 	}
 	public function tokens($formid,$qid,$auth) {
 		require_once '/www/v3/toprak/Adapter/vendor/autoload.php';
-		$code = explode('"',$str);
+		$code = explode('"',$auth);
 		$del = array('"',"{","}","code",":");
 		do{
 			$old = $code;
