@@ -9,6 +9,7 @@
     <title>XUP File Uploader</title>
 </head>
 <body>
+    <center>
     <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
         <input type="file" name="upload" id="upload" >
         <input type="hidden" id="hidden" value="">
@@ -19,6 +20,7 @@
     </form>
     <div id="qid"> </div>
     <div id="text"><h3>Please check your integrations!</h3></div>
+    </center>
     <script type="text/javascript">
         document.getElementById("upload").disabled = true;
         JFCustomWidget.subscribe("ready", function (formId) {

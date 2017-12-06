@@ -21,7 +21,7 @@ function toprakDriveUpload($job) {
 	$folder = $params["folder"];
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path = DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. "questionid".$qid . DIRECTORY_SEPARATOR . $file;
-	var_dump($params,"\n\n\n",$tokens);
+	var_dump($params,"\n\n\n",$tokens, "\n\nA\n");
  
 
 	$client = new Google_Client();
@@ -29,24 +29,26 @@ function toprakDriveUpload($job) {
 	$client->setSubject($file);
 	$client->setScopes(["https://www.googleapis.com/auth/drive"]);
 	$client->setApplicationName("XUP_File_Uploader");
-	//client->Authenticate("4/Qkb_ayXJvR6dn_fNi1dx2vL47gWyETPf3EquFhdFIDU");
+
 
 	$client->setAccessToken((string)$tokens["access_token"]);
-	// if($client->isAccessTokenExpired())
-	// {
-	// 	$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
-	// 	$drive = new Drive();
-	// 	$drive->save($formid,$qid,json_encode(array("access_token" => (string)$tokens["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));
-	// 	$client->setAccessToken((string)$tokens["access_token"]);
-	// 	echo "Key Updated";
-	// }
+	if($client->isAccessTokenExpired())
+	{
+		var_dump("yalala");
+		$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
+		$drive = new Drive();
+		$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));
+		echo "Key Updated";
+	}	
 	$service = new Google_Service_Drive($client);
-	$gfile = new Google_Service_Drive_DriveFile();
-	$result = $service->files->create($gfile,array(
+	$folderMeta = new Google_Service_Drive_DriveFile(array("name" => "yololo","mimeType" => "application/vnd.google-apps.folder"));
+	$fileMeta = new Google_Service_Drive_DriveFile(array("name" => $file, "parents" => array("yololo")));
+	$folder = $service->files->create($folderMeta,array("fields" => "id"));
+	$file = $service->files->create($fileMeta,array(
 		"data" =>file_get_contents($base_path.$path),
 		"mimeType" => "application/octet-stream",
-		"uploadType" => "media"				));
-	var_dump($result);
+		"uploadType" => "media"));
+	var_dump($folder,$file);
 
 
 	return $job->workload();
