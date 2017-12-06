@@ -477,7 +477,7 @@ class Google_Client
     }
 
     // If the token is set to expire in the next 30 seconds.
-    return $created;//($created + ($this->token['expires_in'] - 30)) < time();
+    return ($created + ($this->token['expires_in'] - 30)) < time();
   }
 
   public function getAuth()
