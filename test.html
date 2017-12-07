@@ -1,70 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Google Drive API Test</title>
-	<script src="jquery-3.2.1.min.js"></script>
-	<script src="utils.js"></script>
+    <meta charset="UTF-8">
+    <script src="jquery-3.2.1.min.js"></script>
+    <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+    <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
+    <script src="utils.js"></script>
+    <title>XUP File Uploader</title>
 </head>
 <body>
-	<button id="sign-in">Sign In</button>
-	<kbd id="content"> </kbd>
-	<script type="text/javascript">
-		var key = "AIzaSyAbodyJck6jBlV4oV9A3-E6xdMvf3JsdDg";
-		var client = "424058548993-sbd0hd1dflne6507emj91gad1pf9bebc.apps.googleusercontent.com";
-		var discovery = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-		var scopes = "https://www.googleapis.com/auth/drive";
+    <center>
+    <form action="test.php" method="POST" enctype="multipart/form-data" id="xup"  onsubmit="upload()">
+        <input type="file" name="upload" id="upload" >
+        <input type="submit" name="submit" id="submit">
+    </form>
+    </center>
+    <script type="text/javascript">
+    	function upload(){
+    		var formdata = new FormData();
+    		var file = document.getElementById("upload").files[0];
+    		formdata.append("file",file);
+    		$.ajax({
+    			type: "POST",
+    			url: "test.php",
+    			data: formdata,
+    			success: function(sccss){
+    				console.log(sccss);
+    			}
+    		});
 
-		function handleClientLoad() {
-			gapi.load("client:auth2",initClient);
-		}
-		function initClient() {
-			gapi.client.init({
-				apiKey: key,
-				clientId: client,
-				discoveryDocs: discovery,
-				scope: scopes
-			}).then(function (){
-				gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-				updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-				document.getElementById("sign-in").onclick = handleAuthClick;
-			});
-
-		}
-		function updateSigninStatus(isSignedIn) {
-			if (isSignedIn) {
-				console.log("Signed In");
-			}
-			else {
-				document.getElementById("content").innerHTML = "An Error Has Occured While Signing In";
-			}
-		}
-		function handleAuthClick(event) {
-			gapi.auth2.getAuthInstance().signIn();
-			gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
-				code = JSON.stringify(code);
-					// console.log(code);
-					var formdata = new FormData();
-					formdata.append("code",code);
-					$.ajax({
-						type: "POST",
-						url: "test.php",
-						enctype: "multipart/form-data",
-						data: formdata,
-						async: false,
-						cache: false,
-						contentType: false,
-						processData: false,
-						success: function (sccss) {
-							console.log(sccss);
-						}
-					});
-				});
-		}
-
-	</script>
-	<script async defer src="https://apis.google.com/js/api.js"
-	onload="this.onload=function(){};handleClientLoad()"
-	onreadystatechange="if (this.readyState === 'complete') this.onload()">
-</script>
+    	}
+    </script>
 </body>
-</html>
+</html> 

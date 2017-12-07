@@ -32,8 +32,7 @@ function toprakDriveUpload($job) {
 
 
 	$client->setAccessToken((string)$tokens["access_token"]);
-	if($client->isAccessTokenExpired())
-	{
+	if($client->isAccessTokenExpired()) {
 		var_dump("yalala");
 		$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
 		$drive = new Drive();
@@ -56,8 +55,7 @@ function toprakDriveUpload($job) {
 		$pagetoken = $driveFiles->pageToken;
 	} while ($pagetoken != null);
 
-	if($folderid == null)
-	{
+	if($folderid == null) {
 		$folderMeta = new Google_Service_Drive_DriveFile(array("name" => $formid,"mimeType" => "application/vnd.google-apps.folder"));
 		$folder = $service->files->create($folderMeta,array("fields" => "id"));
 		$folderid = $folder->getId();
