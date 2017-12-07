@@ -47,7 +47,7 @@
                     contentType: false,
                     processData: false,
                     success: function (sccss) {
-                        console.log(sccss);
+                        // console.log(sccss);
                         document.getElementById("hidden").value = sccss;
                     }
                 });
@@ -82,7 +82,7 @@
                                 contentType: false,
                                 processData: false,
                                 success: function (sccss) {
-                                    console.log(sccss);
+                                    // console.log(sccss);
                                     document.getElementById("hidden").value = sccss;
                                 }
                             });
@@ -150,7 +150,7 @@
                                     contentType: false,
                                     processData: false,
                                     success: function(sccss){
-                                        console.log(sccss);
+                                        // console.log(sccss);
                                     }
                                 });
                             })
@@ -193,7 +193,7 @@
                             return xhr;
                         },
                         success: function (sccss) {     
-                            console.log(sccss);
+                            // console.log(sccss);
                             document.getElementById("folder").value = sccss; 
                             var folder = JSON.parse(document.getElementById("folder").value);
                             document.getElementById("folder").value = folder["folder"];
@@ -231,7 +231,7 @@
                 contentType: false,
                 processData: false,
                 success: function (sccss) {
-                    console.log(sccss);
+                    // console.log(sccss);
                     result.value = sccss;
                     JFCustomWidget.sendSubmit(result );
                 }
