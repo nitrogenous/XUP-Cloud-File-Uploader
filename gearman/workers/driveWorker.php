@@ -20,7 +20,7 @@ function toprakDriveUpload($job) {
 	$qid = $params["qid"];
 	$folder = $params["folder"];
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
-	$path = DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. "questionid".$qid . DIRECTORY_SEPARATOR . $file;
+	$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
 	var_dump($params,"\n\n\n",$tokens, "\n\nA\n");
  
 
@@ -39,16 +39,46 @@ function toprakDriveUpload($job) {
 		$drive = new Drive();
 		$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));
 		echo "Key Updated";
-	}	
+	}	 
 	$service = new Google_Service_Drive($client);
-	$folderMeta = new Google_Service_Drive_DriveFile(array("name" => "yololo","mimeType" => "application/vnd.google-apps.folder"));
-	$fileMeta = new Google_Service_Drive_DriveFile(array("name" => $file, "parents" => array("yololo")));
-	$folder = $service->files->create($folderMeta,array("fields" => "id"));
-	$file = $service->files->create($fileMeta,array(
-		"data" =>file_get_contents($base_path.$path),
+	
+	$pagetoken = null;
+	$folderid = null;
+	do { 
+		$driveFiles = $service->files->listFiles();
+		foreach ($driveFiles->files as $dFiles) {
+			var_dump($dFiles->name);
+			if($dFiles->name == $formid)
+			{
+				$folderid = $dFiles->id;
+			}
+		}
+		$pagetoken = $driveFiles->pageToken;
+	} while ($pagetoken != null);
+
+	if($folderid == null)
+	{
+		$folderMeta = new Google_Service_Drive_DriveFile(array("name" => $formid,"mimeType" => "application/vnd.google-apps.folder"));
+		$folder = $service->files->create($folderMeta,array("fields" => "id"));
+		$folderid = $folder->getId();
+	}
+
+		$pathArray = array_filter(explode("/", $path));
+		
+		foreach ($pathArray as $paths) {
+			$folderMeta = new Google_Service_Drive_DriveFile(array("name" => $paths, "mimeType" => "application/vnd.google-apps.folder","parents" => array($folderid)));
+			$folder = $service->files->create($folderMeta,array("fields" => "id"));
+			var_dump("Created Subfolder".$paths);
+			$folderid = $folder->getId();
+		}
+
+
+	$fileMeta = new Google_Service_Drive_DriveFile(array("name" => $file, "parents" => array($folderid)));
+	$fileService = $service->files->create($fileMeta,array(
+		"data" =>file_get_contents($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file),
 		"mimeType" => "application/octet-stream",
 		"uploadType" => "media"));
-	var_dump($folder,$file);
+	var_dump($folder,$fileService);
 
 
 	return $job->workload();

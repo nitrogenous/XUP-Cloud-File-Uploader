@@ -26,4 +26,5 @@ if($client->isAccessTokenExpired())
 $service = new Google_Service_Drive($client);
 $client->setAccessToken($access["access_token"]);
 $file = new Google_Service_Drive_DriveFile();
-$result = $service->files->create($file,array("data" =>file_get_contents("/tmp/72912031423950/07-11-55 30-11-17/questionid3/JotformDevLogoMini.png"),"mimeType" => "application/octet-stream","uploadType" => "media"));
+$result = $service->files->create($file,array("data" =>file_get_contents("/tmp/72912031423950/07-11-55 30-11-17/questionid3/JotformDevLogoMini.png"),"mimeType" => "application/octet-stream","uploadType" => "media")
+);
