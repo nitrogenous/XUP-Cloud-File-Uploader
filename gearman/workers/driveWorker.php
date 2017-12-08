@@ -21,7 +21,8 @@ function toprakDriveUpload($job) {
 	$folder = $params["folder"];
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
-	var_dump($params,"\n\n\n",$tokens, "\n\nA\n");
+	var_dump($params,"\n\n\n",$tokens, "\n\n\n", $base_path, "\n\n\n",$path,"\n\n\n");
+	var_dump($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file);
  
 
 	$client = new Google_Client();
@@ -36,7 +37,7 @@ function toprakDriveUpload($job) {
 		var_dump("yalala");
 		$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
 		$drive = new Drive();
-		$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));
+		$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));	
 		echo "Key Updated";
 	}	 
 	$service = new Google_Service_Drive($client);
@@ -70,7 +71,6 @@ function toprakDriveUpload($job) {
 			$folderid = $folder->getId();
 		}
 
-
 	$fileMeta = new Google_Service_Drive_DriveFile(array("name" => $file, "parents" => array($folderid)));
 	$fileService = $service->files->create($fileMeta,array(
 		"data" =>file_get_contents($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file),
@@ -78,6 +78,6 @@ function toprakDriveUpload($job) {
 		"uploadType" => "media"));
 	var_dump($folder,$fileService);
 
-
-	return $job->workload();
+	$url = "https://drive.google.com/drive/u/0/folders/$folderid";
+	return $url;
 }

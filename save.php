@@ -90,7 +90,7 @@ function mime($str)
 		}
 	}
 }
-$folder = date("h-m-s d-m-y");
+$folder = date("h-ia d-m-Y");
 $formid = injection($_POST["formid"]);
 $qid = injection($_POST["qid"]);
 $path = DIRECTORY_SEPARATOR . "tmp"; 

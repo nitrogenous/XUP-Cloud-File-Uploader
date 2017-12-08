@@ -10,26 +10,10 @@
 </head>
 <body>
     <center>
-    <form action="test.php" method="POST" enctype="multipart/form-data" id="xup"  onsubmit="upload()">
-        <input type="file" name="upload" id="upload" >
-        <input type="submit" name="submit" id="submit">
-    </form>
+   	<h6>I don't know you!</h6>
     </center>
     <script type="text/javascript">
-    	function upload(){
-    		var formdata = new FormData();
-    		var file = document.getElementById("upload").files[0];
-    		formdata.append("file",file);
-    		$.ajax({
-    			type: "POST",
-    			url: "test.php",
-    			data: formdata,
-    			success: function(sccss){
-    				console.log(sccss);
-    			}
-    		});
-
-    	}
+    	console.log("Be carefull! Are you trying to broke my code?");
     </script>
 </body>
 </html> 

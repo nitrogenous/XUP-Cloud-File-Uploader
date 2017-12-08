@@ -30,7 +30,7 @@ class Dropbox extends XUP {
 		}
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$formid = mysqli_real_escape_string($con,$formid);
-		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".$this->value."','".mysqli_real_escape_string($con,$key)."')";
+		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".mysqli_real_escape_string($con,$this->value)."','".$key."')";
 		$result = mysqli_query($con,$sql);
 		mysqli_close($con);
 		if ($result == true) {
@@ -49,7 +49,7 @@ class Dropbox extends XUP {
 		$params = json_encode(array("formid" => $formid,"folder"=>$folder,"qid" => $qid, "key" => $this->key, "file" => $file));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
-		$client->doBackground("toprakDBX",$params);
+		$client->doNormal("toprakDBX",$params);
 		return $client->returnCode();
 	}
 	public function test() {
@@ -63,14 +63,13 @@ class Dropbox extends XUP {
 			while($row = $result->fetch_assoc()){
 				$this->key = $row['key'];
 				mysqli_close($con);
-				return $row['key'];;
+				return $row['key'];
 			}
 		}
 		else{
 			return false;
 		};
 	}
-
 	public function tokens($formid,$qid,$auth) {
 		return null;
 	}

@@ -25,6 +25,8 @@
         document.getElementById("upload").disabled = true;
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
+                var label = JFCustomWidget.getWidgetSettings();
+                console.log(label); 
                 // this.onload=function(){};handleClientLoad();
                 var status;
                 var formdata = new FormData();
@@ -194,6 +196,8 @@
                         },
                         success: function (sccss) {     
                             // console.log(sccss);
+                            var result = {};
+                            result.valid = true;
                             document.getElementById("folder").value = sccss; 
                             var folder = JSON.parse(document.getElementById("folder").value);
                             document.getElementById("folder").value = folder["folder"];
@@ -205,9 +209,8 @@
                 })  
         })
         JFCustomWidget.subscribe("submit", function (formId) {
-            var result = {};
-            result.valid = true;
-            // result.value = file;
+
+            result.value = file;
             var formdata = new FormData();
             var form_id = document.getElementById("formid").value;
             console.log(form_id);
@@ -232,7 +235,10 @@
                 processData: false,
                 success: function (sccss) {
                     // console.log(sccss);
-                    result.value = sccss;
+                      var result = {
+                        valid: true,
+                        value: true
+                    };
                     JFCustomWidget.sendSubmit(result );
                 }
             })

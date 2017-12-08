@@ -28,5 +28,6 @@ function toprakDbxUpload($job) {
 	$stream = fopen($base_path.$path,"r+");
 	$filesystem->putStream($path,$stream);
 	fclose($stream);	
-	return $job->workload();
+	$url = "https://www.dropbox.com/home/$formid/$folder/questiondid$qid/$file";
+	return $url;	
 }
