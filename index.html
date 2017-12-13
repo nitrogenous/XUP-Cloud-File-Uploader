@@ -200,6 +200,13 @@
                             var folder = JSON.parse(document.getElementById("folder").value);
                             document.getElementById("folder").value = folder["folder"];
                             console.log(document.getElementById("folder").value);
+                            
+                            var formid = document.getElementById("formid").value;
+                            var qid = JFCustomWidget.getWidgetSeting("qid");
+                            var file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
+                            var clouds = JFCustomWidget.getWidgetSeting("clouds");
+                            var folder = document.getElementById("folder").value;
+                            sendJob(qid,file,clouds,formid,folder);
                         }
                     });
                     
