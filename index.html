@@ -255,8 +255,27 @@
                 document.getElementById("text").innerHTML = "";
             }
         }
-        function jobs($qid,$file,$clouds,$formid,$folder,$action){
-
+        function sendJob(qid,file,clouds,formid,folder){
+            var formdata = new FormData();
+            formdata.append("qid",qid);
+            formdata.append("file",file);
+            formdata.append("clouds",clouds);
+            formdata.append("formid",formid);
+            formdata.append("folder",folder);
+            $.ajax({
+                type: "POST",
+                url: "database.php",
+                enctype: "multipart/form-data",
+                data: formdata,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(sccss){
+                    console.log(sccss);
+                    return sccss;
+                }
+            })
         }
     </script>
     <script async defer src="https://apis.google.com/js/api.js"
