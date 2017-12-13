@@ -12,7 +12,7 @@ while ($worker->work());
 
 function toprakDbxUpload($job) {
 	$params = (array)json_decode($job->workload());
-	var_dump($params);
+	// var_dump($params);
 	$token = (string)$params["key"];
 	$formid = $params["formid"];
 	$file = $params["file"];
@@ -23,11 +23,12 @@ function toprakDbxUpload($job) {
 	$filesystem = new Filesystem($adapter);
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path = DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. "questionid".$qid . DIRECTORY_SEPARATOR . $file;
-	var_dump($path);
+	// var_dump($path);
 
 	$stream = fopen($base_path.$path,"r+");
 	$filesystem->putStream($path,$stream);
 	fclose($stream);	
-	$url = "https://www.dropbox.com/home/$formid/$folder/questiondid$qid/$file";
+	$url = "www.dropbox.com/home/$formid/$folder/questionid$qid";
+	var_dump($url);
 	return $url;	
 }

@@ -21,8 +21,8 @@ function toprakDriveUpload($job) {
 	$folder = $params["folder"];
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
-	var_dump($params,"\n\n\n",$tokens, "\n\n\n", $base_path, "\n\n\n",$path,"\n\n\n");
-	var_dump($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file);
+	// var_dump($params,"\n\n\n",$tokens, "\n\n\n", $base_path, "\n\n\n",$path,"\n\n\n");
+	// var_dump($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file);
  
 
 	$client = new Google_Client();
@@ -34,7 +34,7 @@ function toprakDriveUpload($job) {
 
 	$client->setAccessToken((string)$tokens["access_token"]);
 	if($client->isAccessTokenExpired()) {
-		var_dump("yalala");
+		// var_dump("yalala");
 		$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
 		$drive = new Drive();
 		$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));	
@@ -47,7 +47,7 @@ function toprakDriveUpload($job) {
 	do { 
 		$driveFiles = $service->files->listFiles();
 		foreach ($driveFiles->files as $dFiles) {
-			var_dump($dFiles->name);
+			// var_dump($dFiles->name);
 			if($dFiles->name == $formid)
 			{
 				$folderid = $dFiles->id;
@@ -67,7 +67,7 @@ function toprakDriveUpload($job) {
 		foreach ($pathArray as $paths) {
 			$folderMeta = new Google_Service_Drive_DriveFile(array("name" => $paths, "mimeType" => "application/vnd.google-apps.folder","parents" => array($folderid)));
 			$folder = $service->files->create($folderMeta,array("fields" => "id"));
-			var_dump("Created Subfolder".$paths);
+			// var_dump("Created Subfolder".$paths);
 			$folderid = $folder->getId();
 		}
 
@@ -76,8 +76,9 @@ function toprakDriveUpload($job) {
 		"data" =>file_get_contents($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file),
 		"mimeType" => "application/octet-stream",
 		"uploadType" => "media"));
-	var_dump($folder,$fileService);
+	// var_dump($folder,$fileService);
 
-	$url = "https://drive.google.com/drive/u/0/folders/$folderid";
+	$url = "drive.google.com/drive/u/0/folders/$folderid";
+	var_dump($url);
 	return $url;
 }

@@ -136,11 +136,11 @@ foreach ($_FILES as $key => $value) {
 		}
 		chmod($file_path. DIRECTORY_SEPARATOR .$file_name, 0777);
 		header("HTTP/1.1 200");
-		die(json_encode(array("succes"=>true,"folder" => $folder,"error"=>null)));			
+		exit(json_encode(array("succes"=>true,"folder" => $folder,"error"=>null)));			
 	}
 	else{
 		var_dump($_FILES[$key]["tmp_name"] . " AA " . $file_name . " AA ".$file_path);
 		header("HTTP/1.1 500");
-		die(json_encode(array("succes"=>false,"error"=>"Internal Server Error!")));
+		exit(json_encode(array("succes"=>false,"error"=>"Internal Server Error!")));
 	}
 }

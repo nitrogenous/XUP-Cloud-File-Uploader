@@ -202,11 +202,12 @@
                             console.log(document.getElementById("folder").value);
                             
                             var formid = document.getElementById("formid").value;
-                            var qid = JFCustomWidget.getWidgetSeting("qid");
+                            var qid = JFCustomWidget.getWidgetSetting("qid");
                             var file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
-                            var clouds = JFCustomWidget.getWidgetSeting("clouds");
+                            var clouds = JFCustomWidget.getWidgetSetting("clouds");
                             var folder = document.getElementById("folder").value;
-                            sendJob(qid,file,clouds,formid,folder);
+                            return sendJob(qid,file,clouds,formid,folder);;
+
                         }
                     });
                     
@@ -215,38 +216,9 @@
         })
         JFCustomWidget.subscribe("submit", function (formId) {
 
-            result.value = file;
-            var formdata = new FormData();
-            var form_id = document.getElementById("formid").value;
-            console.log(form_id);
-            var folder = document.getElementById("folder").value;
-            var qid =  JFCustomWidget.getWidgetSetting("qid");
-            var clouds = JFCustomWidget.getWidgetSetting("clouds");
-            var file = document.getElementById('upload').value.split(/(\\|\/)/g).pop();
-            formdata.append("qid", qid);
-            formdata.append("file",file);
-            formdata.append("clouds", clouds);
-            formdata.append("formid", form_id);
-            formdata.append("folder",folder);
-            formdata.append("action","upload");
-            $.ajax({
-               type: "POST",
-                url: "database.php",
-                enctype: "multipart/form-data",
-                data: formdata,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (sccss) {
-                    // console.log(sccss);
-                      var result = {
-                        valid: true,
-                        value: true
-                    };
-                    JFCustomWidget.sendSubmit(result );
-                }
-            })
+            result.value = "congrats";
+            JFCustomWidget.sendSubmit(result );
+             
         });
         function empty(input) {
             if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
@@ -269,6 +241,7 @@
             formdata.append("clouds",clouds);
             formdata.append("formid",formid);
             formdata.append("folder",folder);
+            formdata.append("action","upload");
             $.ajax({
                 type: "POST",
                 url: "database.php",
@@ -279,8 +252,15 @@
                 contentType: false,
                 processData: false,
                 success: function(sccss){
-                    console.log(sccss);
-                    return sccss;
+                     urls = sccss;
+                     do{
+                     old = urls;
+                     urls = urls.replace("\\","");
+                     }
+                     while (old != urls);
+                     urls = urls.split(",");
+                     console.log(urls);
+                    return urls;
                 }
             })
         }
