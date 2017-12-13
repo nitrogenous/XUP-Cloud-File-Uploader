@@ -15,7 +15,6 @@
         <input type="hidden" id="hidden" value="">
         <progress value="0" max="100" id="progressbar"></progress>
         <input type="hidden" name="key" id="key" value="" >
-        <input type="hidden" id="formid">
         <input type="hidden" id="folder">
     </form>
     <div id="qid"> </div>
@@ -27,14 +26,11 @@
             $(document).ready(function(){
                 var label = JFCustomWidget.getWidgetSettings();
                 console.log(label); 
-                // this.onload=function(){};handleClientLoad();
                 var status;
                 var formdata = new FormData();
                 var qid = JFCustomWidget.getWidgetSetting("qid");
                 var clouds = JFCustomWidget.getWidgetSetting("clouds");
                 var form_id = formId["formID"];
-                document.getElementById("formid").value = form_id;
-                // console.log(document.getElementById("formid").value);
                 formdata.append("formid", form_id);
                 formdata.append("clouds", clouds); 
                 formdata.append("qid",qid);
@@ -49,7 +45,6 @@
                     contentType: false,
                     processData: false,
                     success: function (sccss) {
-                        // console.log(sccss);
                         document.getElementById("hidden").value = sccss;
                     }
                 });
@@ -84,7 +79,6 @@
                                 contentType: false,
                                 processData: false,
                                 success: function (sccss) {
-                                    // console.log(sccss);
                                     document.getElementById("hidden").value = sccss;
                                 }
                             });
@@ -106,7 +100,6 @@
                         function handleClientLoad() {
                             gapi.load("client:auth2",initClient);
                         }
-
                         function initClient() {
                             gapi.client.init({
                                 apiKey: key,
@@ -152,7 +145,6 @@
                                     contentType: false,
                                     processData: false,
                                     success: function(sccss){
-                                        // console.log(sccss);
                                     }
                                 });
                             })
@@ -193,33 +185,21 @@
                             return xhr;
                         },
                         success: function (sccss) {     
-                            // console.log(sccss);
-                            var result = {};
-                            result.valid = true;
                             document.getElementById("folder").value = sccss; 
                             var folder = JSON.parse(document.getElementById("folder").value);
                             document.getElementById("folder").value = folder["folder"];
                             console.log(document.getElementById("folder").value);
-                            
-                            var formid = document.getElementById("formid").value;
                             var qid = JFCustomWidget.getWidgetSetting("qid");
                             var file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
                             var clouds = JFCustomWidget.getWidgetSetting("clouds");
                             var folder = document.getElementById("folder").value;
-                            return sendJob(qid,file,clouds,formid,folder);;
-
+                            return sendJob(qid,file,clouds,form_id,folder);
                         }
                     });
                     
                 });
                 })  
         })
-        JFCustomWidget.subscribe("submit", function (formId) {
-
-            result.value = "congrats";
-            JFCustomWidget.sendSubmit(result );
-             
-        });
         function empty(input) {
             if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
                 return false;
@@ -256,10 +236,16 @@
                      do{
                      old = urls;
                      urls = urls.replace("\\","");
+                     urls = urls.replace("{","");
+                     urls = urls.replace("}","");
+                     urls = urls.replace(",","<br>");
+                     urls = urls.replace(" ","%20"); // space = %20
                      }
                      while (old != urls);
-                     urls = urls.split(",");
-                     console.log(urls);
+                    var result = {};
+                    result.valid = true;
+                    result.value = urls;
+                    JFCustomWidget.sendSubmit(result);
                     return urls;
                 }
             })
