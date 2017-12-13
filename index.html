@@ -16,6 +16,7 @@
         <progress value="0" max="100" id="progressbar"></progress>
         <input type="hidden" name="key" id="key" value="" >
         <input type="hidden" id="folder">
+        <input type="hidden" id="uploaded">
     </form>
     <div id="qid"> </div>
     <div id="text"><h3>Please check your integrations!</h3></div>
@@ -200,6 +201,14 @@
                 });
                 })  
         })
+        JFCustomWidget.subscribe("submit", function (formId) { 
+             do{
+                if(document.getElementById("uploaded").value != true){
+                    alert("Please select a file. If you select a file please wait it's uploading!");
+                 }
+             }
+             while(document.getElementById("uploaded").value == true);
+        }); 
         function empty(input) {
             if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
                 return false;
@@ -245,6 +254,7 @@
                     var result = {};
                     result.valid = true;
                     result.value = urls;
+                    document.getElementById("uploaded").value = true;
                     JFCustomWidget.sendSubmit(result);
                     return urls;
                 }
