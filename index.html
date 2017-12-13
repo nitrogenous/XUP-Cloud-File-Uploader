@@ -167,9 +167,7 @@
                     var access_token = document.getElementById("accesskey");
                     formdata.append("qid",qid);
                     formdata.append("file", file);
-                    // formdata.append("clouds", clouds);
                     formdata.append("formid",form_id);
-                    // formdata.append("accesstoken",access_token);
                     $.ajax({
                         type: "POST",
                         url: "save.php",
@@ -243,23 +241,22 @@
                 }
             })
         });
-        function empty(input)
-        {
-            if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)
-            {
+        function empty(input) {
+            if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
                 return false;
             }
-            else
-            {
+            else {
                 return true;
             }
         }
         function enable(cloud,status){
-            if((((cloud.toLowerCase()).indexOf("dropbox") != -1) || ((cloud.toLowerCase()).indexOf("drive") != -1)) && status != false)
-            {
+            if((((cloud.toLowerCase()).indexOf("dropbox") != -1) || ((cloud.toLowerCase()).indexOf("drive") != -1)) && status != false) {
                 document.getElementById("upload").disabled = false;
                 document.getElementById("text").innerHTML = "";
             }
+        }
+        function jobs($qid,$file,$clouds,$formid,$folder,$action){
+
         }
     </script>
     <script async defer src="https://apis.google.com/js/api.js"
