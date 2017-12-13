@@ -1,7 +1,7 @@
 <?php
-require_once("/www/v3/toprak/Adapter/src/XUP/main.php");
-require_once("/www/v3/toprak/Adapter/vendor/autoload.php");
-require_once("/www/v3/toprak/Adapter/src/XUP/adapters/drive.php");
+require_once(DIRECTORY_SEPARATOR."www".DIRECTORY_SEPARATOR."v3".DIRECTORY_SEPARATOR."toprak".DIRECTORY_SEPARATOR."Adapter".DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."XUP".DIRECTORY_SEPARATOR."main.php");
+require_once(DIRECTORY_SEPARATOR."www".DIRECTORY_SEPARATOR."v3".DIRECTORY_SEPARATOR."toprak".DIRECTORY_SEPARATOR."Adapter".DIRECTORY_SEPARATOR."vendor".DIRECTORY_SEPARATOR."autoload.php");
+require_once(DIRECTORY_SEPARATOR."www".DIRECTORY_SEPARATOR."v3".DIRECTORY_SEPARATOR."toprak".DIRECTORY_SEPARATOR."Adapter".DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."XUP".DIRECTORY_SEPARATOR."adapters".DIRECTORY_SEPARATOR."drive.php");
 
 use XUP\Uploader\Main;
 use XUP\Uploader\Drive;
@@ -24,7 +24,6 @@ function toprakDriveUpload($job) {
 	// var_dump($params,"\n\n\n",$tokens, "\n\n\n", $base_path, "\n\n\n",$path,"\n\n\n");
 	// var_dump($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file);
  
-
 	$client = new Google_Client();
 	$client->setAuthConfig("client_secrets.json");
 	$client->setSubject($file);
@@ -78,7 +77,7 @@ function toprakDriveUpload($job) {
 		"uploadType" => "media"));
 	// var_dump($folder,$fileService);
 
-	$url = "drive.google.com/drive/u/0/folders/$folderid";
+	$url = "drive.google.com/#folders/$folderid";
 	var_dump($url);
 	return $url;
 }

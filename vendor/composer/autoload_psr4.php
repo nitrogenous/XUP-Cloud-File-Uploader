@@ -24,5 +24,6 @@ return array(
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Google\\Auth\\' => array($vendorDir . '/google/auth/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
+    'Aws\\Resource\\' => array($vendorDir . '/aws/aws-sdk-php-resources/src'),
     'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
 );

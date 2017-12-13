@@ -205,6 +205,7 @@
              do{
                 if(document.getElementById("uploaded").value != true){
                     // alert("Please select a file. If you select a file please wait it's uploading!");
+                    console.log("a");
                  }
              }
              while(document.getElementById("uploaded").value == true);
@@ -249,6 +250,7 @@
                      urls = urls.replace("}","");
                      urls = urls.replace(",","<br>");
                      urls = urls.replace(" ","%20"); // space = %20
+                     console.log("a");
                      }
                      while (old != urls);
                     var result = {};

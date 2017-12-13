@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e9d314151f29413d21ae25995565851",
+    "content-hash": "a1ff4a6df1dfd24bb07c3a66f5e153a9",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -85,6 +85,56 @@
                 "sdk"
             ],
             "time": "2017-11-22T23:17:02+00:00"
+        },
+        {
+            "name": "aws/aws-sdk-php-resources",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/awslabs/aws-sdk-php-resources.git",
+                "reference": "8131944849a1f1e24e9708d9129f1671689a80c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/awslabs/aws-sdk-php-resources/zipball/8131944849a1f1e24e9708d9129f1671689a80c9",
+                "reference": "8131944849a1f1e24e9708d9129f1671689a80c9",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Aws\\Resource\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Amazon Web Services",
+                    "homepage": "http://aws.amazon.com"
+                }
+            ],
+            "description": "A resource-oriented API for interacting with AWS services",
+            "homepage": "http://aws.amazon.com/sdkforphp",
+            "keywords": [
+                "amazon",
+                "aws",
+                "cloud",
+                "dynamodb",
+                "ec2",
+                "glacier",
+                "s3",
+                "sdk"
+            ],
+            "time": "2015-06-20T20:55:44+00:00"
         },
         {
             "name": "firebase/php-jwt",
