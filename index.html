@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport2" content="height=device-height, initial-scale=1.0">
     <script src="jquery-3.2.1.min.js"></script>
     <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
     <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
@@ -11,9 +13,9 @@
 <body>
     <center>
     <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
+        <progress value="0" max="100" id="progressbar"></progress>
         <input type="file" name="upload" id="upload" >
         <input type="hidden" id="hidden" value="">
-        <progress value="0" max="100" id="progressbar"></progress>
         <input type="hidden" name="key" id="key" value="" >
         <input type="hidden" id="folder">
         <input type="hidden" id="uploaded">
@@ -25,8 +27,10 @@
         document.getElementById("upload").disabled = true;
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
-                var label = JFCustomWidget.getWidgetSettings();
-                console.log(label); 
+                var size ={};
+                size.width = ((document.body.offsetWidth/100)*50);
+                size.height = ((document.body.offsetHeight/100)*75);
+                JFCustomWidget.requestFrameResize(size);
                 var status;
                 var formdata = new FormData();
                 var qid = JFCustomWidget.getWidgetSetting("qid");
