@@ -1,7 +1,7 @@
 <?php
 namespace XUP\Uploader;
 
-class Drive extends XUP {
+class Amazon extends XUP {
 	protected	$value;
 	protected 	$key;
 	protected	$status;
@@ -44,10 +44,12 @@ class Drive extends XUP {
 	public function remove($formid,$qid) {
 		return false;
 	}
-	public function upload($params) {
+	public function upload($formid,$folder,$qid,$file) {
+		$this->get($formid,$qid);
+		$params = json_encode(array("formid" => $formid,"folder"=>$folder,"qid" => $qid, "key" => $this->key, "file" => $file));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
-		return $client->doNormal("toprakDrive",$params);
+		return $client->doNormal("toprakAWS",$params);
 	}
 	public function test() {
 		return $this->value . ":✔";
@@ -68,26 +70,6 @@ class Drive extends XUP {
 		};
 	}
 	public function tokens($formid,$qid,$auth) {
-		require_once '/www/v3/toprak/Adapter/vendor/autoload.php';
-		$code = explode('"',$auth);
-		$del = array('"',"{","}","code",":");
-		do{
-			$old = $code;
-			$code = str_replace($del,"",$code);
-			$code = array_filter($code);
-		}
-		while($old !== $code);
-		$code = implode($code);
-		$client = new \Google_Client();
-		$client->setAuthConfig("client_secrets.json");
-		$client->addScope(\Google_Service_Drive::DRIVE_METADATA_READONLY); 
-		$client->setRedirectUri("https://toprak.jotform.pro"); 
-		$client->setAccessType("offline");
-		$client->setApprovalPrompt("force");
-		$client->setIncludeGrantedScopes(true);
-		$client->authenticate($code);
-		$resp = $client->getAccessToken($code);
-		$tokens = json_encode(array("access_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
-		$this->save($formid,$qid,$tokens);
+		return null;
 	}
 }

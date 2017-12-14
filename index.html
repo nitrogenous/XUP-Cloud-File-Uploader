@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport2" content="height=device-height, initial-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <!-- <meta name="viewport" content="height=device-height, initial-scale=1.0"> -->
     <script src="jquery-3.2.1.min.js"></script>
     <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
     <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
@@ -27,10 +27,11 @@
         document.getElementById("upload").disabled = true;
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
-                var size ={};
-                size.width = ((document.body.offsetWidth/100)*50);
-                size.height = ((document.body.offsetHeight/100)*75);
-                JFCustomWidget.requestFrameResize(size);
+                console.log(JFCustomWidget.getWidgetSetting("clouds"));
+                // var size ={};
+                // size.width = ((document.body.offsetWidth/100)*50);
+                // size.height = ((document.body.offsetHeight/100)*75);
+                // JFCustomWidget.requestFrameResize(size);
                 var status;
                 var formdata = new FormData();
                 var qid = JFCustomWidget.getWidgetSetting("qid");
@@ -206,12 +207,13 @@
                 })  
         })
         JFCustomWidget.subscribe("submit", function (formId) { 
-             while(document.getElementById("uploaded").value == true){  
+            do{
                 if(document.getElementById("uploaded").value != true){
                     // alert("Please select a file. If you select a file please wait it's uploading!");
                     console.log("a");
                  }
              }
+              while(document.getElementById("uploaded").value == true);
         }); 
         function empty(input) {
             if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
@@ -253,13 +255,12 @@
                      urls = urls.replace("}","");
                      urls = urls.replace(",","<br>");
                      urls = urls.replace(" ","%20"); // space = %20
-                     console.log("a");
                      }
                      while (old != urls);
                     var result = {};
                     result.valid = true;
                     result.value = urls;
-                    document.getElementById("uploaded").value = true;
+                    document.getElementById("uploaded").value == true;
                     JFCustomWidget.sendSubmit(result);
                     return urls;
                 }

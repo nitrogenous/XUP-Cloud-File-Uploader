@@ -21,7 +21,7 @@ function toprakDriveUpload($job) {
 	$folder = $params["folder"];
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
-	// var_dump($params,"\n\n\n",$tokens, "\n\n\n", $base_path, "\n\n\n",$path,"\n\n\n");
+	var_dump($params,"\n\n\n");
 	// var_dump($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file);
  
 	$client = new Google_Client();

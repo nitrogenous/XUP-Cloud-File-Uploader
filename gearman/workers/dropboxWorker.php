@@ -12,7 +12,7 @@ while ($worker->work());
 
 function toprakDbxUpload($job) {
 	$params = (array)json_decode($job->workload());
-	// var_dump($params);
+	var_dump($params);
 	$token = (string)$params["key"];
 	$formid = $params["formid"];
 	$file = $params["file"];
