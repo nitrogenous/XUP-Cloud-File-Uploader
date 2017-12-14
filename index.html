@@ -206,13 +206,12 @@
                 })  
         })
         JFCustomWidget.subscribe("submit", function (formId) { 
-             do{
+             while(document.getElementById("uploaded").value == true){  
                 if(document.getElementById("uploaded").value != true){
                     // alert("Please select a file. If you select a file please wait it's uploading!");
                     console.log("a");
                  }
              }
-             while(document.getElementById("uploaded").value == true);
         }); 
         function empty(input) {
             if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
