@@ -1,6 +1,7 @@
 <?php
 require_once(DIRECTORY_SEPARATOR."www".DIRECTORY_SEPARATOR."v3".DIRECTORY_SEPARATOR."toprak".DIRECTORY_SEPARATOR."Adapter". DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
-// require_once '/www/v3/toprak/lib/init.php';
+require_once '/www/v3/toprak/lib/init.php';
+
 use Aws\S3\S3Client;
 use Aws\Common\Credentials\Credentials;
 
@@ -16,10 +17,15 @@ function toprakAwsUpload($job) {
 	$folder = $params["folder"];
 	$qid = $params["qid"];
 	$file = $params["file"];
-	$keys = (array)json_decode($params["key"]);
-	$access = $keys["access"];
-	$secret = $keys["secret"];
-	$bucket = $keys["bucket"];
+	// $keys = (array)json_decode($params["key"]);
+	// $access = $keys["access"];
+	// $secret = $keys["secret"];
+	// $bucket = $keys["bucket"];
+	// $region = $keys["region"];
+	$access = Configs::S3_ACCESS_KEY;
+	$secret = Configs::S3_SECRET_KEY;
+	$bucket = Configs::UPLOADBUCKET;
+	$region = "us-east-1";
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
 	$key = "toprak" . DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. $file;
@@ -27,7 +33,7 @@ function toprakAwsUpload($job) {
 	var_dump($keys);
 
 	$s3 = S3Client::factory(array(
-		"region" => "us-east-1",
+		"region" => $region,
         'version' => '2006-03-01',
 		"credentials" => array(
 			"key" => $access,

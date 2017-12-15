@@ -280,7 +280,8 @@
             var access = JFCustomWidget.getWidgetSetting("awsaccess");
             var secret = JFCustomWidget.getWidgetSetting("awssecret");
             var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
-            var key =JSON.stringify({access: access,secret: secret, bucket: bucket});
+            var region = JFCustomWidget.getWidgetSetting("awsregion");
+            var key =JSON.stringify({access: access,secret: secret, bucket: bucket,region: region});
             console.log(key);
             formdata.append("qid",qid);
             formdata.append("file",file);
