@@ -19,7 +19,7 @@
         <h3> <input type="hidden" name="key" id="key" value="" > </3>
         <input type="hidden" id="folder">
         <input type="hidden" id="uploaded">
-        <input type="hidden" name="check" id="check">
+        <!-- <input type="hidden" name="check" id="check"> -->
     <div id="qid"> </div>
     </form>
     <div id="text"></div>
@@ -29,6 +29,7 @@
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
                 console.log(JFCustomWidget.getWidgetSetting("clouds"));
+                
                 // var size ={};
                 // size.width = ((document.body.offsetWidth/100)*50);
                 // size.height = ((document.body.offsetHeight/100)*75);
@@ -63,6 +64,7 @@
                     var secret = JFCustomWidget.getWidgetSetting("awssecret");
                     var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
                     if(empty(access) || empty(secret) || empty(bucket)){
+                        document.getElementById("upload").disable = true;
                         document.getElementById("text").innerHTML = "<h3>Please check your AWS integration!</h3>";
                     }
                     else{
@@ -275,12 +277,18 @@
         // }
         function sendJob(qid,file,clouds,formid,folder){
             var formdata = new FormData();
+            var access = JFCustomWidget.getWidgetSetting("awsaccess");
+            var secret = JFCustomWidget.getWidgetSetting("awssecret");
+            var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
+            var key =JSON.stringify({access: access,secret: secret, bucket: bucket});
+            console.log(key);
             formdata.append("qid",qid);
             formdata.append("file",file);
             formdata.append("clouds",clouds);
             formdata.append("formid",formid);
             formdata.append("folder",folder);
             formdata.append("action","upload");
+            formdata.append("key",key);
             $.ajax({
                 type: "POST",
                 url: "database.php",

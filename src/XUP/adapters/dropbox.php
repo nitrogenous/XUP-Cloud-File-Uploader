@@ -30,7 +30,7 @@ class Dropbox extends XUP {
 		}
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$formid = mysqli_real_escape_string($con,$formid);
-		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".mysqli_real_escape_string($con,$this->value)."','".$key."')";
+		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".mysqli_real_escape_string($con,$this->value)."','".mysqli_real_escape_string($con,$key)."')";
 		$result = mysqli_query($con,$sql);
 		mysqli_close($con);
 		if ($result == true) {
@@ -45,10 +45,11 @@ class Dropbox extends XUP {
 		return false;
 	}
 	public function upload($params) {
-		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->get($params["formid"],$params["qid"], "file" =>  $params["file"]));
+		$params = (array)json_decode($params);
+		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->get($params["formid"],$params["qid"]), "file" =>  $params["file"]));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
-		return $client->doNormal("toprakDBX",$params);
+		return $client->doNormal("toprakDBX",$job);
 	}
 	public function test() {
 		return $this->value . ":✔";
