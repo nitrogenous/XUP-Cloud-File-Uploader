@@ -17,15 +17,12 @@ function toprakAwsUpload($job) {
 	$folder = $params["folder"];
 	$qid = $params["qid"];
 	$file = $params["file"];
-	// $keys = (array)json_decode($params["key"]);
-	// $access = $keys["access"];
-	// $secret = $keys["secret"];
-	// $bucket = $keys["bucket"];
-	// $region = $keys["region"];
-	$access = Configs::S3_ACCESS_KEY;
-	$secret = Configs::S3_SECRET_KEY;
-	$bucket = Configs::UPLOADBUCKET;
-	$region = "us-east-1";
+	$keys = (array)json_decode($params["key"]);
+	$access = $keys["access"];
+	$secret = $keys["secret"];
+	$bucket = $keys["bucket"];
+	$region = $keys["region"];
+
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
 	$key = "toprak" . DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. $file;

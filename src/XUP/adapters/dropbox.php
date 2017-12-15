@@ -72,5 +72,8 @@ class Dropbox extends XUP {
 	public function tokens($formid,$qid,$auth) {
 		return null;
 	}
+	public function query($query){
+		return null; //Şimdilik
+	}
 
 }

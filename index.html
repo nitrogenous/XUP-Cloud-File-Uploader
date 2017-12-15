@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <!-- <meta name="viewport" content="height=device-height, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="height=device-height, initial-scale=1.0">
     <script src="jquery-3.2.1.min.js"></script>
     <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
     <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
@@ -19,21 +19,19 @@
         <h3> <input type="hidden" name="key" id="key" value="" > </3>
         <input type="hidden" id="folder">
         <input type="hidden" id="uploaded">
-        <!-- <input type="hidden" name="check" id="check"> -->
     <div id="qid"> </div>
     </form>
     <div id="text"></div>
     </center>
     <script type="text/javascript">
-        // disable("");
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
                 console.log(JFCustomWidget.getWidgetSetting("clouds"));
                 
-                // var size ={};
-                // size.width = ((document.body.offsetWidth/100)*50);
-                // size.height = ((document.body.offsetHeight/100)*75);
-                // JFCustomWidget.requestFrameResize(size);
+                var size ={};
+                size.width = ((document.body.offsetWidth/100)*50);
+                size.height = ((document.body.offsetHeight/100)*75);
+                JFCustomWidget.requestFrameResize(size);
                 var status;
                 var formdata = new FormData();
                 var qid = JFCustomWidget.getWidgetSetting("qid");
@@ -101,14 +99,12 @@
                                 processData: false,
                                 success: function (sccss) {
                                     document.getElementById("hidden").value = sccss;
-                                    // enable("dropbox");
                                 }
                             });
                             AuthWindow.close();
                         }) 
                     }
                     else{
-                        // enable("dropbox");
                     }
                 }
                 if((clouds.toLowerCase()).indexOf("drive") !=  -1)
@@ -139,7 +135,6 @@
                         }
                         function updateSigninStatus(isSignedIn) {
                             if (isSignedIn) {
-                                // enable("drive");
                                 console.log("signed");
                             }
                             addEventListener
@@ -170,14 +165,12 @@
                                     contentType: false,
                                     processData: false,
                                     success: function(sccss){
-                                        // enable("drive");
                                     }
                                 });
                             })
                         }    
                     }
                     else {
-                        // enable("drive");
                     }
                 }
                  $("#upload").change(function (e) {
@@ -231,8 +224,6 @@
         JFCustomWidget.subscribe("submit", function (formId) { 
             do{
                 if(document.getElementById("uploaded").value != true){
-                    // alert("Please select a file. If you select a file please wait it's uploading!");
-                    console.log("a");
                  }
              }
               while(document.getElementById("uploaded").value == true);
@@ -245,44 +236,8 @@
                 return false;
             }
         }
-        // function enable(cloud){
-        //     document.getElementById("check").value = document.getElementById("check").value + "-" + cloud;
-        //     console.log(document.getElementById("check").value + " BBBBBB");
-        //     check();
-        // }
-        // function check(){
-        //     var clouds = JFCustomWidget.getWidgetSetting("clouds");
-        //     clouds = clouds.split(",");
-        //     clouds = clouds.filter(function(n){return n != ""});
-        //     var cloud = document.getElementById("check").value;
-        //     cloud = cloud.split("-");
-        //     cloud = cloud.filter(function(n){return n != ""});
-        //    for(var i = 0; i <=  clouds.length; i++){
-        //         // for(var a = 0; a <= cloud.length; a++){
-        //             console.log(cloud);
-        //             if((clouds[i].toLowerCase()).indexOf(cloud) != -1){
-        //                 document.getElementById("upload").disable = false;
-        //                 document.getElementById("text").innerHTML = "";
-        //             }
-        //             else{
-        //                 disable(cloud);
-        //             }
-        //         // }
-        //     }
-        // }
-        
-        // function disable(cloud){
-        //     document.getElementById("upload").disable = true;
-        //     document.getElementById("text").innerHTML = "Please check your " + cloud + " integration!";
-        // }
         function sendJob(qid,file,clouds,formid,folder){
             var formdata = new FormData();
-            var access = JFCustomWidget.getWidgetSetting("awsaccess");
-            var secret = JFCustomWidget.getWidgetSetting("awssecret");
-            var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
-            var region = JFCustomWidget.getWidgetSetting("awsregion");
-            var key =JSON.stringify({access: access,secret: secret, bucket: bucket,region: region});
-            console.log(key);
             formdata.append("qid",qid);
             formdata.append("file",file);
             formdata.append("clouds",clouds);
@@ -318,6 +273,14 @@
                     return urls;
                 }
             })
+        }
+        function getAwsKeys(){
+              ar access = JFCustomWidget.getWidgetSetting("awsaccess");
+            var secret = JFCustomWidget.getWidgetSetting("awssecret");
+            var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
+            var region = JFCustomWidget.getWidgetSetting("awsregion");
+            var key =JSON.stringify({access: access,secret: secret, bucket: bucket,region: region});
+            return key;
         }
     </script>
     <script async defer src="https://apis.google.com/js/api.js">

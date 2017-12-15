@@ -2,7 +2,6 @@
 
 namespace XUP\Uploader;
 
-
 class XUP
 {		
 	function __construct() {
@@ -26,7 +25,7 @@ class XUP
 	}
 
 	public function test() {
-		return "class:✔";
+		return "class:✔"; 
 	}
 
 	public function get($formid,$qid){
@@ -34,6 +33,9 @@ class XUP
 	}
 
 	public function tokens($formid,$qid,$auth){
+		return null;
+	}
+	public function query($query){
 		return null;
 	}
 }

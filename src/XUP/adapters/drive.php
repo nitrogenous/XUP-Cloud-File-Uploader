@@ -92,4 +92,7 @@ class Drive extends XUP {
 		$tokens = json_encode(array("access_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
 		$this->save($formid,$qid,$tokens);
 	}
+	public function query($query){
+		return null; //Şimdilik
+	}
 }
