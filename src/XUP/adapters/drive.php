@@ -93,6 +93,14 @@ class Drive extends XUP {
 		$this->save($formid,$qid,$tokens);
 	}
 	public function query($query){
-		return null; //Şimdilik
+		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
+		$result = mysqli_query($con,$query);
+		mysqli_close();
+		if($result->num_rows > 0){
+			return $result;
+		}		
+		else{
+			return false;
+		}
 	}
 }

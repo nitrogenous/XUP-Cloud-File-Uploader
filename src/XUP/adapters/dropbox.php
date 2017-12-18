@@ -28,11 +28,8 @@ class Dropbox extends XUP {
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
 		}
-		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
-		$formid = mysqli_real_escape_string($con,$formid);
 		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".mysqli_real_escape_string($con,$formid).",".mysqli_real_escape_string($con,$qid).",'".mysqli_real_escape_string($con,$this->value)."','".mysqli_real_escape_string($con,$key)."')";
-		$result = mysqli_query($con,$sql);
-		mysqli_close($con);
+		$result = $this->query($sql);
 		if ($result == true) {
 			$this->value = true;
 			return true;
@@ -55,9 +52,8 @@ class Dropbox extends XUP {
 		return $this->value . ":✔";
 	}
 	public function get($formid,$qid){
-		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$sql = "SELECT `key` FROM `widget_access_keys` WHERE formId = $formid AND questionId = $qid AND value = '".$this->value."'";
-		$result = mysqli_query($con,$sql); 
+		$result = $this->query($sql); 
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()){
 				$this->key = $row['key'];
@@ -73,7 +69,15 @@ class Dropbox extends XUP {
 		return null;
 	}
 	public function query($query){
-		return null; //Şimdilik
+		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
+		$result = mysqli_query($con,$query);
+		mysqli_close();
+		if($result->num_rows > 0) {
+			return $result;
+		}
+		else{
+			return false;
+		}
 	}
 
 }
