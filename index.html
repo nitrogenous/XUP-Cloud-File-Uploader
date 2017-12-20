@@ -215,7 +215,18 @@
                                 var result = {};
                                 result.valid = true;
                                 result.value = url;
-                                JFCustomWidget.sendSubmit(result);
+                                $.ajax({
+                                    type: "POST",
+                                    url: "removeFiles.php",
+                                    enctype: "multipart/form-data",
+                                    data: {formid: form_id,folder: folder},
+                                    async: false,
+                                    cache: false,
+                                    success: function(sccss){
+                                        console.log(sccss);
+                                        JFCustomWidget.sendSubmit(result);
+                                    }                                    
+                                })
                                 console.log("leeroy!");
                             // }
                         }
@@ -223,13 +234,8 @@
                 });
             })  
 })
-// JFCustomWidget.subscribe("submit", function (formId) { 
-    // do{
-    //     if(document.getElementById("uploaded").value != true){
-    //         console.log("test");
-    //     }
-    // }
-    // while(document.getElementById("uploaded").value === true);
+// JFCustomWidget.subscribe("submit", function(formId) { 
+
 // }); 
 function empty(input) {
     if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {

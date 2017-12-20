@@ -78,22 +78,7 @@ function toprakDriveUpload($job) {
 	// var_dump($folder,$fileService);
 		$url = "www.drive.google.com/#folders/$folderid";
 		var_dump($url);
-
-		function delete_files($target){
-			if(is_dir($target)){
-				$files = glob($target."*",GLOB_MARK);
-				foreach ($files as $file) {
-					delete_files($file);
-				}
-				rmdir($target);
-			}
-			elseif(is_file($target)){
-				unlink($target);
-			}
-		}
-
-		delete_files(DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.$formid.DIRECTORY_SEPARATOR.$params["folder"].DIRECTORY_SEPARATOR);
-
+		
 		return $url;
 	}
 }
