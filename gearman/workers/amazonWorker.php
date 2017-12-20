@@ -29,22 +29,28 @@ function toprakAwsUpload($job) {
 	$sourcepath =$base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file;
 	var_dump($keys);
 
-	$s3 = S3Client::factory(array(
-		"region" => $region,
-        'version' => '2006-03-01',
-		"credentials" => array(
-			"key" => $access,
-			"secret" => $secret
-		)
-	));
-	$result = $s3->putObject(array(
-		"Bucket" => $bucket,
-		"Key" => $key,
-		"SourceFile" => $sourcepath,
-		"ContenType" => "application/octet-stream",
-		"ACL" => "public-read"
-	));
-	$url = $result["ObjectURL"];
-	var_dump($url);
-	return $url;	
+	if(!file_exists($sourcepath)){
+		echo"Error!File.Does.Not.Exist";
+		return("Error!File.Does.Not.Exist");
+	}
+	else{
+		$s3 = S3Client::factory(array(
+			"region" => $region,
+			'version' => '2006-03-01',
+			"credentials" => array(
+				"key" => $access,
+				"secret" => $secret
+			)
+		));
+		$result = $s3->putObject(array(
+			"Bucket" => $bucket,
+			"Key" => $key,
+			"SourceFile" => $sourcepath,
+			"ContenType" => "application/octet-stream",
+			"ACL" => "public-read"
+		));
+		$url = $result["ObjectURL"];
+		var_dump($url);
+		return $url;	
+	}
 }

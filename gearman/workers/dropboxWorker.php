@@ -18,17 +18,22 @@ function toprakDbxUpload($job) {
 	$file = $params["file"];
 	$qid = $params["qid"];
 	$folder = $params["folder"];
-	$client = new Client($token);
-	$adapter = new DropboxAdapter($client);
-	$filesystem = new Filesystem($adapter);
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path = DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. "questionid".$qid . DIRECTORY_SEPARATOR . $file;
 	// var_dump($path);
-
-	$stream = fopen($base_path.$path,"r+");
-	$filesystem->putStream($path,$stream);
-	fclose($stream);	
-	$url = "www.dropbox.com/home/$formid/$folder/questionid$qid";
-	var_dump($url);
-	return $url;	
+	if(!file_exists($base_path.$path)){
+		echo"Error!File.Does.Not.Exist";
+		return("Error!File.Does.Not.Exist");
+	}
+	else{	
+		$client = new Client($token);
+		$adapter = new DropboxAdapter($client);
+		$filesystem = new Filesystem($adapter);
+		$stream = fopen($base_path.$path,"r+");
+		$filesystem->putStream($path,$stream);
+		fclose($stream);	
+		$url = "www.dropbox.com/home/$formid/$folder/questionid$qid";
+		var_dump($url);
+		return $url;	
+	}
 }

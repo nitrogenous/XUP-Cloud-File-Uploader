@@ -100,7 +100,9 @@ if(realpath($file_path) !== true)
 {
 	if(file_exists($file_path) !== true)
 	{
-		$asd = mkdir($file_path, 0777, true);
+		$oldumask = umask(0);//kalkacak 
+		mkdir($file_path,0777,true);//644
+		umask($oldumask);//kalkacak
 	}
 }
 foreach ($_FILES as $key => $value) {

@@ -12,31 +12,29 @@
 </head>
 <body>
     <center>
-    <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
-        <progress value="0" max="100" id="progressbar"></progress>
-        <input type="file" name="upload" id="upload">
-        <input type="hidden" id="hidden" value="">
-        <h3> <input type="hidden" name="key" id="key" value="" > </3>
-        <input type="hidden" id="folder">
-        <input type="hidden" id="uploaded">
-    <div id="qid"> </div>
-    </form>
-    <div id="text"></div>
-    </center>
-    <script type="text/javascript">
-        JFCustomWidget.subscribe("ready", function (formId) {
-            $(document).ready(function(){
-                console.log(JFCustomWidget.getWidgetSetting("clouds"));
-                
+        <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
+            <progress value="0" max="100" id="progressbar"></progress>
+            <input type="file" name="upload" id="upload">
+            <input type="hidden" id="hidden" value="">
+            <h3> <input type="hidden" name="key" id="key" value="" > </3>
+                <input type="hidden" id="folder">
+                <input type="hidden" id="uploaded">
+                <div id="qid"> </div>
+            </form>
+            <div id="text"></div>
+        </center>
+        <script type="text/javascript">
+            JFCustomWidget.subscribe("ready", function (formId) {
+                $(document).ready(function(){                
                 // var size ={};
                 // size.width = ((document.body.offsetWidth/100)*50);
                 // size.height = ((document.body.offsetHeight/100)*75);
                 // JFCustomWidget.requestFrameResize(size);
-                var status;
                 var formdata = new FormData();
-                var qid = JFCustomWidget.getWidgetSetting("qid");
-                var clouds = JFCustomWidget.getWidgetSetting("clouds");
-                var form_id = formId["formID"];
+                const form_id = formId["formID"];
+                const qid = JFCustomWidget.getWidgetSetting("qid");
+                const clouds = JFCustomWidget.getWidgetSetting("clouds");
+                var status;
                 formdata.append("formid", form_id);
                 formdata.append("clouds", clouds); 
                 formdata.append("qid",qid);
@@ -81,7 +79,6 @@
                         $("#key").change(function(){
                             key = document.getElementById("key").value;
                             var formdata = new FormData();
-                            var form_id = formId["formID"];
                             formdata.append("action", "save");
                             formdata.append("qid",qid);
                             formdata.append("value","dropbox");
@@ -148,7 +145,6 @@
                             gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
                                 key = JSON.stringify(code);
                                 var formdata = new FormData();
-                                var form_id = formId["formID"];
                                 formdata.append("qid",qid);
                                 formdata.append("value","drive");
                                 formdata.append("key",key);
@@ -173,7 +169,7 @@
                     else {
                     }
                 }
-                 $("#upload").change(function (e) {
+                $("#upload").change(function (e) {
                     e.preventDefault();
                     var formdata = new FormData();
                     var file = document.getElementById("upload").files[0];
@@ -214,74 +210,86 @@
                             var file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
                             var clouds = JFCustomWidget.getWidgetSetting("clouds");
                             var folder = document.getElementById("folder").value;
-                            return sendJob(qid,file,clouds,form_id,folder);
+                            var url = sendJob(qid,file,clouds,form_id,folder);
+                            // if(!empty(url)){
+                                var result = {};
+                                result.valid = true;
+                                result.value = url;
+                                JFCustomWidget.sendSubmit(result);
+                                console.log("leeroy!");
+                            // }
                         }
                     });
                 });
-                })  
-        })
-        JFCustomWidget.subscribe("submit", function (formId) { 
-            do{
-                if(document.getElementById("uploaded").value != true){
-                 }
-             }
-              while(document.getElementById("uploaded").value == true);
-        }); 
-        function empty(input) {
-            if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
-                return true;
-            }
-            else {
-                return false;
-            }
+            })  
+})
+// JFCustomWidget.subscribe("submit", function (formId) { 
+    // do{
+    //     if(document.getElementById("uploaded").value != true){
+    //         console.log("test");
+    //     }
+    // }
+    // while(document.getElementById("uploaded").value === true);
+// }); 
+function empty(input) {
+    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+function sendJob(qid,file,clouds,formid,folder){
+    var formdata = new FormData();
+    var response = null;
+    $key = getAwsKeys();
+    formdata.append("qid",qid);
+    formdata.append("file",file);
+    formdata.append("clouds",clouds);
+    formdata.append("formid",formid);
+    formdata.append("folder",folder);
+    formdata.append("action","upload");
+    formdata.append("key",key);
+    $.ajax({
+        type: "POST",
+        url: "database.php",
+        enctype: "multipart/form-data",
+        data: formdata,
+        async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(sccss){
+            url = sccss;
+            url = urlReplace(url);
+            document.getElementById("uploaded").value == true;
+            console.log(url);
+            response = url;
         }
-        function sendJob(qid,file,clouds,formid,folder){
-            var formdata = new FormData();
-            $key = getAwsKeys();
-            formdata.append("qid",qid);
-            formdata.append("file",file);
-            formdata.append("clouds",clouds);
-            formdata.append("formid",formid);
-            formdata.append("folder",folder);
-            formdata.append("action","upload");
-            formdata.append("key",key);
-            $.ajax({
-                type: "POST",
-                url: "database.php",
-                enctype: "multipart/form-data",
-                data: formdata,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(sccss){
-                     urls = sccss;
-                     do{
-                     old = urls;
-                     urls = urls.replace("\\","");
-                     urls = urls.replace("{","");
-                     urls = urls.replace("}","");
-                     urls = urls.replace(",","<br>");
-                     urls = urls.replace(" ","%20"); // space = %20
-                     }
-                     while (old != urls);
-                    var result = {};
-                    result.valid = true;
-                    result.value = urls;
-                    document.getElementById("uploaded").value == true;
-                    JFCustomWidget.sendSubmit(result);
-                    return urls;
-                }
-            })
+    })   
+    return response;
+}
+function getAwsKeys(){
+    var access = JFCustomWidget.getWidgetSetting("awsaccess");
+    var secret = JFCustomWidget.getWidgetSetting("awssecret");
+    var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
+    var region = JFCustomWidget.getWidgetSetting("awsregion");
+    var key =JSON.stringify({access: access,secret: secret, bucket: bucket,region: region});
+    return key;
+}
+function urlReplace(url){
+    do{
+        old = url;
+        url = url.replace("\\","");
+        url = url.replace("{","");
+        url = url.replace("}","");
+        url = url.replace(",","<br>");
+        url = url.replace(" ","%20"); //Space = %20
         }
-        function getAwsKeys(){
-            var access = JFCustomWidget.getWidgetSetting("awsaccess");
-            var secret = JFCustomWidget.getWidgetSetting("awssecret");
-            var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
-            var region = JFCustomWidget.getWidgetSetting("awsregion");
-            var key =JSON.stringify({access: access,secret: secret, bucket: bucket,region: region});
-            return key;
-        }
+    while(old != url);
+    return url;
+}
+
     </script>
     <script async defer src="https://apis.google.com/js/api.js">
     </script>

@@ -15,7 +15,6 @@ class Dropbox extends XUP {
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$sql = "SELECT * FROM widget_access_keys  WHERE formId =".mysqli_real_escape_string($con,$formid)." AND questionId = ".mysqli_real_escape_string($con,$qid)." AND value = '$this->value'";
 		$result = mysqli_query($con,$sql);
-		mysqli_close($con);
 		if ($result->num_rows > 0) {
 			$this->value = true;
 			return true;
@@ -57,7 +56,6 @@ class Dropbox extends XUP {
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()){
 				$this->key = $row['key'];
-				mysqli_close($con);
 				return $row['key'];
 			}
 		}
@@ -71,13 +69,8 @@ class Dropbox extends XUP {
 	public function query($query){
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$result = mysqli_query($con,$query);
-		mysqli_close();
-		if($result->num_rows > 0) {
-			return $result;
-		}
-		else{
-			return false;
-		}
+		mysqli_close($con);
+		return $result;
 	}
 
 }
