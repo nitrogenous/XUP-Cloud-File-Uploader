@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="height=device-height, initial-scale=1.0">
     <script src="jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
     <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
     <script src="utils.js"></script>
     <title>XUP File Uploader</title>
 </head>
 <body>
-    <center>
+    <!-- <center> --> 
         <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
             <progress value="0" max="100" id="progressbar"></progress>
-            <input type="file" name="upload" id="upload">
+            <label for="upload" id="uploadbutton">Choose a File</label>
+            <input type="file" name="upload[]" id="upload" multiple>
             <input type="hidden" id="hidden" value="">
             <h3> <input type="hidden" name="key" id="key" value="" > </3>
                 <input type="hidden" id="folder">
@@ -22,13 +25,14 @@
                 <div id="qid"> </div>
             </form>
             <div id="text"></div>
-        </center>
-        <script type="text/javascript">
-            JFCustomWidget.subscribe("ready", function (formId) {
-                $(document).ready(function(){                
+            <!-- </center> -->
+            <script type="text/javascript">
+                JFCustomWidget.subscribe("ready", function (formId) {
+                    $(document).ready(function(){    
+
                 // var size ={};
-                // size.width = ((document.body.offsetWidth/100)*50);
-                // size.height = ((document.body.offsetHeight/100)*75);
+                // size.width = ((document.body.offsetWidth/100)*100);
+                // size.height = ((document.body.offsetHeight/100)*100);    
                 // JFCustomWidget.requestFrameResize(size);
                 var formdata = new FormData();
                 const form_id = formId["formID"];
@@ -172,17 +176,19 @@
                 $("#upload").change(function (e) {
                     e.preventDefault();
                     var formdata = new FormData();
-                    var file = document.getElementById("upload").files[0];
+                    var file = document.getElementById("upload");
                     var access_token = document.getElementById("accesskey");
-                    formdata.append("qid",qid);
-                    formdata.append("file", file);
-                    formdata.append("formid",form_id);
-                    $.ajax({
-                        type: "POST",
-                        url: "save.php",
-                        enctype: "multipart/form-data",
-                        data: formdata,
-                        cache: false,
+                    for(var x = 0;x < file.files.length; x++){
+                        console.log(file.files[x]);
+                        formdata.append("qid",qid);
+                        formdata.append("file", file.files[x]);
+                        formdata.append("formid",form_id);
+                        $.ajax({
+                            type: "POST",
+                            url: "save.php",
+                            enctype: "multipart/form-data",
+                            data: formdata,
+                            cache: false,
                         // async: false,
                         contentType: false,
                         processData: false,
@@ -231,6 +237,7 @@
                             // }
                         }
                     });
+                    }
                 });
             })  
 })
@@ -291,13 +298,13 @@ function urlReplace(url){
         url = url.replace("}","");
         url = url.replace(",","<br>");
         url = url.replace(" ","%20"); //Space = %20
-        }
+    }
     while(old != url);
     return url;
 }
 
-    </script>
-    <script async defer src="https://apis.google.com/js/api.js">
-    </script>
+</script>
+<script async defer src="https://apis.google.com/js/api.js">
+</script>
 </body>
 </html> 
