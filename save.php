@@ -1,4 +1,68 @@
 <?php
+$folder = date("h-ia d-m-Y");
+$key = injection($_POST["key"]);
+$formid = injection($_POST["formid"]);
+$qid = injection($_POST["qid"]);
+$path = DIRECTORY_SEPARATOR . "tmp"; 
+$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder,"questionid".$qid));
+
+if(realpath($file_path) !== true)
+{
+	if(file_exists($file_path) !== true)
+	{
+		$oldumask = umask(0);//kalkacak
+		mkdir($file_path,0777,true);//644
+		umask($oldumask);//kalkacak
+	}
+}
+if(file_exists(DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR."$formid".DIRECTORY_SEPARATOR."$key.txt")){
+	$folder = getFolder($formid,$key);
+}
+else{
+	saveFolder($formid,$key,$folder);
+}
+foreach ($_FILES as $key => $value) {
+	$file_name = injection($_FILES[$key]["name"]);
+	$array = explode('.', $file_name);
+	$extension = end($array);
+	if(type($extension) != true)
+	{
+		exit(json_encode(array("succes"=>false,"error"=>"type")));
+	}
+	
+	$chars = range("a","z");
+	$numbers= range("0","9");
+	foreach ($chars as $char){
+		if(stripos($file_name, $char)){
+			break;		
+		}
+		else{
+			foreach ($numbers as $number) {
+				if(stripos($file_name, $number)){
+					$tmp = explode(".", $file_name);
+					$extension = ".".end($tmp);
+					$file_name = $formid.$extension;
+				}
+			}
+		}
+	}
+	
+	if(move_uploaded_file($_FILES[$key]["tmp_name"], $file_path. DIRECTORY_SEPARATOR .$file_name)){
+		if(mime($file_path. DIRECTORY_SEPARATOR .$file_name.DIRECTORY_SEPARATOR.$file_name) != true)
+		{
+			exit(json_encode(array("succes"=>false,"error"=>"mime_content_type(filename)")));	
+		}
+		chmod($file_path. DIRECTORY_SEPARATOR .$file_name, 0777);
+		header("HTTP/1.1 200");
+		exit(json_encode(array("succes"=>true,"folder" => $folder,"error"=>null)));			
+	}
+	else{
+		var_dump($_FILES[$key]["tmp_name"] . " AA " . $file_name . " AA ".$file_path);
+		header("HTTP/1.1 500");
+		exit(json_encode(array("succes"=>false,"error"=>"Internal Server Error!")));
+	}
+}
+
 function injection($str)
 {
 	$bad = array(
@@ -90,59 +154,15 @@ function mime($str)
 		}
 	}
 }
-$folder = date("h-ia d-m-Y");
-$formid = injection($_POST["formid"]);
-$qid = injection($_POST["qid"]);
-$path = DIRECTORY_SEPARATOR . "tmp"; 
-$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder,"questionid".$qid));
-
-if(realpath($file_path) !== true)
-{
-	if(file_exists($file_path) !== true)
-	{
-		$oldumask = umask(0);//kalkacak 
-		mkdir($file_path,0777,true);//644
-		umask($oldumask);//kalkacak
-	}
+function getFolder($formid,$key){
+	$file = fopen("/tmp/$formid/$key.txt","r");
+	$date = fgets($file);
+	fclose($file);
+	return $date;
 }
-foreach ($_FILES as $key => $value) {
-	$file_name = injection($_FILES[$key]["name"]);
-	$array = explode('.', $file_name);
-	$extension = end($array);
-	if(type($extension) != true)
-	{
-		exit(json_encode(array("succes"=>false,"error"=>"type")));
-	}
-	
-	$chars = range("a","z");
-	$numbers= range("0","9");
-	foreach ($chars as $char){
-		if(stripos($file_name, $char)){
-			break;		
-		}
-		else{
-			foreach ($numbers as $number) {
-				if(stripos($file_name, $number)){
-					$tmp = explode(".", $file_name);
-					$extension = ".".end($tmp);
-					$file_name = $formid.$extension;
-				}
-			}
-		}
-	}
-	
-	if(move_uploaded_file($_FILES[$key]["tmp_name"], $file_path. DIRECTORY_SEPARATOR .$file_name)){
-		if(mime($file_path. DIRECTORY_SEPARATOR .$file_name.DIRECTORY_SEPARATOR.$file_name) != true)
-		{
-			exit(json_encode(array("succes"=>false,"error"=>"mime_content_type(filename)")));	
-		}
-		chmod($file_path. DIRECTORY_SEPARATOR .$file_name, 0777);
-		header("HTTP/1.1 200");
-		exit(json_encode(array("succes"=>true,"folder" => $folder,"error"=>null)));			
-	}
-	else{
-		var_dump($_FILES[$key]["tmp_name"] . " AA " . $file_name . " AA ".$file_path);
-		header("HTTP/1.1 500");
-		exit(json_encode(array("succes"=>false,"error"=>"Internal Server Error!")));
-	}
+function saveFolder($formid,$key,$date){
+$file = fopen("/tmp/$formid/$key.txt","wr") or die ("Unable to open file");
+fwrite($file,$date) or die ("Unable to write file!");
+fclose($file);
+return true;
 }
