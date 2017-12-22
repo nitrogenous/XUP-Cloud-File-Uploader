@@ -22,6 +22,7 @@
         <h3> <input type="hidden" name="key" id="key" value="" > </3>
         <input type="hidden" id="folder">
         <input type="hidden" id="uploaded">
+        <input type="hidden" id="folderKey">
         <div id="qid"> </div>
     </form>
     <div id="text"></div>
@@ -197,7 +198,9 @@
                 let qid = JFCustomWidget.getWidgetSetting("qid");
                 let clouds = JFCustomWidget.getWidgetSetting("clouds");
                 folder = document.getElementById("folder").value;
-                console.log(sendJob(qid,file.name,clouds,formid,folder));
+                var folderKey = document.getElementById("folderKey").value;
+                console.log(folderKey);
+                console.log(sendJob(qid,file.name,clouds,formid,folder,folderKey));
             }).fail(function(){
                 console.log("An Error Occured");
             });
@@ -258,7 +261,7 @@
                 }                                    
             })
         }
-        function sendJob(qid,file,clouds,formid,folder){
+        function sendJob(qid,file,clouds,formid,folder,folderKey){
             var formdata = new FormData();
             var response = null;
             $key = getAwsKeys();
@@ -269,6 +272,7 @@
             formdata.append("folder",folder);
             formdata.append("action","upload");
             formdata.append("key",key);
+            formdata.append("folderKey",folderKey);
             $.ajax({
                 type: "POST",
                 url: "database.php",
@@ -279,9 +283,14 @@
                 contentType: false,
                 processData: false,
                 success: function(sccss){
-                    url = sccss;
-                    url = urlReplace(url);
-                    document.getElementById("uploaded").value == url;
+                    callback = JSON.parse(JSON.stringify(JSON.parse(sccss)));
+                    google = callback.Drive;
+                    google = JSON.parse(JSON.stringify(JSON.parse(google)));
+                    document.getElementById("folderKey").value = google.folderKey;
+                    googleUrl = urlReplace(google.url);
+                    dropboxUrl = urlReplace(callback.Dropbox);
+                    url = {Drive: googleUrl,Dropbox: dropboxUrl};
+                    document.getElementById("uploaded").value = url;
                     // console.log(url);
                     response = url;
                 }

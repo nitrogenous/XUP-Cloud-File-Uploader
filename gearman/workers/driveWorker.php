@@ -19,6 +19,7 @@ function toprakDriveUpload($job) {
 	$file = $params["file"];
 	$qid = $params["qid"];
 	$folder = $params["folder"];
+	$folderKey = $params["folderKey"];
 	$base_path = DIRECTORY_SEPARATOR . "tmp";
 	$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
 	$file_path = $base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file;
@@ -45,23 +46,39 @@ function toprakDriveUpload($job) {
 		$service = new Google_Service_Drive($client);
 		$pagetoken = null;
 		$folderid = null;
+		$isFolder = false;
 		do { 
 			$driveFiles = $service->files->listFiles();
 			foreach ($driveFiles->files as $dFiles) {
 			// var_dump($dFiles->name);
-				if($dFiles->name == $formid)
-				{
+				if($dFiles->name == $formid){
 					$folderid = $dFiles->id;
+				}
+				if(!empty($folderKey)){
+					if($dFiles->id == $folderKey){
+						$isFolder = true;
+					}
 				}
 			}
 			$pagetoken = $driveFiles->pageToken;
 		} while ($pagetoken != null);
+		var_dump($isFolder + " " + $folderKey);
+		if($isFolder){
+			$fileMeta = new Google_Service_Drive_DriveFile(array("name" => $file, "parents" => array($folderKey)));
+			$fileService = $service->files->create($fileMeta,array(
+				"data" =>file_get_contents($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file),
+				"mimeType" => "application/octet-stream",
+				"uploadType" => "media"));
+			$url = "www.drive.google.com/#folders/$folderKey";
+			$return = json_encode(array("folderKey" => $folderKey,"url" => $url));
+			var_dump($return);
+			return $return;
+		}
 		if($folderid == null) {
 			$folderMeta = new Google_Service_Drive_DriveFile(array("name" => $formid,"mimeType" => "application/vnd.google-apps.folder"));
 			$folder = $service->files->create($folderMeta,array("fields" => "id"));
 			$folderid = $folder->getId();
 		}
-
 		$pathArray = array_filter(explode("/", $path));
 		
 		foreach ($pathArray as $paths) {
@@ -77,8 +94,8 @@ function toprakDriveUpload($job) {
 			"uploadType" => "media"));
 	// var_dump($folder,$fileService);
 		$url = "www.drive.google.com/#folders/$folderid";
-		var_dump($url);
-		
-		return $url;
+		$return = json_encode(array("folderKey" => $folderid,"url" => $url));
+		var_dump($return);
+		return $return;
 	}
 }
