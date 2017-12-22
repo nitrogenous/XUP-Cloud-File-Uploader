@@ -162,33 +162,15 @@
                 }
                 $("#upload").change(function (e) {
                     e.preventDefault();
-                    var formdata = new FormData();
                     var access_token = document.getElementById("accesskey");
                     var url = "An Error Has Occured";
                     var key = generate_token(32);
-                    var input = document.getElementById("upload");
+                    var input = document.getElementById("upload");  
                     for(var x = 0;x < input.files.length; x++){
                         var file = input.files[x];
-                        formdata.append("qid",qid);
-                        formdata.append("file", input.files[x]);
-                        formdata.append("formid",form_id);
-                        formdata.append("key",key);
+                        upload(form_id,qid,file,key);
                     }
-                    var result = {};
-                    result.valid = true;
-                    result.value = url;
-                    $.ajax({
-                        type: "POST",
-                        url: "removeFiles.php",
-                        enctype: "multipart/form-data",
-                        data: {formid: form_id,folder: folder},
-                        async: false,
-                        cache: false,
-                        success: function(sccss){
-                            console.log(sccss);
-                            JFCustomWidget.sendSubmit(result);
-                        }                                    
-                    })
+                    removeFiles(form_id,folder);                 
                 });
             })  
         })
@@ -200,8 +182,30 @@
                 return false;
             }
         }
-        function save(formdata,url,key){
-            $.ajax({
+        function upload(formid,qid,file,key){
+            var formdata = new FormData();
+            var folder = null;
+            formdata.append("key",key);
+            formdata.append("formid",formid);
+            formdata.append("qid",qid);
+            formdata.append("file", file);
+              
+            save(formdata,key).done(function(result){
+                document.getElementById("folder").value = result; 
+                folder = JSON.parse(document.getElementById("folder").value);
+                document.getElementById("folder").value = folder["folder"];
+                let qid = JFCustomWidget.getWidgetSetting("qid");
+                let clouds = JFCustomWidget.getWidgetSetting("clouds");
+                folder = document.getElementById("folder").value;
+                console.log(sendJob(qid,file.name,clouds,formid,folder));
+            }).fail(function(){
+                console.log("An Error Occured");
+            });
+            return true;
+        }
+        function save(formdata,key){
+           
+        return $.ajax({
                 type: "POST",
                 url: "save.php",
                 enctype: "multipart/form-data",
@@ -234,12 +238,25 @@
                     // let file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
                     // let clouds = JFCustomWidget.getWidgetSetting("clouds");
                     // let folder = document.getElementById("folder").value;
-                    console.log(x); 
                     // var url = sendJob(qid,file,clouds,form_id,folder);
-                    console.log("leeroy!");
+                    // console.log(url);    
                 // }
                 }
             });
+     
+        }   
+        function removeFiles(form_id,folder){
+            $.ajax({
+                type: "POST",
+                url: "removeFiles.php",
+                enctype: "multipart/form-data",
+                data: {formid: form_id,folder: folder},
+                async: false,
+                cache: false,
+                success: function(sccss){
+                    console.log(sccss);
+                }                                    
+            })
         }
         function sendJob(qid,file,clouds,formid,folder){
             var formdata = new FormData();
@@ -264,8 +281,8 @@
                 success: function(sccss){
                     url = sccss;
                     url = urlReplace(url);
-                    document.getElementById("uploaded").value == true;
-                    console.log(url);
+                    document.getElementById("uploaded").value == url;
+                    // console.log(url);
                     response = url;
                 }
             })   
