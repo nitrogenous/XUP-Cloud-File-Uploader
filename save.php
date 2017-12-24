@@ -161,8 +161,8 @@ function getFolder($formid,$key){
 	return $date;
 }
 function saveFolder($formid,$key,$date){
-$file = fopen("/tmp/$formid/$key.txt","wr") or die ("Unable to open file");
-fwrite($file,$date) or die ("Unable to write file!");
-fclose($file);
-return true;
+	$file = fopen("/tmp/$formid/$key.txt","wr") or die ("Unable to open file");
+	fwrite($file,$date) or die ("Unable to write file!");
+	fclose($file);
+	return true;
 }
