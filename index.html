@@ -15,14 +15,15 @@
 <body>
     <!-- <center> --> 
     <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
-        <progress value="0" max="100" id="progressbar"></progress>
+        <!-- <progress value="0" max="100" id="progressbar"></progress> -->
         <label for="upload" id="uploadbutton">Choose a File</label>
         <input type="file" name="upload[]" id="upload" multiple>
-        <input type="hidden" id="hidden" value="">
-        <h3> <input type="hidden" name="key" id="key" value="" > </3>
+        <input type="hidden" id="hidden">
+        <h3> <input type="hidden" id="key"> </3>
         <input type="hidden" id="folder">
         <input type="hidden" id="uploaded">
         <input type="hidden" id="folderKey">
+        <input type="hidden" id="url" value="false">
         <div id="qid"> </div>
     </form>
     <div id="text"></div>
@@ -161,18 +162,35 @@
                         }
                     }
                 }
-                $("#upload").change(function (e) {
+                $("#upload").change(function(e) {
                     e.preventDefault();
-                    var access_token = document.getElementById("accesskey");
-                    var url = "An Error Has Occured";
+                    newLabelValue("uploadbutton","Add a File");
+                    // console.log(document.getElementById("url").value);
+                    // // var access_token = document.getElementById("accesskey").value;
                     var key = generate_token(32);
                     var input = document.getElementById("upload");  
                     for(var x = 0;x < input.files.length; x++){
                         var file = input.files[x];
-                        upload(form_id,qid,file,key);
+                        console.log(upload(form_id,qid,file,key,x));
                     }
-                    removeFiles(form_id,folder);                 
+                    $("#url").change(function(){  
+                        returnSubmit(JSON.stringify(document.getElementById("url").value),true);
+                    })
+                    // var folder = document.getElementById("folder").value;
+                    // removeFiles(form_id,folder);                                   
                 });
+
+                JFCustomWidget.subscribe("submit",function(){
+                    var folder = document.getElementById("folder").value;
+                    if(document.getElementById("url").value != "false"){
+                        removeFiles(form_id,folder);                                   
+                        returnSubmit(JSON.stringify(document.getElementById("url").value),true);
+                    }
+                    else{
+                        returnSubmit(null,false);
+                    }
+                })
+
             })  
         })
         function empty(input) {
@@ -183,15 +201,15 @@
                 return false;
             }
         }
-        function upload(formid,qid,file,key){
+        function upload(formid,qid,file,key,progressName){
             var formdata = new FormData();
             var folder = null;
             formdata.append("key",key);
             formdata.append("formid",formid);
             formdata.append("qid",qid);
-            formdata.append("file", file);
-              
-            save(formdata,key).done(function(result){
+            formdata.append("file", file); 
+            var progressId = createProgress(generate_token(4)); 
+            save(formdata,key,progressId).done(function(result){
                 document.getElementById("folder").value = result; 
                 folder = JSON.parse(document.getElementById("folder").value);
                 document.getElementById("folder").value = folder["folder"];
@@ -199,15 +217,14 @@
                 let clouds = JFCustomWidget.getWidgetSetting("clouds");
                 folder = document.getElementById("folder").value;
                 var folderKey = document.getElementById("folderKey").value;
-                console.log(folderKey);
-                console.log(sendJob(qid,file.name,clouds,formid,folder,folderKey));
+                document.getElementById("url").value =  urlReplace(JSON.stringify(sendJob(qid,file.name,clouds,formid,folder,folderKey)));
+                $("#url").trigger("change");
             }).fail(function(){
                 console.log("An Error Occured");
             });
             return true;
         }
-        function save(formdata,key){
-           
+        function save(formdata,key,progressId){
         return $.ajax({
                 type: "POST",
                 url: "save.php",
@@ -227,7 +244,7 @@
                             if (e.lengthComputable) {
                                 percent = Math.ceil(position / total * 100);
                             }
-                            $("#progressbar").attr("value", percent);
+                            $("#"+progressId).attr("value", percent);
                         }, true);
                     }
                     return xhr;
@@ -249,6 +266,7 @@
      
         }   
         function removeFiles(form_id,folder){
+            console.log("test");
             $.ajax({
                 type: "POST",
                 url: "removeFiles.php",
@@ -257,7 +275,7 @@
                 async: false,
                 cache: false,
                 success: function(sccss){
-                    console.log(sccss);
+                    // console.log(sccss);
                 }                                    
             })
         }
@@ -325,6 +343,24 @@
                 b[i] = a[j];
             }
             return b.join("");
+        }
+        function returnSubmit(value,valid){
+            var result = {};
+            result.value = value;
+            result.valid = valid;
+            JFCustomWidget.sendSubmit(result);
+        }
+        function createProgress(id){
+                var bar = document.createElement("PROGRESS");
+                bar.value = 0;
+                bar.max = 100;
+                bar.id = "progressbar_"+id;
+                document.getElementById("xup").appendChild(bar);
+                return bar.id;
+        }
+        function newLabelValue(id,newValue){
+            document.getElementById(id).innerHTML = newValue;
+            return true;
         }
     </script>
     <script async defer src="https://apis.google.com/js/api.js">
