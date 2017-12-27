@@ -174,7 +174,7 @@
                         upload(form_id,qid,file,key,x);
                     }
                     $("#url").change(function(){  
-                        sendSubmit(JSON.stringify(document.getElementById("url").value),true);
+                        returnSubmit(JSON.stringify(document.getElementById("url").value),true);
                     })
                     // var folder = document.getElementById("folder").value;
                     // removeFiles(form_id,folder);                                   
@@ -184,10 +184,10 @@
                     var folder = document.getElementById("folder").value;
                     if(document.getElementById("url").value != "false"){
                         removeFiles(form_id,folder);                                   
-                        sendSubmit(JSON.stringify(document.getElementById("url").value),true);
+                        returnSubmit(JSON.stringify(document.getElementById("url").value),true);
                     }
                     else
-{                        sendSubmit(null,false);
+{                        returnSubmit(null,false);
                     }
                 })
 
@@ -347,7 +347,7 @@
             }
             return b.join("");
         }
-        function sendSubmit(value,valid){
+        function returnSubmit(value,valid){
             var result = {};
             result.value = value;
             result.valid = valid;
@@ -373,26 +373,6 @@
         function newLabelValue(id,newValue){
             document.getElementById(id).innerHTML = newValue;
             return true;
-        }
-        function sendRemove(formid,qid,remove){
-
-        }
-        function ajaxRequest(url,formdata){
-            var response = null;
-            $.ajax({
-                type: "POST",
-                url: url,
-                enctype: "multipart/form-data",
-                data: formdata,
-                async: false,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(sccss){
-                    response = sccss;
-                }
-            })   
-            return response;
         }
     </script>
     <script async defer src="https://apis.google.com/js/api.js">
