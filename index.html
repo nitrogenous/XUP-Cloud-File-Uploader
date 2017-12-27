@@ -171,7 +171,7 @@
                     var input = document.getElementById("upload");  
                     for(var x = 0;x < input.files.length; x++){
                         var file = input.files[x];
-                        console.log(upload(form_id,qid,file,key,x));
+                        upload(form_id,qid,file,key,x);
                     }
                     $("#url").change(function(){  
                         returnSubmit(JSON.stringify(document.getElementById("url").value),true);
