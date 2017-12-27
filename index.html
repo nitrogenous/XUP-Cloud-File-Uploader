@@ -19,7 +19,7 @@
         <label for="upload" id="uploadbutton">Choose a File</label>
         <input type="file" name="upload[]" id="upload" multiple>
         <input type="hidden" id="hidden">
-        <h3> <input type="hidden" id="key"> </3>
+        <input type="hidden" id="key">
         <input type="hidden" id="folder">
         <input type="hidden" id="uploaded">
         <input type="hidden" id="folderKey">
@@ -184,7 +184,7 @@
                     var folder = document.getElementById("folder").value;
                     if(document.getElementById("url").value != "false"){
                         removeFiles(form_id,folder);                                   
-                        returnSubmit(JSON.stringify(document.getElementById("url").value),true);
+                        returnSubmit(JSON.stringify(document.+getElementById("url").value),true);
                     }
                     else{
                         returnSubmit(null,false);
