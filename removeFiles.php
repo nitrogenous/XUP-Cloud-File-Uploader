@@ -2,7 +2,6 @@
 // var_dump($_POST);
 if(isset($_POST["formid"])){
 	if(isset($_POST["folder"])){
-
 		$formid = injection($_POST["formid"]);
 		$folder = injection($_POST["folder"]);
 		$path = DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR.injection($formid).DIRECTORY_SEPARATOR.injection($folder).DIRECTORY_SEPARATOR;
