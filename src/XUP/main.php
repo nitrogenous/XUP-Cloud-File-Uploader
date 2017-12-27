@@ -16,7 +16,7 @@ class XUP
 		return null;
 	}	
 
-	public function remove($formid,$qid) {
+	public function remove($params) {
 		return null;
 	}
 

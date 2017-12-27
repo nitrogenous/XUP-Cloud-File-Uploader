@@ -9,8 +9,14 @@ use XUP\Uploader\Drive;
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");
 $worker->addFunction("toprakDrive", "toprakDriveUpload");
+$worker->addFunction("toprakDrive", "toprakDriveRemove");
 
 while ($worker->work());
+
+function toprakDriveRemove($job) {
+	$params = (array)json_decode($job->workload());
+	
+}
 
 function toprakDriveUpload($job) {
 	$params = (array)json_decode($job->workload());

@@ -39,7 +39,7 @@ class Drive extends XUP {
 			return false;
 		}
 	}
-	public function remove($formid,$qid) {
+	public function remove($params) {
 		return false;
 	}
 	public function upload($params) {

@@ -186,8 +186,8 @@
                         removeFiles(form_id,folder);                                   
                         returnSubmit(JSON.stringify(document.getElementById("url").value),true);
                     }
-                    else{
-                        returnSubmit(null,false);
+                    else
+{                        returnSubmit(null,false);
                     }
                 })
 
@@ -208,7 +208,8 @@
             formdata.append("formid",formid);
             formdata.append("qid",qid);
             formdata.append("file", file); 
-            var progressId = createProgress(generate_token(4)); 
+            var id = generate_token(4);
+            var progressId = createProgress(id); 
             save(formdata,key,progressId).done(function(result){
                 document.getElementById("folder").value = result; 
                 folder = JSON.parse(document.getElementById("folder").value);
@@ -217,7 +218,9 @@
                 let clouds = JFCustomWidget.getWidgetSetting("clouds");
                 folder = document.getElementById("folder").value;
                 var folderKey = document.getElementById("folderKey").value;
-                document.getElementById("url").value =  urlReplace(JSON.stringify(sendJob(qid,file.name,clouds,formid,folder,folderKey)));
+                var url = urlReplace(JSON.stringify(sendJob(qid,file.name,clouds,formid,folder,folderKey)));
+                document.getElementById("url").value =  url;
+                var buttonId = createButton(url,id);
                 $("#url").trigger("change");
             }).fail(function(){
                 console.log("An Error Occured");
@@ -357,6 +360,15 @@
                 bar.id = "progressbar_"+id;
                 document.getElementById("xup").appendChild(bar);
                 return bar.id;
+        }
+        function createButton(value,id){
+            var button = document.createElement("BUTTON");
+            button.id = "button_"+id;
+            button.value = value;
+            button.appendChild(document.createTextNode("X"));
+            document.getElementById("xup").appendChild(button);
+            button.onclick = function(e){e.preventDefault(); console.log(button.value);};
+            return button.id;
         }
         function newLabelValue(id,newValue){
             document.getElementById(id).innerHTML = newValue;
