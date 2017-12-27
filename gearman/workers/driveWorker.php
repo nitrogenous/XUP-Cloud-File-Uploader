@@ -37,7 +37,6 @@ function toprakDriveUpload($job) {
 		$client->setApplicationName("XUP_File_Uploader");
 		$client->setAccessToken((string)$tokens["access_token"]);
 		if($client->isAccessTokenExpired()) {
-		// var_dump("yalala");
 			$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
 			$drive = new Drive();
 			$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));	
@@ -53,10 +52,10 @@ function toprakDriveUpload($job) {
 			// var_dump($dFiles->name);
 				if($dFiles->name == $formid){
 					$folderid = $dFiles->id;
-				}
-				if(!empty($folderKey)){
-					if($dFiles->id == $folderKey){
-						$isFolder = true;
+					if(!empty($fodlerKey)){
+						if($dFiles->id == $folderKey){
+							$isFolder = true;
+						}	
 					}
 				}
 			}
