@@ -7,7 +7,7 @@ use Spatie\FlysystemDropbox\DropboxAdapter;
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");
 $worker->addFunction("toprakDBX", "toprakDbxUpload");
-
+$worker->addFunction("toprakDBX", "toprakDbxRemove");
 while ($worker->work());
 
 function toprakDbxUpload($job) {
@@ -36,4 +36,10 @@ function toprakDbxUpload($job) {
 		var_dump($url);
 		return $url;	
 	}
+}
+function toprakDbxRemove($job){
+	$params = (array)json_encode($job->workload());
+	$token = (string)$params["key"];
+	$remove = (string)$params["remove"];
+	var_dump($params);
 }
