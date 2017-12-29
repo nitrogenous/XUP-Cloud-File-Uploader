@@ -13,9 +13,7 @@
     <title>XUP File Uploader</title>
 </head>
 <body>
-    <!-- <center> --> 
     <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
-        <!-- <progress value="0" max="100" id="progressbar"></progress> -->
         <label for="upload" id="uploadbutton">Choose a File</label>
         <input type="file" name="upload[]" id="upload" multiple>
         <input type="hidden" id="hidden">
@@ -27,14 +25,9 @@
         <div id="qid"> </div>
     </form>
     <div id="text"></div>
-    <!-- </center> -->
     <script type="text/javascript">
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){    
-                // var size ={};
-                // size.width = ((document.body.offsetWidth/100)*100);
-                // size.height = ((document.body.offsetHeight/100)*100);    
-                // JFCustomWidget.requestFrameResize(size);
                 console.log(JFCustomWidget.getWidgetSetting("clouds"));
                 var filekey = generate_token(16);
                 var formdata = new FormData();
@@ -121,16 +114,16 @@
                                 discoveryDocs: discovery,
                                 scope: scopes
                             }).then(function (){
-                            gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-                            updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-                            handleAuthClick();
+                                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+                                updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                                handleAuthClick();
                             });
                         }
                         function updateSigninStatus(isSignedIn) {
                             if (isSignedIn) {
                                 console.log("signed");
                             }
-                             addEventListener
+                            addEventListener
                             {
                                 console.log("error");
                             }
@@ -186,8 +179,8 @@
                         removeFiles(form_id,folder);                                   
                         returnSubmit(JSON.stringify(document.getElementById("url").value),true);
                     }
-                    else
-{                        returnSubmit(null,false);
+                    else{
+                        returnSubmit(null,false);
                     }
                 })
 
@@ -204,11 +197,10 @@
         function upload(formid,qid,file,filekey,progressName){
             var formdata = new FormData();
             var folder = null;
-            console.log(formid+"\n"+qid+"\n"+file+"\n"+filekey);
-            formdata.append("filekey",filekey);
-            formdata.append("formid",formid);
             formdata.append("qid",qid);
             formdata.append("file", file); 
+            formdata.append("formid",formid);
+            formdata.append("filekey",filekey);
             formdata.append("key",getAwsKeys());
             var id = generate_token(4);
             var progressId = createProgress(id); 
@@ -271,53 +263,35 @@
                 });
         }   
         function removeFiles(form_id,folder){
-            console.log("test");
-            $.ajax({
-                type: "POST",
-                url: "removeFiles.php",
-                enctype: "multipart/form-data",
-                data: {formid: form_id,folder: folder},
-                async: false,
-                cache: false,
-                success: function(sccss){
-                    // console.log(sccss);
-                }                                    
-            })
+            ajaxRequest("removeFiles.php",{formid: form_id,folder: folder},false);
         }
-        function sendJob(qid,file,formid,folder,folderKey,key){
-            var formdata = new FormData();
-            var response = null;
-            console.log(formid);
-            // $key = getAwsKeys();
-            formdata.append("qid",qid);
-            formdata.append("file",file);
-            formdata.append("formid",formid);
-            formdata.append("folder",folder);
-            formdata.append("action","upload");
-            formdata.append("key",key);
-            formdata.append("folderKey",folderKey);
+        function ajaxRequest(url,formdata,async){
+            var result = null;
             $.ajax({
                 type: "POST",
-                url: "database.php",
+                url: url,
                 enctype: "multipart/form-data",
                 data: formdata,
-                async: false,
+                async: async,
                 cache: false,
                 contentType: false,
                 processData: false,
                 success: function(sccss){
-                    // callback = JSON.parse(JSON.stringify(JSON.parse(sccss)));
-                    // google = callback.Drive;
-                    // google = JSON.parse(JSON.stringify(JSON.parse(google)));
-                    // document.getElementById("folderKey").value = google.folderKey;
-                    // googleUrl = urlReplace(google.url);
-                    // dropboxUrl = urlReplace(callback.Dropbox);
-                    // url = {Drive: googleUrl,Dropbox: dropboxUrl};
-                    // document.getElementById("uploaded").value = url;
-                    // console.log(url);
-                    response = sccss;
+                    result = sccss;
                 }
-            })   
+            })
+            return result;
+        }
+        function sendJob(qid,file,formid,folder,folderKey,key){
+            var formdata = new FormData();
+            formdata.append("key",key);
+            formdata.append("qid",qid);
+            formdata.append("file",file);
+            formdata.append("folder",folder);
+            formdata.append("formid",formid);
+            formdata.append("action","upload");
+            formdata.append("folderKey",folderKey);
+            var response = ajaxRequest("database.php",formdata,false);
             return response;
         }
         function getAwsKeys(){
@@ -356,12 +330,12 @@
             JFCustomWidget.sendSubmit(result);
         }
         function createProgress(id){
-                var bar = document.createElement("PROGRESS");
-                bar.value = 0;
-                bar.max = 100;
-                bar.id = "progressbar_"+id;
-                document.getElementById("xup").appendChild(bar);
-                return bar.id;
+            var bar = document.createElement("PROGRESS");
+            bar.value = 0;
+            bar.max = 100;
+            bar.id = "progressbar_"+id;
+            document.getElementById("xup").appendChild(bar);
+            return bar.id;
         }
         function createButton(value,id){
             var button = document.createElement("BUTTON");
