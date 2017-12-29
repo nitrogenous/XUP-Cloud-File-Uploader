@@ -16,9 +16,12 @@
     <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
         <label for="upload" id="uploadbutton">Choose a File</label>
         <input type="file" name="upload[]" id="upload" multiple>
-        <input type="hidden" id="hidden">
+        <input type="hidden" id="aws">
         <input type="hidden" id="key">
+        <input type="hidden" id="drive">
         <input type="hidden" id="folder">
+        <input type="hidden" id="hidden">
+        <input type="hidden" id="dropbox">
         <input type="hidden" id="uploaded">
         <input type="hidden" id="folderKey">
         <input type="hidden" id="url" value="false">
@@ -26,8 +29,9 @@
     </form>
     <div id="text"></div>
     <script type="text/javascript">
+        document.getElementById("uploadbutton").style.display = "none";
         JFCustomWidget.subscribe("ready", function (formId) {
-            $(document).ready(function(){    
+            $(document).ready(function(){
                 console.log(JFCustomWidget.getWidgetSetting("clouds"));
                 var filekey = generate_token(16);
                 var formdata = new FormData();
@@ -38,35 +42,12 @@
                 formdata.append("formid", form_id);
                 formdata.append("qid",qid);
                 formdata.append("action", "check");
-                $.ajax({
-                    type: "POST",
-                    url: "database.php",
-                    enctype: "multipart/form-data",
-                    data: formdata,
-                    async: false,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function (sccss) {
-                        document.getElementById("hidden").value = sccss;
-                    }
-                });
+                document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
                 var status = JSON.parse(document.getElementById("hidden").value); 
                 console.log(status);
-                if((clouds.toLowerCase()).indexOf("amazonwebservices") != -1){
-                    var access = JFCustomWidget.getWidgetSetting("awsaccess");
-                    var secret = JFCustomWidget.getWidgetSetting("awssecret");
-                    var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
-                    if(empty(access) || empty(secret) || empty(bucket)){
-                        document.getElementById("upload").disable = true;
-                        // document.getElementById("text").innerHTML = "<h3>Please check your AWS integration!</h3>";
-                    }
-                    else{
-                        document.getElementById("text").innerHTML = "";
-                    }
-                }
                 if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
-                    if(status.Dropbox != true){
+                    if(!status.Dropbox){
+                        document.getElementById("dropbox").value = false;
                         var client_id = "9pdfdpjr2pnqzmo";
                         var dbx = new Dropbox({clientId: client_id});
                         var authUrl = dbx.getAuthenticationUrl("https://toprak.jotform.pro/Adapter/oauth.html"); 
@@ -74,31 +55,22 @@
                         $("#key").change(function(){
                             key = document.getElementById("key").value;
                             var formdata = new FormData();
-                            formdata.append("action", "save");
-                            formdata.append("qid",qid);
-                            formdata.append("value","dropbox");
                             formdata.append("key",key);
+                            formdata.append("qid",qid);
+                            formdata.append("action", "save");
+                            formdata.append("value","dropbox");
                             formdata.append("formid", form_id);
-                            formdata.append("clouds", clouds);
-                            $.ajax({
-                                type: "POST",
-                                url: "database.php",
-                                enctype: "multipart/form-data",
-                                data: formdata,
-                                async: false,
-                                cache: false,
-                                contentType: false,
-                                processData: false,
-                                success: function (sccss) {
-                                    document.getElementById("hidden").value = sccss;
-                                }
-                            });
+                            document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
                             AuthWindow.close();
                         }) 
                     }
+                    else{
+                        document.getElementById("dropbox").value = true;                        
+                    } 
                 }
                 if((clouds.toLowerCase()).indexOf("drive") !=  -1){
                     if(status.Drive != true){
+                        document.getElementById("drive").value = false;
                         this.onload=function(){};handleClientLoad();
                         var key = "AIzaSyAbodyJck6jBlV4oV9A3-E6xdMvf3JsdDg";
                         var client = "424058548993-sbd0hd1dflne6507emj91gad1pf9bebc.apps.googleusercontent.com";
@@ -156,6 +128,29 @@
                         }
                     }
                 }
+                if((clouds.toLowerCase()).indexOf("amazonwebservices") != -1){
+                    if(empty(getAwsKeys())){
+                        document.getElementById("upload").disable = true;
+                        // document.getElementById("text").innerHTML = "<h3>Please check your AWS integration!</h3>";
+                    }
+                    else{
+                        document.getElementById("text").innerHTML = "";
+                    }
+                }
+
+                cloudsArray = clouds.split(",");
+                cloudsArray.shift();
+                cloudsArray.forEach(function(e){
+                    if(!document.getElementById(e.toLowerCase()).value){
+                        document.getElementById("uploadbutton").style.display = "none";
+                        document.getElementById("text").innerHTML = "Please check your integrations";
+                    }
+                    else{
+                        document.getElementById("uploadbutton").style.display = "table";
+                        document.getElementById("text").innerHTML = "";   
+                    }
+
+                })
                 $("#upload").change(function(e) {
                     e.preventDefault();
                     newLabelValue("uploadbutton","Add a File");
@@ -245,18 +240,7 @@
                         }
                         return xhr;
                     },
-                    success: function (sccss) { 
-                        // document.getElementById("folder").value = sccss; 
-                        // let folder = JSON.parse(document.getElementById("folder").value);
-                        // document.getElementById("folder").value = folder["folder"];
-                        // console.log(document.getElementById("folder").value);
-                        // let qid = JFCustomWidget.getWidgetSetting("qid");
-                        // let file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
-                        // let clouds = JFCustomWidget.getWidgetSetting("clouds");
-                        // let folder = document.getElementById("folder").value;
-                        // var url = sendJob(qid,file,clouds,form_id,folder);
-                        // console.log(url);    
-                    // }
+                    success: function (sccss) {
                     }
                 });
         }   
