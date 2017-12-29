@@ -35,13 +35,14 @@
                 // size.width = ((document.body.offsetWidth/100)*100);
                 // size.height = ((document.body.offsetHeight/100)*100);    
                 // JFCustomWidget.requestFrameResize(size);
+                console.log(JFCustomWidget.getWidgetSetting("clouds"));
+                var filekey = generate_token(16);
                 var formdata = new FormData();
                 const form_id = formId["formID"];
                 const qid = JFCustomWidget.getWidgetSetting("qid");
                 const clouds = JFCustomWidget.getWidgetSetting("clouds");
                 var status;
                 formdata.append("formid", form_id);
-                formdata.append("clouds", clouds); 
                 formdata.append("qid",qid);
                 formdata.append("action", "check");
                 $.ajax({
@@ -65,7 +66,7 @@
                     var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
                     if(empty(access) || empty(secret) || empty(bucket)){
                         document.getElementById("upload").disable = true;
-                        document.getElementById("text").innerHTML = "<h3>Please check your AWS integration!</h3>";
+                        // document.getElementById("text").innerHTML = "<h3>Please check your AWS integration!</h3>";
                     }
                     else{
                         document.getElementById("text").innerHTML = "";
@@ -167,11 +168,10 @@
                     newLabelValue("uploadbutton","Add a File");
                     // console.log(document.getElementById("url").value);
                     // // var access_token = document.getElementById("accesskey").value;
-                    var key = generate_token(32);
                     var input = document.getElementById("upload");  
                     for(var x = 0;x < input.files.length; x++){
                         var file = input.files[x];
-                        upload(form_id,qid,file,key,x);
+                        upload(form_id,qid,file,filekey,x);
                     }
                     $("#url").change(function(){  
                         returnSubmit(JSON.stringify(document.getElementById("url").value),true);
@@ -201,25 +201,28 @@
                 return false;
             }
         }
-        function upload(formid,qid,file,key,progressName){
+        function upload(formid,qid,file,filekey,progressName){
             var formdata = new FormData();
             var folder = null;
-            formdata.append("key",key);
+            console.log(formid+"\n"+qid+"\n"+file+"\n"+filekey);
+            formdata.append("filekey",filekey);
             formdata.append("formid",formid);
             formdata.append("qid",qid);
             formdata.append("file", file); 
+            formdata.append("key",getAwsKeys());
             var id = generate_token(4);
             var progressId = createProgress(id); 
-            save(formdata,key,progressId).done(function(result){
-                document.getElementById("folder").value = result; 
-                folder = JSON.parse(document.getElementById("folder").value);
-                document.getElementById("folder").value = folder["folder"];
+            save(formdata,filekey,progressId).done(function(result){
+                if(empty(document.getElementById("folder").value)){
+                    document.getElementById("folder").value = result; 
+                    folder = JSON.parse(document.getElementById("folder").value);
+                    document.getElementById("folder").value = folder["folder"];
+                }
                 let qid = JFCustomWidget.getWidgetSetting("qid");
-                let clouds = JFCustomWidget.getWidgetSetting("clouds");
                 folder = document.getElementById("folder").value;
                 var folderKey = document.getElementById("folderKey").value;
-                var url = urlReplace(JSON.stringify(sendJob(qid,file.name,clouds,formid,folder,folderKey)));
-                document.getElementById("url").value =  url;
+                var url = sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,""); //key,
+                document.getElementById("url").value =  url;                    
                 var buttonId = createButton(url,id);
                 $("#url").trigger("change");
             }).fail(function(){
@@ -227,46 +230,45 @@
             });
             return true;
         }
-        function save(formdata,key,progressId){
-        return $.ajax({
-                type: "POST",
-                url: "save.php",
-                enctype: "multipart/form-data",
-                data: formdata,
-                cache: false,
-                // async: false,
-                contentType: false,
-                processData: false,
-                xhr: function () {
-                    var xhr = $.ajaxSettings.xhr();
-                    if (xhr.upload) {   
-                        xhr.upload.addEventListener("progress", function (e) {
-                            var percent = 0;
-                            var position = e.loaded || e.position;
-                            var total = e.total;
-                            if (e.lengthComputable) {
-                                percent = Math.ceil(position / total * 100);
-                            }
-                            $("#"+progressId).attr("value", percent);
-                        }, true);
+        function save(formdata,filekey,progressId){
+            return $.ajax({
+                    type: "POST",
+                    url: "save.php",
+                    enctype: "multipart/form-data",
+                    data: formdata,
+                    cache: false,
+                    // async: false,
+                    contentType: false,
+                    processData: false,
+                    xhr: function () {
+                        var xhr = $.ajaxSettings.xhr();
+                        if (xhr.upload) {   
+                            xhr.upload.addEventListener("progress", function (e) {
+                                var percent = 0;
+                                var position = e.loaded || e.position;
+                                var total = e.total;
+                                if (e.lengthComputable) {
+                                    percent = Math.ceil(position / total * 100);
+                                }
+                                $("#"+progressId).attr("value", percent);
+                            }, true);
+                        }
+                        return xhr;
+                    },
+                    success: function (sccss) { 
+                        // document.getElementById("folder").value = sccss; 
+                        // let folder = JSON.parse(document.getElementById("folder").value);
+                        // document.getElementById("folder").value = folder["folder"];
+                        // console.log(document.getElementById("folder").value);
+                        // let qid = JFCustomWidget.getWidgetSetting("qid");
+                        // let file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
+                        // let clouds = JFCustomWidget.getWidgetSetting("clouds");
+                        // let folder = document.getElementById("folder").value;
+                        // var url = sendJob(qid,file,clouds,form_id,folder);
+                        // console.log(url);    
+                    // }
                     }
-                    return xhr;
-                },
-                success: function (sccss) { 
-                    // document.getElementById("folder").value = sccss; 
-                    // let folder = JSON.parse(document.getElementById("folder").value);
-                    // document.getElementById("folder").value = folder["folder"];
-                    // console.log(document.getElementById("folder").value);
-                    // let qid = JFCustomWidget.getWidgetSetting("qid");
-                    // let file = document.getElementById("upload").value.split(/(\\|\/)/g).pop();
-                    // let clouds = JFCustomWidget.getWidgetSetting("clouds");
-                    // let folder = document.getElementById("folder").value;
-                    // var url = sendJob(qid,file,clouds,form_id,folder);
-                    // console.log(url);    
-                // }
-                }
-            });
-     
+                });
         }   
         function removeFiles(form_id,folder){
             console.log("test");
@@ -282,13 +284,13 @@
                 }                                    
             })
         }
-        function sendJob(qid,file,clouds,formid,folder,folderKey){
+        function sendJob(qid,file,formid,folder,folderKey,key){
             var formdata = new FormData();
             var response = null;
-            $key = getAwsKeys();
+            console.log(formid);
+            // $key = getAwsKeys();
             formdata.append("qid",qid);
             formdata.append("file",file);
-            formdata.append("clouds",clouds);
             formdata.append("formid",formid);
             formdata.append("folder",folder);
             formdata.append("action","upload");
@@ -304,16 +306,16 @@
                 contentType: false,
                 processData: false,
                 success: function(sccss){
-                    callback = JSON.parse(JSON.stringify(JSON.parse(sccss)));
-                    google = callback.Drive;
-                    google = JSON.parse(JSON.stringify(JSON.parse(google)));
-                    document.getElementById("folderKey").value = google.folderKey;
-                    googleUrl = urlReplace(google.url);
-                    dropboxUrl = urlReplace(callback.Dropbox);
-                    url = {Drive: googleUrl,Dropbox: dropboxUrl};
-                    document.getElementById("uploaded").value = url;
+                    // callback = JSON.parse(JSON.stringify(JSON.parse(sccss)));
+                    // google = callback.Drive;
+                    // google = JSON.parse(JSON.stringify(JSON.parse(google)));
+                    // document.getElementById("folderKey").value = google.folderKey;
+                    // googleUrl = urlReplace(google.url);
+                    // dropboxUrl = urlReplace(callback.Dropbox);
+                    // url = {Drive: googleUrl,Dropbox: dropboxUrl};
+                    // document.getElementById("uploaded").value = url;
                     // console.log(url);
-                    response = url;
+                    response = sccss;
                 }
             })   
             return response;

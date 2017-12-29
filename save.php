@@ -1,10 +1,10 @@
 <?php
 $folder = date("h-ia d-m-Y");
-$key = injection($_POST["key"]);
+$key = injection($_POST["filekey"]);
 $formid = injection($_POST["formid"]);
 $qid = injection($_POST["qid"]);
 $path = DIRECTORY_SEPARATOR . "tmp"; 
-$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder,"questionid".$qid));
+$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder."-".$key,"questionid".$qid));
 
 if(realpath($file_path) !== true)
 {
@@ -34,7 +34,7 @@ foreach ($_FILES as $key => $value) {
 	$numbers= range("0","9");
 	foreach ($chars as $char){
 		if(stripos($file_name, $char)){
-			break;		
+			break;
 		}
 		else{
 			foreach ($numbers as $number) {
@@ -46,21 +46,20 @@ foreach ($_FILES as $key => $value) {
 			}
 		}
 	}
-	
-	if(move_uploaded_file($_FILES[$key]["tmp_name"], $file_path. DIRECTORY_SEPARATOR .$file_name)){
-		if(mime($file_path. DIRECTORY_SEPARATOR .$file_name.DIRECTORY_SEPARATOR.$file_name) != true)
-		{
-			exit(json_encode(array("succes"=>false,"error"=>"mime_content_type(filename)")));	
-		}
-		chmod($file_path. DIRECTORY_SEPARATOR .$file_name, 0777);
-		header("HTTP/1.1 200");
-		exit(json_encode(array("succes"=>true,"folder" => $folder,"error"=>null)));			
+	if(file_exists($file_path.DIRECTORY_SEPARATOR.$file_name)){
+		$newFileName = fileNameExist($file_path,$file_name);
+		save($_FILES[$key]["tmp_name"],$file_path,$newFileName,$folder);
 	}
 	else{
-		var_dump($_FILES[$key]["tmp_name"] . " AA " . $file_name . " AA ".$file_path);
-		header("HTTP/1.1 500");
-		exit(json_encode(array("succes"=>false,"error"=>"Internal Server Error!")));
+		save($_FILES[$key]["tmp_name"],$file_path,$file_name,$folder);		
 	}
+}
+
+function fileNameExist($path,$filename){
+	while(file_exists($path.DIRECTORY_SEPARATOR.$filename) != false) {
+		$filename = "1_".$filename;
+	}
+	return $filename;
 }
 
 function injection($str)
@@ -95,8 +94,7 @@ function injection($str)
 		// '46', 		// .
 		// '47'		// /
 	);
-	do
-	{
+	do{
 		$old = $str;
 		$str = str_replace($bad, ' ', $str);
 		if(stripos($str, '4647'))
@@ -162,7 +160,23 @@ function getFolder($formid,$key){
 }
 function saveFolder($formid,$key,$date){
 	$file = fopen("/tmp/$formid/$key.txt","wr") or die ("Unable to open file");
-	fwrite($file,$date) or die ("Unable to write file!");
+	fwrite($file,$date."-".$key) or die ("Unable to write file!");
 	fclose($file);
 	return true;
+}
+function save($fileTmpName,$filePath,$fileName,$folder){
+	if(move_uploaded_file($fileTmpName, $filePath. DIRECTORY_SEPARATOR .$fileName)){
+		if(mime($filePath. DIRECTORY_SEPARATOR .$fileName.DIRECTORY_SEPARATOR.$fileName) != true)
+		{
+			exit(json_encode(array("succes"=>false,"error"=>"mime_content_type($fileName)")));	
+		}
+		chmod($filePath. DIRECTORY_SEPARATOR .$fileName, 0776);
+		header("HTTP/1.1 200");
+		exit(json_encode(array("succes"=>true,"filename" => $fileName,"folder" => $folder,"error"=>null)));			
+	}
+	else{
+		var_dump($fileTmpName . " " . $fileName . " ".$filePath);
+		header("HTTP/1.1 500");
+		exit(json_encode(array("succes"=>false,"error"=>"Internal Server Error!")));
+	}
 }
