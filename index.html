@@ -208,7 +208,7 @@
                 var folderKey = document.getElementById("folderKey").value;
                 var url = sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,""); //key,
                 document.getElementById("url").value =  url;    
-                progressDiv.querySelector("BUTTON").value = url;      
+                document.getElementById("remove-"+id).value = url;      
                 $("#url").trigger("change");
             }).fail(function(){
                 console.log("An Error Occured");
