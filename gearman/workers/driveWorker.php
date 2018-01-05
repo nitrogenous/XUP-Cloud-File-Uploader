@@ -60,6 +60,7 @@ function toprakDriveUpload($job) {
 				foreach ($driveFiles->files as $dFiles) {
 					if($dFiles->name == $formid){
 						$folderid = $dFiles->getId();
+						var_dump($dFiles->getId());	
 					}
 					if(!empty($folderKey)){
 						var_dump($dFiles->getId(), "\n",$folderKey,"\n");
@@ -73,7 +74,6 @@ function toprakDriveUpload($job) {
 			while ($pagetoken != null);
 			var_dump($isFolder + " " + $folderKey);
 			if($isFolder){
-				var_dump("a");
 				$fileMeta = new Google_Service_Drive_DriveFile(array("name" => $file, "parents" => array($folderKey)));
 				$fileService = $service->files->create($fileMeta,array(
 					"data" =>file_get_contents($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file),
@@ -103,6 +103,7 @@ function toprakDriveUpload($job) {
 				"mimeType" => "application/octet-stream",
 				"uploadType" => "media"));
 		// var_dump($folder,$fileService);
+
 			$url = "www.drive.google.com/#folders/$folderid";
 			$return = json_encode(array("Error" => 0,"File" => $file,"Url" => $url));
 			return $return;
@@ -114,5 +115,4 @@ function toprakDriveUpload($job) {
 }
 function toprakDriveRemove($job) {
 	// $params = (array)json_decode($job->workload());
-	
 }

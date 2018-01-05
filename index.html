@@ -2,8 +2,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="height=device-height, initial-scale=1.0">
     <script src="jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="index.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
@@ -14,22 +12,23 @@
 </head>
 <body>
     <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
-        <label for="upload" id="uploadbutton">Choose a File</label>
+        <label for="upload" id="add" class="addFile">Add a File</label>
         <input type="file" name="upload[]" id="upload" multiple>
-        <input type="hidden" id="aws">
-        <input type="hidden" id="key">
-        <input type="hidden" id="drive">
-        <input type="hidden" id="folder">
-        <input type="hidden" id="hidden">
-        <input type="hidden" id="dropbox">
-        <input type="hidden" id="uploaded">
-        <input type="hidden" id="folderKey">
-        <input type="hidden" id="url" value="false">
-        <div id="qid"> </div>
-    </form>
+
+        <div id="hiddenInputs">
+            <input type="hidden" id="aws">
+            <input type="hidden" id="key">
+            <input type="hidden" id="drive">
+            <input type="hidden" id="folder">
+            <input type="hidden" id="hidden">
+            <input type="hidden" id="dropbox">
+            <input type="hidden" id="uploaded">
+            <input type="hidden" id="folderKey">
+            <input type="hidden" id="url" value="false">
+        </div>
+        </form>
     <div id="text"></div>
     <script type="text/javascript">
-        document.getElementById("uploadbutton").style.display = "none";
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
                 console.log(JFCustomWidget.getWidgetSetting("clouds"));
@@ -142,18 +141,17 @@
                 cloudsArray.shift();
                 cloudsArray.forEach(function(e){
                     if(!document.getElementById(e.toLowerCase()).value){
-                        document.getElementById("uploadbutton").style.display = "none";
+                        // document.getElementById("add").style.display = "none";
                         document.getElementById("text").innerHTML = "Please check your integrations";
                     }
                     else{
-                        document.getElementById("uploadbutton").style.display = "table";
+                        // document.getElementById("add").style.display = "inline-flex";
                         document.getElementById("text").innerHTML = "";   
                     }
 
                 })
                 $("#upload").change(function(e) {
                     e.preventDefault();
-                    newLabelValue("uploadbutton","Add a File");
                     var input = document.getElementById("upload");  
                     for(var x = 0;x < input.files.length; x++){
                         var file = input.files[x];
@@ -188,16 +186,18 @@
             }
         }
         function upload(formid,qid,file,filekey,progressName){
-            var formdata = new FormData();
             var folder = null;
+            var formdata = new FormData();
+            var id =  createDiv(generate_token(4),file.name,getFileExtension(file.name));
             formdata.append("qid",qid);
             formdata.append("file", file); 
             formdata.append("formid",formid);
             formdata.append("filekey",filekey);
             formdata.append("key",getAwsKeys());
-            var id = generate_token(4);
-            var progressId = createProgress(id); 
-            save(formdata,filekey,progressId).done(function(result){
+            var progressBar = "progressBar-"+id;
+            // var progressButton =;
+            // console.log(progressBar);
+            save(formdata,filekey,progressBar).done(function(result){
                 if(empty(document.getElementById("folder").value)){
                     document.getElementById("folder").value = result; 
                     folder = JSON.parse(document.getElementById("folder").value);
@@ -207,8 +207,8 @@
                 folder = document.getElementById("folder").value;
                 var folderKey = document.getElementById("folderKey").value;
                 var url = sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,""); //key,
-                document.getElementById("url").value =  url;                    
-                var buttonId = createButton(url,id);
+                document.getElementById("url").value =  url;    
+                progressDiv.querySelector("BUTTON").value = url;      
                 $("#url").trigger("change");
             }).fail(function(){
                 console.log("An Error Occured");
@@ -311,26 +311,51 @@
             result.valid = valid;
             JFCustomWidget.sendSubmit(result);
         }
-        function createProgress(id){
-            var bar = document.createElement("PROGRESS");
-            bar.value = 0;
-            bar.max = 100;
-            bar.id = "progressbar_"+id;
-            document.getElementById("xup").appendChild(bar);
-            return bar.id;
-        }
-        function createButton(value,id){
-            var button = document.createElement("BUTTON");
-            button.id = "button_"+id;
-            button.value = value;
-            button.appendChild(document.createTextNode("X"));
-            document.getElementById("xup").appendChild(button);
-            button.onclick = function(e){e.preventDefault(); console.log(button.value);};
-            return button.id;
+        function createDiv(id,file = null,fileExtension = null){
+            var uploadItem = document.createElement("div");
+            var imageSection = document.createElement("div");
+            var img = document.createElement("img");
+            var fileType = document.createElement("div");
+            var progressSection = document.createElement("div");
+            var progressFile = document.createElement("div");
+            var progressBar = document.createElement("progress");
+            var remove = document.createElement("button");
+            
+            uploadItem.classList.add("uploadItem");
+            uploadItem.id = "uploadItem-"+id;
+            imageSection.classList.add("imageSection");
+            imageSection.id = "imageSection-"+id;
+            img.setAttribute("src","https://i.hizliresim.com/p6qB80.png");
+            img.setAttribute("alt","img");
+            fileType.id = "fileType-"+id;
+            progressSection.classList.add("progressSection");
+            progressSection.id = "progressSection-"+id;
+            progressFile.id = "progressFile-"+id;
+            progressBar.id = "progressBar-"+id;
+            remove.classList.add("remove");
+            remove.id = "remove-"+id;
+
+            fileType.appendChild(document.createTextNode(fileExtension.toUpperCase()));
+            progressFile.appendChild(document.createTextNode(file));
+            remove.appendChild(document.createTextNode("X"));
+
+            document.getElementById("xup").appendChild(uploadItem);
+            document.getElementById(uploadItem.id).appendChild(imageSection);
+            document.getElementById(imageSection.id).appendChild(img);
+            document.getElementById(imageSection.id).appendChild(fileType);
+            document.getElementById(uploadItem.id).appendChild(progressSection);
+            document.getElementById(progressSection.id).appendChild(progressFile);
+            document.getElementById(progressSection.id).appendChild(progressBar);
+            document.getElementById(uploadItem.id).appendChild(remove);
+
+            return id;
         }
         function newLabelValue(id,newValue){
             document.getElementById(id).innerHTML = newValue;
             return true;
+        }
+        function getFileExtension(filename){
+            return filename.split('.').pop();
         }
     </script>
     <script async defer src="https://apis.google.com/js/api.js">
