@@ -1,7 +1,8 @@
 *{
   box-sizing: border-box;
-  font-family: 'Roboto Condensed', sans-serif;
-}
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+  }
 html, body { 
   margin:0;
   height: 100%;
@@ -17,14 +18,13 @@ form {
 }
 .addFile{
   color: gray;
-  height: 75px;
-  width: 378.02px;
+  padding: 3.36px 148.24px;
   font-size: 15px;
   cursor: pointer;
-  line-height: 68px;
-  font-weight: bold;
+  line-height: 72px;
   border-radius: 5px;
   margin-bottom: 8px;
+  margin-left: 5px;
   text-align: center;
   transition: 0.3s ease;
   display: inline-block;
@@ -32,19 +32,23 @@ form {
   background-color: transparent;
 }
 .addFile:hover{
-  color: black;
-  border: 2px solid black;
+  color: #4a85ef;
+  border: 2px solid #4a85ef;
+  background-color: #ecececad;
 }
 .uploadItem{
-  border-radius: 5px;
+  font-size: 15px;
+  width: 378px;
+  border-radius:5px;
   margin-bottom: 5px;
-  padding: 20px 25px;
+  padding: 10px 25px;
   transition: 0.3s ease;
   display: inline-block;
   border: 2px solid #bbb;
 }
 .uploadItem:hover{
-  border: 2px solid black;
+  border: 2px solid #4a85ef;
+  background-color: #ecececad;
 }
 .imageSection{
   width: 48px;
@@ -63,11 +67,11 @@ form {
   font-size: 12px;
   cursor: default;
   position: absolute;
-  background-color: black;
-  box-shadow: 0 0 2px 2px black;
+  background-color: #4a85ef;
+  box-shadow: 0 0 1px 1px #4a85ef;
 }
 .progressSection{
-  margin-top: 3px;
+  margin-top: 5px;
   vertical-align: top;
   display: inline-block;
 
@@ -85,29 +89,48 @@ form {
   text-overflow: ellipsis;
   border-bottom: 1px solid gray;
 }
+.progresFile-Long{
+  max-width: 200px;
+  text-align: left;
+  overflow: hidden;
+  margin-bottom: 3px;
+  padding-bottom: 1px;
+  white-space: nowrap;
+  transition: 0.3s ease;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid gray;
+  background-color: red;
+}
 .progressFile-Long:hover{
   cursor: default;
-  text-indent: -25%;
+/*   text-indent: -25%; */
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .remove{
-  color: gray;
+  width: 25px;
+  height: 25px;
+  color: white;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 15px;
   margin-left: 7px;
   margin-right: 4px;
-  font-weight: bold;
-  border-radius: 5px;
-  padding: 10px 20px;
+  margin-top: 16.5px;
+  border-radius: 50%;
+  padding: 1px;
+  line-height: 23px;
+  text-indent: 0.5px;
   vertical-align: top;
-  transition: 0.3s ease;
-  border: 2px solid gray;
-  background-color: transparent;
+  transition: 0.5s ease;
+  border: none;
+  background-color: #bbbbbb96;
 }
 .remove:hover{
-  color: black;
-  border: 2px solid black;
+  background-color: #ad1616;
+}
+.remove img{
+  margin-left: -10px;
+  width: 15px;
 }
 .progressSection progress {
   border: none;
@@ -124,6 +147,8 @@ form {
 .progressSection progress::-webkit-progress-value {
   border-radius: 5px;
   box-sizing: border-box;
-  background-color: cornflowerblue;
+  background: #4a85ef; 
 }
-
+.measurement{
+  white-space: nowrap;
+}

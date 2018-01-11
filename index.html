@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <script src="jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="index.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet"> -->
     <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
     <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
     <script src="utils.js"></script>
@@ -198,7 +198,7 @@
             // var progressButton =;
             // console.log(progressBar);
             save(formdata,filekey,progressBar).done(function(result){
-                if(empty(document.getElementById("folder").value)){
+                  if(empty(document.getElementById("folder").value)){
                     document.getElementById("folder").value = result; 
                     folder = JSON.parse(document.getElementById("folder").value);
                     document.getElementById("folder").value = folder["folder"];
@@ -208,7 +208,7 @@
                 var folderKey = document.getElementById("folderKey").value;
                 var url = sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,""); //key,
                 document.getElementById("url").value =  url;    
-                document.getElementById("remove-"+id).value = url;      
+                document.getElementById("remove-"+id).value = url;  
                 $("#url").trigger("change");
             }).fail(function(){
                 console.log("An Error Occured");
@@ -320,24 +320,49 @@
             var progressFile = document.createElement("div");
             var progressBar = document.createElement("progress");
             var remove = document.createElement("button");
-            
-            uploadItem.classList.add("uploadItem");
+            // var removeImage = document.createElement("img");
+
             uploadItem.id = "uploadItem-"+id;
-            imageSection.classList.add("imageSection");
+            uploadItem.classList.add("uploadItem");
             imageSection.id = "imageSection-"+id;
-            img.setAttribute("src","https://i.hizliresim.com/p6qB80.png");
+            imageSection.classList.add("imageSection");
             img.setAttribute("alt","img");
+            img.setAttribute("src","https://i.hizliresim.com/dOzJkZ.png");
             fileType.id = "fileType-"+id;
-            progressSection.classList.add("progressSection");
+            fileType.innerHTML = fileExtension.toUpperCase();
             progressSection.id = "progressSection-"+id;
+            progressSection.classList.add("progressSection");
             progressFile.id = "progressFile-"+id;
+            progressFile.innerHTML = file;
             progressBar.id = "progressBar-"+id;
             remove.classList.add("remove");
             remove.id = "remove-"+id;
+            remove.innerHTML = '✕';
+            // removeImage.setAttribute("alt","remove-img");
+            // removeImage.setAttribute("src","https://i.hizliresim.com/Pl4V09.png");
 
-            fileType.appendChild(document.createTextNode(fileExtension.toUpperCase()));
-            progressFile.appendChild(document.createTextNode(file));
-            remove.appendChild(document.createTextNode("X"));
+            var measurement = document.createElement("span");
+            document.getElementById("xup").appendChild(measurement);
+            measurement.id = "measurement-"+id;
+            measurement.classList.add("measurement");
+            document.getElementById(measurement.id).innerHTML = file;
+            if(document.getElementById(measurement.id).offsetWidth > 200){
+                progressFile.classList.add("progressFile-Long");
+                var indentValue = document.getElementById(measurement.id).offsetWidth-190;
+                // debugger;
+                var css = '#progressFile-'+id+':hover{ text-indent:-'+indentValue+'px; }';
+                head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+                style.type = 'text/css';
+                if (style.styleSheet){
+                  style.styleSheet.cssText = css;
+                } else {
+                  style.appendChild(document.createTextNode(css));
+                }
+
+                head.appendChild(style);
+            }
+            measurement.remove();
 
             document.getElementById("xup").appendChild(uploadItem);
             document.getElementById(uploadItem.id).appendChild(imageSection);
@@ -347,7 +372,8 @@
             document.getElementById(progressSection.id).appendChild(progressFile);
             document.getElementById(progressSection.id).appendChild(progressBar);
             document.getElementById(uploadItem.id).appendChild(remove);
-
+            // document.getElementById(remove.id).appendChild(removeImage);
+           console.log($(".progressSection progress::-webkit-progress-value ").css("background-color"));
             return id;
         }
         function newLabelValue(id,newValue){
