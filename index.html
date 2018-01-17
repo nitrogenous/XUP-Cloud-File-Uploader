@@ -2,12 +2,22 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy">
     <script src="jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="index.css">
     <!-- <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet"> -->
     <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
     <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
     <script src="utils.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112392850-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-112392850-1');
+    </script>
     <title>XUP File Uploader</title>
 </head>
 <body>
@@ -31,7 +41,10 @@
     <script type="text/javascript">
         JFCustomWidget.subscribe("ready", function (formId) {
             $(document).ready(function(){
-                console.log(JFCustomWidget.getWidgetSetting("clouds"));
+                var size ={}; 
+                size.width = 500; 
+                size.height = 100; 
+                JFCustomWidget.requestFrameResize(size); 
                 var filekey = generate_token(16);
                 var formdata = new FormData();
                 const form_id = formId["formID"];
@@ -111,7 +124,7 @@
                                 formdata.append("formid", form_id);
                                 formdata.append("clouds", clouds);
                                 formdata.append("action", "tokens");
-                                $.ajax({
+                                jQuery.ajax({
                                     type: "POST",
                                     url: "database.php",
                                     enctype: "multipart/form-data",
@@ -153,9 +166,16 @@
                 $("#upload").change(function(e) {
                     e.preventDefault();
                     var input = document.getElementById("upload");  
+                    var currentHeight = window.innerHeight;
+                    var totalItemHeights = (input.files.length) * 90;
+                    var height = currentHeight + totalItemHeights;
+                    setFrameSize(height);
+
                     for(var x = 0;x < input.files.length; x++){
                         var file = input.files[x];
-                        upload(form_id,qid,file,filekey,x);
+
+                        // console.log("hll");
+                       upload(form_id,qid,file,filekey,x);
                     }
                     $("#url").change(function(){  
                         returnSubmit(JSON.stringify(document.getElementById("url").value),true);
@@ -213,10 +233,11 @@
             }).fail(function(){
                 console.log("An Error Occured");
             });
+           
             return true;
         }
         function save(formdata,filekey,progressId){
-            return $.ajax({
+            return jQuery.ajax({
                     type: "POST",
                     url: "save.php",
                     enctype: "multipart/form-data",
@@ -249,7 +270,7 @@
         }
         function ajaxRequest(url,formdata,async){
             var result = null;
-            $.ajax({
+            jQuery.ajax({
                 type: "POST",
                 url: url,
                 enctype: "multipart/form-data",
@@ -312,6 +333,7 @@
             JFCustomWidget.sendSubmit(result);
         }
         function createDiv(id,file = null,fileExtension = null){
+
             var uploadItem = document.createElement("div");
             var imageSection = document.createElement("div");
             var img = document.createElement("img");
@@ -349,7 +371,6 @@
             if(document.getElementById(measurement.id).offsetWidth > 200){
                 progressFile.classList.add("progressFile-Long");
                 var indentValue = document.getElementById(measurement.id).offsetWidth-190;
-                // debugger;
                 var css = '#progressFile-'+id+':hover{ text-indent:-'+indentValue+'px; }';
                 head = document.head || document.getElementsByTagName('head')[0],
                 style = document.createElement('style');
@@ -373,7 +394,7 @@
             document.getElementById(progressSection.id).appendChild(progressBar);
             document.getElementById(uploadItem.id).appendChild(remove);
             // document.getElementById(remove.id).appendChild(removeImage);
-           console.log($(".progressSection progress::-webkit-progress-value ").css("background-color"));
+           // console.log($(".progressSection progress::-webkit-progress-value ").css("background-color"));
             return id;
         }
         function newLabelValue(id,newValue){
@@ -382,6 +403,21 @@
         }
         function getFileExtension(filename){
             return filename.split('.').pop();
+        }
+        function setFrameSize(height){
+            if(height < 510){
+                var size ={}; 
+                size.width = 500; 
+                size.height =  height; 
+                JFCustomWidget.requestFrameResize(size); 
+            }
+            else{
+                var size ={}; 
+                size.width = 500; 
+                size.height =  510; 
+                JFCustomWidget.requestFrameResize(size);
+            }
+            return true;
         }
     </script>
     <script async defer src="https://apis.google.com/js/api.js">

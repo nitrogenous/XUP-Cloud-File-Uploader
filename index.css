@@ -1,39 +1,65 @@
-*{
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
-  letter-spacing: 1px;
+  *{
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    /*   letter-spacing: 1px; */
   }
-html, body { 
-  margin:0;
-  height: 100%;
-}
-form {
- height: 100%;
- overflow-y: auto;
- text-align: center;
-}
-#upload{
-  width: 0px;
+  html, body { 
+    margin:0;
+    height: 100%;
+  }
+  form {
+   height: 100%;
+   overflow-y: auto;
+   text-align: center;
+ }
+ #upload{
+  width: 100%;
   visibility:hidden;
 }
+/*@-moz-document url-prefix(){
+  .addFile:before{
+    content: "-";
+  }
+  .addFile:first-letter{    
+  }
+}*/
 .addFile{
-  color: gray;
-  padding: 3.36px 148.24px;
+  color: #4a85ef;
+  width: 378px;
+  height: 84px;
+/*   padding: 3.36px 136.85px; */
   font-size: 15px;
   cursor: pointer;
-  line-height: 72px;
+  line-height: 80px;
   border-radius: 5px;
-  margin-bottom: 8px;
-  margin-left: 5px;
+  margin-bottom: -10px;
+  margin-left: 0px;
   text-align: center;
   transition: 0.3s ease;
   display: inline-block;
-  border: 2px solid #bbb;
+  border: 1px solid #4a85ef;
   background-color: transparent;
 }
+.addFile:before{
+  content: "+";
+  font-size: 20px;
+  padding: 3px 8.5px;
+  color: white;
+  background-color: #4a85ef;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+/* .addFile::first-letter{
+  color: white;
+  text-align: center;
+  font-size: 25px;
+  padding: 1px 8px 1px 8px;
+  background-color: #4a85ef;
+  border-radius: 50px;
+} */
 .addFile:hover{
   color: #4a85ef;
-  border: 2px solid #4a85ef;
+  border: 1px solid #4a85ef;
   background-color: #ecececad;
 }
 .uploadItem{
@@ -44,10 +70,10 @@ form {
   padding: 10px 25px;
   transition: 0.3s ease;
   display: inline-block;
-  border: 2px solid #bbb;
+  border: 1px solid #bbb;
 }
 .uploadItem:hover{
-  border: 2px solid #4a85ef;
+  border: 1px solid #4a85ef;
   background-color: #ecececad;
 }
 .imageSection{
@@ -103,7 +129,7 @@ form {
 }
 .progressFile-Long:hover{
   cursor: default;
-/*   text-indent: -25%; */
+  /*   text-indent: -25%; */
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -119,7 +145,6 @@ form {
   border-radius: 50%;
   padding: 1px;
   line-height: 23px;
-  text-indent: 0.5px;
   vertical-align: top;
   transition: 0.5s ease;
   border: none;
@@ -137,11 +162,12 @@ form {
   height: 20px;
   width: 200px;
   transition: 0.5s ease;
+  background: transparent;
   -webkit-appearance: none;
 }
 .progressSection progress::-webkit-progress-bar {
   padding: 2px;
-  background: #bbb;
+  background: transparent;
   border-radius: 5px;
 }
 .progressSection progress::-webkit-progress-value {
@@ -149,6 +175,199 @@ form {
   box-sizing: border-box;
   background: #4a85ef; 
 }
+.progressSection progress::-moz-progress-bar {
+  border-radius: 5px;
+  box-sizing: border-box;
+  background: #4a85ef; 
+
+}
 .measurement{
   white-space: nowrap;
 }
+
+@media all and (max-width: 500px){
+  *{
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    /*     letter-spacing: 1px; */
+  }
+  html, body { 
+    /*margin: 0;*/
+    height: 100%;
+  }
+  form {
+    height: 100%;
+    overflow-y: visible;
+    overflow-x: visible;
+    text-align: center;  
+  }
+  #upload{
+    width: 100%;
+    visibility: hidden;
+  }
+  .addFile{
+    color: #4a85ef;
+    width: 100%;
+    padding: 3px 65px;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: -10px;
+    margin-top : 0.3px;
+    /*margin-left: -0.53px;*/
+    text-align: center;
+    transition: 0.3s ease;
+    display: inline-block;
+    border: 1px solid #4a85ef;
+    background-color: transparent;
+  }
+  .addFile:hover{
+    color: #4a85ef;
+    border: 1px solid #4a85ef;
+    background-color: #ecececad;
+  }
+/*   .addFile::first-letter{
+    color: white;
+    text-align: center;
+    margin-left: -10px;;
+    font-size: 20px;
+    padding: 1px 7px 1px 7px;
+    background-color: #4a85ef;
+    border-radius: 50px;
+  } */
+  .addFile:before{
+    content: "+";
+    font-size: 15px;
+    padding: 3px 8px;
+  }
+  .uploadItem{
+    font-size: 15px;
+    width: 100%;
+    border-radius:5px;
+    margin-bottom: 5px;
+    /*margin-left: -0.53px;*/
+    padding: 10px 5px;
+    transition: 0.3s ease;
+    display: inline-block;
+    border: 1px solid #bbb;
+  }
+  .uploadItem:hover{
+    border: 1px solid #4a85ef;
+    background-color: #ecececad;
+  }
+  .imageSection{
+    margin-top: 8px;
+    width: 25px;
+    position: relative;
+    margin-right: 20px;
+    display: inline-block;
+  }
+  .imageSection img{
+    width: 30px;
+  }
+
+  .imageSection div{
+    top: 17px;
+    right: -9px;
+    color: white;
+    font-size: 9px;
+    cursor: default;
+    position: absolute;
+    background-color: #4a85ef;
+    box-shadow: 0 0 1px 1px #4a85ef;
+  }
+  .progressSection{
+    margin-top: 5px;
+    vertical-align: top;
+    display: inline-block;
+
+  }
+  .progressSection div{
+    height: 15px;
+    font-size: 11px;
+    cursor: default;
+    max-width: 140px;
+    text-align: left;
+    overflow: hidden;
+    margin-bottom: 3px;
+    padding-bottom: 1px;
+    white-space: nowrap;
+    transition: 0.3s ease;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid gray;
+  }
+  .progresFile-Long{
+    font-size: 11px;
+    max-width: 140px;
+    text-align: left;
+    overflow: hidden;
+    margin-bottom: 3px;
+    padding-bottom: 1px;
+    white-space: nowrap;
+    transition: 0.3s ease;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid gray;
+    background-color: red;
+  }
+  .progressFile-Long:hover{
+    cursor: default;
+    /*   text-indent: -25%; */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .remove{
+    width: 25px;
+    height: 25px;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    margin-left: 7px;
+    margin-right: 4px;
+    margin-top: 7px;
+    border-radius: 50%;
+    padding: 1px;
+    line-height: 25px;
+    text-indent: 0.5px;
+    vertical-align: top;
+    transition: 0.5s ease;
+    border: none;
+    background-color: #bbbbbb96;
+  }
+  .remove:hover{
+    background-color: #ad1616;
+  }
+  .remove img{
+    margin-left: -10px;
+    width: 15px;
+  }
+  .progressSection progress {
+    border: none;
+    height: 20px;
+    width: 140px;
+    transition: 0.5s ease;
+    -webkit-appearance: none;
+  }
+  .progressSection progress::-webkit-progress-bar {
+    padding: 2px;
+    background: transparent;
+    border-radius: 5px;
+  }
+  .progressSection progress::-webkit-progress-value {
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: #4a85ef; 
+  }
+  .progressSection progress::-moz-progress-bar {
+    padding: 2px;
+    background: transparent;
+    border-radius: 5px;
+  }
+  .progressSection progress::-moz-progress-value {
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: #4a85ef; 
+  }
+  .measurement{
+    white-space: nowrap;
+  }
+} 
