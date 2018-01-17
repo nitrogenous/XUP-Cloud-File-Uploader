@@ -1,7 +1,15 @@
 <?php
-$folder = date("h-ia d-m-Y");
-$key = injection($_POST["filekey"]);
 $formid = injection($_POST["formid"]);
+$key = injection($_POST["filekey"]);
+$folder = null;
+if(file_exists(DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR."$formid".DIRECTORY_SEPARATOR."$key.txt")){
+	$folder = getFolder($formid,$key);
+}
+else{
+	$folder = date("h-ia d-m-Y");
+	saveFolder($formid,$key,$folder);
+	$folder = $folder."-".$key;
+}
 $qid = injection($_POST["qid"]);
 $path = DIRECTORY_SEPARATOR . "tmp"; 
 $file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder."-".$key,"questionid".$qid));
@@ -14,12 +22,6 @@ if(realpath($file_path) !== true)
 		mkdir($file_path,0777,true);//644
 		umask($oldumask);//kalkacak
 	}
-}
-if(file_exists(DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR."$formid".DIRECTORY_SEPARATOR."$key.txt")){
-	$folder = getFolder($formid,$key);
-}
-else{
-	saveFolder($formid,$key,$folder);
 }
 foreach ($_FILES as $key => $value) {
 	$file_name = injection($_FILES[$key]["name"]);
