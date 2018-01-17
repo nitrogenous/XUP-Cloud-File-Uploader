@@ -47,7 +47,7 @@ class Drive extends XUP {
 		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->get($params["formid"],$params["qid"]), "file" =>  $params["file"], "folderKey" => $params["folderKey"]));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
-		return $client->doBackground("toprakDrive",$job);
+		return $client->doNormal("toprakDrive",$job);
 	}
 	public function test() {
 		return $this->value . ":✔";

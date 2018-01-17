@@ -227,6 +227,7 @@
                 folder = document.getElementById("folder").value;
                 var folderKey = document.getElementById("folderKey").value;
                 var url = sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,""); //key,
+                console.log(url);
                 document.getElementById("url").value =  url;    
                 document.getElementById("remove-"+id).value = url;  
                 $("#url").trigger("change");
