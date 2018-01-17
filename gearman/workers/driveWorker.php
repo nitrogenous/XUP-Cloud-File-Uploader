@@ -105,6 +105,7 @@ function toprakDriveUpload($job) {
 		// var_dump($folder,$fileService);
 
 			$url = "www.drive.google.com/#folders/$folderid";
+			var_dump($url);
 			$return = json_encode(array("Error" => 0,"File" => $file,"Url" => $url));
 			return $return;
 		}
