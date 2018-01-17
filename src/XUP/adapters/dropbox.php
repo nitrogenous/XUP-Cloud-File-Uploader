@@ -47,7 +47,7 @@ class Dropbox extends XUP {
 		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->get($params["formid"],$params["qid"]), "file" =>  $params["file"]));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
-		return $client->doNormal("toprakDBX",$job);
+		return $client->doBackground("toprakDBX",$job);
 	}
 	public function test() {
 		return $this->value . ":✔";
