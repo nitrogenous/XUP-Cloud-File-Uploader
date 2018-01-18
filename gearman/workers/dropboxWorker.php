@@ -52,10 +52,10 @@ function toprakDbxRemove($job){
 		$params = (array)json_decode($job->workload());
 		foreach ($params as $param) {
 			if(empty($param)){
-				return json_encode(array("Error" => "Please Check Input Variables","File" => null,"Url" => null, "Remove" => null));
+				return json_encode(array("Error" => "Please Check Input Variables"));
 				}
 			}
-		}
+		
 		$token = $params["key"];
 		$remove = (array)json_decode($params["remove"]);
 		$remove = $remove["Dropbox"];
@@ -64,10 +64,9 @@ function toprakDbxRemove($job){
 		$adapter = new DropboxAdapter($client);
 		$filesystem = new Filesystem($adapter);
 		$filesystem->delete($remove);
-		return true;
-	}
+		return json_encode(array("Error" => 0));	
+	}	
 	catch(Exception $e){
-		return json_encode(array("Error" => $e,"File" => null,"Url" => null, "Remove" => null));
-			}
+		return json_encode(array("Error" => $e));
 	}
 }
