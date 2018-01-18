@@ -169,8 +169,9 @@
 }
 .progressSection progress::-webkit-progress-bar {
   padding: 2px;
-  background: transparent;
+  background: gray;
   border-radius: 5px;
+  padding: 0px;
 }
 .progressSection progress::-webkit-progress-value {
   border-radius: 5px;
