@@ -48,18 +48,29 @@ function toprakDbxUpload($job) {
 	}
 }
 function toprakDbxRemove($job){
-	$params = (array)json_decode($job->workload());
-	$token = $params["key"];
-	$remove = $params["remove"];
-	var_dump($remove);
-	$remove = $remove["Dropbox"];
-	$client = new Client($token);
-	$adapter = new DropboxAdapter($client);
-	$filesystem = new Filesystem($adapter);
-	// $test = $filesystem->listContents("/".$remove);
-	$test = "a";
-	// $token = (string)$params["key"];
-	// $remove = json_decode($params["remove"])["Dropbox"];
-	var_dump($test);
-	return $test;
+	try{
+		$params = (array)json_decode($job->workload());
+		foreach ($params as $param) {
+			if(empty($param)){
+				return json_encode(array("Error" => "Please Check Input Variables","File" => null,"Url" => null, "Remove" => null));
+				}
+			}
+		}
+		$token = $params["key"];
+		$remove = (array)json_decode($params["remove"]);
+		$remove = $remove["Dropbox"];
+		var_dump($remove);
+		$client = new Client($token);
+		$adapter = new DropboxAdapter($client);
+		$filesystem = new Filesystem($adapter);
+		$test = $filesystem->delete($remove);
+		// $token = (string)$params["key"];
+		// $remove = json_decode($params["remove"])["Dropbox"];
+		var_dump($test);
+		return true;
+	}
+	catch(Exception $e){
+		return json_encode(array("Error" => $e,"File" => null,"Url" => null, "Remove" => null));
+			}
+	}
 }
