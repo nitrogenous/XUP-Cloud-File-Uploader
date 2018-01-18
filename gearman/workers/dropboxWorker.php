@@ -16,7 +16,7 @@ function toprakDbxUpload($job) {
 		var_dump($params);
 		foreach ($params as $param) {
 			if(empty($param)){
-				return json_encode(array("Error" => 1,"File" => null,"Url" => null));
+				return json_encode(array("Error" => "File Does Not Exist","File" => null,"Url" => null, "Remove" => null));
 			}
 		}
 		$token = (string)$params["key"];
@@ -40,18 +40,26 @@ function toprakDbxUpload($job) {
 			fclose($stream);	
 			$url = "www.dropbox.com/home/$formid/$folder/questionid$qid";
 			var_dump($url);
-			return json_encode(array("Error" => 0,"File" => $file, "Url" => $url));	
+			return json_encode(array("Error" => 0,"File" => $file, "Url" => $url, "Remove" => $path));	
 		}
 	}
 	catch(Exception $e){
-		return json_encode(array("Error" => 1,"File" => null,"Url" => null));
+		return json_encode(array("Error" => $e,"File" => null,"Url" => null,"Remove" => null));
 	}
 }
 function toprakDbxRemove($job){
-	// $params = (array)json_encode($job->workload());
+	$params = (array)json_decode($job->workload());
+	$token = $params["key"];
+	$remove = (array)$params["remove"];
+	var_dump(json_decode(json_encode($remove)));
+	$remove = $remove["Dropbox"];
+	$client = new Client($token);
+	$adapter = new DropboxAdapter($client);
+	$filesystem = new Filesystem($adapter);
+	// $test = $filesystem->listContents("/".$remove);
+	$test = "a";
 	// $token = (string)$params["key"];
-	// $formid = $param["formid"];
-	// $file = $params["file"];
-	// $qid = $params["qid"];
-	// $folder = $params["qid"];
+	// $remove = json_decode($params["remove"])["Dropbox"];
+	var_dump($test);
+	return $test;
 }
