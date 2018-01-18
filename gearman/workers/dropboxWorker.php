@@ -50,8 +50,8 @@ function toprakDbxUpload($job) {
 function toprakDbxRemove($job){
 	$params = (array)json_decode($job->workload());
 	$token = $params["key"];
-	$remove = (array)$params["remove"];
-	var_dump(json_decode(json_encode($remove)));
+	$remove = $params["remove"];
+	var_dump($remove);
 	$remove = $remove["Dropbox"];
 	$client = new Client($token);
 	$adapter = new DropboxAdapter($client);
