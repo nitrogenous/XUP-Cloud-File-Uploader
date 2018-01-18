@@ -224,8 +224,6 @@
                     formdata.append("filekey",filekey);
                     formdata.append("key",document.getElementById("aws").value);
                     var progressBar = "progressBar-"+id;
-                    // var progressButton =;
-                    // console.log(progressBar);
                     save(formdata,filekey,progressBar).done(function(result){
                           if(empty(document.getElementById("folder").value)){
                             document.getElementById("folder").value = result; 
@@ -250,7 +248,7 @@
                         amazonRemove = amazon.Remove;
                         console.log(amazonUrl +"\n"+amazonRemove);
 
-                        var remove = {"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove};
+                        var remove = JSON.parse(JSON.stringify({"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove}));
                         // url.forEach(function(e){
                         //     remove.push(e);
                         // })
