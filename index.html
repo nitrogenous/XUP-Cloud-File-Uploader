@@ -39,8 +39,8 @@
         </form>
     <div id="text"></div>
     <script type="text/javascript">
-        JFCustomWidget.subscribe("ready", function (formId) {
-            $(document).ready(function(){
+        $(document).ready(function(){
+            JFCustomWidget.subscribe("ready", function (formId) {
                 var size ={}; 
                 size.width = 500; 
                 size.height = 100; 
@@ -195,259 +195,253 @@
                         returnSubmit(null,false);
                     }
                 })
+                function empty(input) {
+                    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                function upload(formid,qid,file,filekey,progressName){
+                    var folder = null;
+                    var formdata = new FormData();
+                    var id =  createDiv(generate_token(4),file.name,getFileExtension(file.name));
+                    formdata.append("qid",qid);
+                    formdata.append("file", file); 
+                    formdata.append("formid",formid);
+                    formdata.append("filekey",filekey);
+                    formdata.append("key",document.getElementById("aws").value);
+                    var progressBar = "progressBar-"+id;
+                    // var progressButton =;
+                    // console.log(progressBar);
+                    save(formdata,filekey,progressBar).done(function(result){
+                          if(empty(document.getElementById("folder").value)){
+                            document.getElementById("folder").value = result; 
+                            folder = JSON.parse(document.getElementById("folder").value);
+                            document.getElementById("folder").value = folder["folder"];
+                        }
+                        let qid = JFCustomWidget.getWidgetSetting("qid");
+                        folder = document.getElementById("folder").value;
+                        var folderKey = document.getElementById("folderKey").value;
+                        var url = JSON.parse(sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,document.getElementById("aws").value)); //key,
+                        console.log(url);
+                        dropbox = JSON.parse(url.Dropbox);
+                        dropboxUrl = dropbox.Url;
+                        dropboxRemove = dropbox.Remove;
+                        console.log(dropboxUrl +"\n"+dropboxRemove);
+                        drive = JSON.parse(url.Drive);
+                        driveUrl = drive.Url;
+                        driveRemove = drive.Remove;
+                        console.log(driveUrl +"\n"+driveRemove);
+                        amazon = JSON.parse(url.AmazonWebServices);
+                        amazonUrl = amazon.Url;
+                        amazonRemove = amazon.Remove;
+                        console.log(amazonUrl +"\n"+amazonRemove);
 
+                        var remove = {"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove};
+                        // url.forEach(function(e){
+                        //     remove.push(e);
+                        // })
+                        document.getElementById("url").value =  url;   
+                        document.getElementById("remove-"+id).value = JSON.stringify({"formid": formid,"qid": qid,"Remove":remove});  
+                        $("#url").trigger("change");
+                    }).fail(function(){
+                        console.log("An Error Occured");
+                    });
+                   
+                    return true;
+                }
+                function save(formdata,filekey,progressId){
+                    return jQuery.ajax({
+                            type: "POST",
+                            url: "save.php",
+                            enctype: "multipart/form-data",
+                            data: formdata,
+                            cache: false,
+                            // async: false,
+                            contentType: false,
+                            processData: false,
+                            xhr: function () {
+                                var xhr = $.ajaxSettings.xhr();
+                                if (xhr.upload) {   
+                                    xhr.upload.addEventListener("progress", function (e) {
+                                        var percent = 0;
+                                        var position = e.loaded || e.position;
+                                        var total = e.total;
+                                        if (e.lengthComputable) {
+                                            percent = Math.ceil(position / total * 100);
+                                        }
+                                        $("#"+progressId).attr("value", percent);
+                                    }, true);
+                                }
+                                return xhr;
+                            },
+                            success: function (sccss) {
+                            }
+                        });
+                }   
+                function ajaxRequest(url,formdata,async){
+                    var result = null;
+                    jQuery.ajax({
+                        type: "POST",
+                        url: url,
+                        enctype: "multipart/form-data",
+                        data: formdata,
+                        async: async,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function(sccss){
+                            result = sccss;
+                        }
+                    })
+                    return result;
+                }
+                function sendJob(qid,file,formid,folder,folderKey,key){
+                    var formdata = new FormData();
+                    formdata.append("key",key);
+                    formdata.append("qid",qid);
+                    formdata.append("file",file);
+                    formdata.append("folder",folder);
+                    formdata.append("formid",formid);
+                    formdata.append("action","upload");
+                    formdata.append("folderKey",folderKey);
+                    var response = ajaxRequest("database.php",formdata,false);
+                    return response;
+                }
+                function getAwsKeys(){
+                    var access = JFCustomWidget.getWidgetSetting("awsaccess");
+                    var secret = JFCustomWidget.getWidgetSetting("awssecret");
+                    var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
+                    var region = JFCustomWidget.getWidgetSetting("awsregion");
+                    var key =JSON.stringify({access: access,secret: secret, bucket: bucket,region: region});
+                    return key;
+                }
+                function urlReplace(url){
+                    do{
+                        old = url;
+                        url = url.replace("\\","");
+                        url = url.replace("{","");
+                        url = url.replace("}","");
+                        url = url.replace(",","<br>");
+                        url = url.replace(" ","%20"); //Space = %20
+                    }
+                    while(old != url);
+                    return url;
+                }
+                function generate_token(length){
+                    var a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
+                    var b = [];  
+                    for (var i=0; i<length; i++) {
+                        var j = (Math.random() * (a.length-1)).toFixed(0);
+                        b[i] = a[j];
+                    }
+                    return b.join("");
+                }
+                function returnSubmit(value,valid){
+                    var result = {};
+                    result.value = value;
+                    result.valid = valid;
+                    JFCustomWidget.sendSubmit(result);
+                }
+                function createDiv(id,file = null,fileExtension = null){
+
+                    var uploadItem = document.createElement("div");
+                    var imageSection = document.createElement("div");
+                    var img = document.createElement("img");
+                    var fileType = document.createElement("div");
+                    var progressSection = document.createElement("div");
+                    var progressFile = document.createElement("div");
+                    var progressBar = document.createElement("progress");
+                    var remove = document.createElement("button");
+                    // var removeImage = document.createElement("img");
+
+                    uploadItem.id = "uploadItem-"+id;
+                    uploadItem.classList.add("uploadItem");
+                    imageSection.id = "imageSection-"+id;
+                    imageSection.classList.add("imageSection");
+                    img.setAttribute("alt","img");
+                    img.setAttribute("src","https://i.hizliresim.com/dOzJkZ.png");
+                    fileType.id = "fileType-"+id;
+                    fileType.innerHTML = fileExtension.toUpperCase();
+                    progressSection.id = "progressSection-"+id;
+                    progressSection.classList.add("progressSection");
+                    progressFile.id = "progressFile-"+id;
+                    progressFile.innerHTML = file;
+                    progressBar.id = "progressBar-"+id;
+                    remove.classList.add("remove");
+                    remove.id = "remove-"+id;
+                    remove.innerHTML = '✕';
+                    // removeImage.setAttribute("alt","remove-img");
+                    // removeImage.setAttribute("src","https://i.hizliresim.com/Pl4V09.png");
+
+                    var measurement = document.createElement("span");
+                    document.getElementById("xup").appendChild(measurement);
+                    measurement.id = "measurement-"+id;
+                    measurement.classList.add("measurement");
+                    document.getElementById(measurement.id).innerHTML = file;
+                    if(document.getElementById(measurement.id).offsetWidth > 200){
+                        progressFile.classList.add("progressFile-Long");
+                        var indentValue = document.getElementById(measurement.id).offsetWidth-190;
+                        var css = '#progressFile-'+id+':hover{ text-indent:-'+indentValue+'px; }';
+                        head = document.head || document.getElementsByTagName('head')[0],
+                        style = document.createElement('style');
+                        style.type = 'text/css';
+                        if (style.styleSheet){
+                          style.styleSheet.cssText = css;
+                        } else {
+                          style.appendChild(document.createTextNode(css));
+                        }
+
+                        head.appendChild(style);
+                    }
+                    measurement.remove();
+                    document.getElementById("xup").appendChild(uploadItem);
+                    document.getElementById(uploadItem.id).appendChild(imageSection);
+                    document.getElementById(imageSection.id).appendChild(img);
+                    document.getElementById(imageSection.id).appendChild(fileType);
+                    document.getElementById(uploadItem.id).appendChild(progressSection);
+                    document.getElementById(progressSection.id).appendChild(progressFile);
+                    document.getElementById(progressSection.id).appendChild(progressBar);
+                    document.getElementById(uploadItem.id).appendChild(remove);
+                    // document.getElementById(remove.id).appendChild(removeImage);
+                   // console.log($(".progressSection progress::-webkit-progress-value ").css("background-color"));
+                   $("#"+remove.id).click(function(e){
+                        e.preventDefault();
+                        var params = JSON.parse(document.getElementById(remove.id).value);
+                        var path = params.Remove;
+                        path = JSON.stringify(path);
+                        console.log(path);
+                        var formdata = new FormData();
+                        formdata.append("action","remove");
+                        formdata.append("formid", params.formid);
+                        formdata.append("qid", params.qid);
+                        formdata.append("remove", path);
+                        ajaxRequest("database.php",formdata,true);
+                   })
+                    return id;
+                }
+                function getFileExtension(filename){
+                    return filename.split('.').pop();
+                }
+                function setFrameSize(height){
+                    if(height < 510){
+                        var size ={}; 
+                        size.width = 500; 
+                        size.height =  height; 
+                        JFCustomWidget.requestFrameResize(size); 
+                    }
+                    else{
+                        var size ={}; 
+                        size.width = 500; 
+                        size.height =  510; 
+                        JFCustomWidget.requestFrameResize(size);
+                    }
+                    return true;
+                }
             })  
         })
-        function empty(input) {
-            if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        function upload(formid,qid,file,filekey,progressName){
-            var folder = null;
-            var formdata = new FormData();
-            var id =  createDiv(generate_token(4),file.name,getFileExtension(file.name));
-            formdata.append("qid",qid);
-            formdata.append("file", file); 
-            formdata.append("formid",formid);
-            formdata.append("filekey",filekey);
-            formdata.append("key",document.getElementById("aws").value);
-            var progressBar = "progressBar-"+id;
-            // var progressButton =;
-            // console.log(progressBar);
-            save(formdata,filekey,progressBar).done(function(result){
-                  if(empty(document.getElementById("folder").value)){
-                    document.getElementById("folder").value = result; 
-                    folder = JSON.parse(document.getElementById("folder").value);
-                    document.getElementById("folder").value = folder["folder"];
-                }
-                let qid = JFCustomWidget.getWidgetSetting("qid");
-                folder = document.getElementById("folder").value;
-                var folderKey = document.getElementById("folderKey").value;
-                var url = JSON.parse(sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,document.getElementById("aws").value)); //key,
-                console.log(url);
-                dropbox = JSON.parse(url.Dropbox);
-                dropboxUrl = dropbox.Url;
-                dropboxRemove = dropbox.Remove;
-                console.log(dropboxUrl +"\n"+dropboxRemove);
-                drive = JSON.parse(url.Drive);
-                driveUrl = drive.Url;
-                driveRemove = drive.Remove;
-                console.log(driveUrl +"\n"+driveRemove);
-                amazon = JSON.parse(url.AmazonWebServices);
-                amazonUrl = amazon.Url;
-                amazonRemove = amazon.Remove;
-                console.log(amazonUrl +"\n"+amazonRemove);
-
-                var remove = {"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove};
-                // url.forEach(function(e){
-                //     remove.push(e);
-                // })
-                document.getElementById("url").value =  url;   
-                document.getElementById("remove-"+id).value = JSON.stringify({"formid": formid,"qid": qid,"Remove":remove});  
-                $("#url").trigger("change");
-            }).fail(function(){
-                console.log("An Error Occured");
-            });
-           
-            return true;
-        }
-        function save(formdata,filekey,progressId){
-            return jQuery.ajax({
-                    type: "POST",
-                    url: "save.php",
-                    enctype: "multipart/form-data",
-                    data: formdata,
-                    cache: false,
-                    // async: false,
-                    contentType: false,
-                    processData: false,
-                    xhr: function () {
-                        var xhr = $.ajaxSettings.xhr();
-                        if (xhr.upload) {   
-                            xhr.upload.addEventListener("progress", function (e) {
-                                var percent = 0;
-                                var position = e.loaded || e.position;
-                                var total = e.total;
-                                if (e.lengthComputable) {
-                                    percent = Math.ceil(position / total * 100);
-                                }
-                                $("#"+progressId).attr("value", percent);
-                            }, true);
-                        }
-                        return xhr;
-                    },
-                    success: function (sccss) {
-                    }
-                });
-        }   
-        function ajaxRequest(url,formdata,async){
-            var result = null;
-            jQuery.ajax({
-                type: "POST",
-                url: url,
-                enctype: "multipart/form-data",
-                data: formdata,
-                async: async,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(sccss){
-                    result = sccss;
-                }
-            })
-            return result;
-        }
-        function sendJob(qid,file,formid,folder,folderKey,key){
-            var formdata = new FormData();
-            formdata.append("key",key);
-            formdata.append("qid",qid);
-            formdata.append("file",file);
-            formdata.append("folder",folder);
-            formdata.append("formid",formid);
-            formdata.append("action","upload");
-            formdata.append("folderKey",folderKey);
-            var response = ajaxRequest("database.php",formdata,false);
-            return response;
-        }
-        function getAwsKeys(){
-            var access = JFCustomWidget.getWidgetSetting("awsaccess");
-            var secret = JFCustomWidget.getWidgetSetting("awssecret");
-            var bucket = JFCustomWidget.getWidgetSetting("awsbucket");
-            var region = JFCustomWidget.getWidgetSetting("awsregion");
-            var key =JSON.stringify({access: access,secret: secret, bucket: bucket,region: region});
-            return key;
-        }
-        function urlReplace(url){
-            do{
-                old = url;
-                url = url.replace("\\","");
-                url = url.replace("{","");
-                url = url.replace("}","");
-                url = url.replace(",","<br>");
-                url = url.replace(" ","%20"); //Space = %20
-            }
-            while(old != url);
-            return url;
-        }
-        function generate_token(length){
-            var a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
-            var b = [];  
-            for (var i=0; i<length; i++) {
-                var j = (Math.random() * (a.length-1)).toFixed(0);
-                b[i] = a[j];
-            }
-            return b.join("");
-        }
-        function returnSubmit(value,valid){
-            var result = {};
-            result.value = value;
-            result.valid = valid;
-            JFCustomWidget.sendSubmit(result);
-        }
-        function createDiv(id,file = null,fileExtension = null){
-
-            var uploadItem = document.createElement("div");
-            var imageSection = document.createElement("div");
-            var img = document.createElement("img");
-            var fileType = document.createElement("div");
-            var progressSection = document.createElement("div");
-            var progressFile = document.createElement("div");
-            var progressBar = document.createElement("progress");
-            var remove = document.createElement("button");
-            // var removeImage = document.createElement("img");
-
-            uploadItem.id = "uploadItem-"+id;
-            uploadItem.classList.add("uploadItem");
-            imageSection.id = "imageSection-"+id;
-            imageSection.classList.add("imageSection");
-            img.setAttribute("alt","img");
-            img.setAttribute("src","https://i.hizliresim.com/dOzJkZ.png");
-            fileType.id = "fileType-"+id;
-            fileType.innerHTML = fileExtension.toUpperCase();
-            progressSection.id = "progressSection-"+id;
-            progressSection.classList.add("progressSection");
-            progressFile.id = "progressFile-"+id;
-            progressFile.innerHTML = file;
-            progressBar.id = "progressBar-"+id;
-            remove.classList.add("remove");
-            remove.id = "remove-"+id;
-            remove.innerHTML = '✕';
-            // removeImage.setAttribute("alt","remove-img");
-            // removeImage.setAttribute("src","https://i.hizliresim.com/Pl4V09.png");
-
-            var measurement = document.createElement("span");
-            document.getElementById("xup").appendChild(measurement);
-            measurement.id = "measurement-"+id;
-            measurement.classList.add("measurement");
-            document.getElementById(measurement.id).innerHTML = file;
-            if(document.getElementById(measurement.id).offsetWidth > 200){
-                progressFile.classList.add("progressFile-Long");
-                var indentValue = document.getElementById(measurement.id).offsetWidth-190;
-                var css = '#progressFile-'+id+':hover{ text-indent:-'+indentValue+'px; }';
-                head = document.head || document.getElementsByTagName('head')[0],
-                style = document.createElement('style');
-                style.type = 'text/css';
-                if (style.styleSheet){
-                  style.styleSheet.cssText = css;
-                } else {
-                  style.appendChild(document.createTextNode(css));
-                }
-
-                head.appendChild(style);
-            }
-            measurement.remove();
-            document.getElementById("xup").appendChild(uploadItem);
-            document.getElementById(uploadItem.id).appendChild(imageSection);
-            document.getElementById(imageSection.id).appendChild(img);
-            document.getElementById(imageSection.id).appendChild(fileType);
-            document.getElementById(uploadItem.id).appendChild(progressSection);
-            document.getElementById(progressSection.id).appendChild(progressFile);
-            document.getElementById(progressSection.id).appendChild(progressBar);
-            document.getElementById(uploadItem.id).appendChild(remove);
-            // document.getElementById(remove.id).appendChild(removeImage);
-           // console.log($(".progressSection progress::-webkit-progress-value ").css("background-color"));
-           $("#"+remove.id).click(function(e){
-                e.preventDefault();
-                var params = JSON.parse(document.getElementById(remove.id).value);
-                var path = params.Remove;
-                path = JSON.stringify(path);
-                console.log(path);
-                var formdata = new FormData();
-                formdata.append("action","remove");
-                formdata.append("formid", params.formid);
-                formdata.append("qid", params.qid);
-                formdata.append("remove", path);
-                ajaxRequest("database.php",formdata,true);
-           })
-            return id;
-        }
-        function newLabelValue(id,newValue){
-            document.getElementById(id).innerHTML = newValue;
-            return true;
-        }
-        function getFileExtension(filename){
-            return filename.split('.').pop();
-        }
-        function setFrameSize(height){
-            if(height < 510){
-                var size ={}; 
-                size.width = 500; 
-                size.height =  height; 
-                JFCustomWidget.requestFrameResize(size); 
-            }
-            else{
-                var size ={}; 
-                size.width = 500; 
-                size.height =  510; 
-                JFCustomWidget.requestFrameResize(size);
-            }
-            return true;
-        }
-
     </script>
     <script async defer src="https://apis.google.com/js/api.js">
     </script>
