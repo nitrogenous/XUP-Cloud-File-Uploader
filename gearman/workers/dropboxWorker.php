@@ -63,10 +63,7 @@ function toprakDbxRemove($job){
 		$client = new Client($token);
 		$adapter = new DropboxAdapter($client);
 		$filesystem = new Filesystem($adapter);
-		$test = $filesystem->delete($remove);
-		// $token = (string)$params["key"];
-		// $remove = json_decode($params["remove"])["Dropbox"];
-		var_dump($test);
+		$filesystem->delete($remove);
 		return true;
 	}
 	catch(Exception $e){
