@@ -38,4 +38,7 @@ class AmazonWebServices extends XUP {
 		mysqli_close($con);
 		return $result;
 	}
+	public function removeKey($params){
+		return null;
+	}
 }

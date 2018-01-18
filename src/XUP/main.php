@@ -38,4 +38,7 @@ class XUP
 	public function query($query){
 		return null;
 	}
+	public function removeKey($params){
+		return null;
+	}
 }
