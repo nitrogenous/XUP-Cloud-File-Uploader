@@ -38,7 +38,11 @@ class Drive extends XUP {
 		}
 	}
 	public function remove($params) {
-		return false;
+		$params = (array)json_decode($params);
+		$job = json_encode(array("key" => $this->get($params["formid"],$params["qid"]),"remove" => $params["remove"]));
+		$client = new \GearmanClient();
+		$client->addServer("127.0.0.1","4730");
+		return $client->doBackground("toprakDriveRemove",$job);
 	}
 	public function upload($params) {
 		$params = (array)json_decode($params);
