@@ -35,8 +35,7 @@ function toprakDriveUpload($job) {
 		var_dump($params,"\n\n\n");
 		// var_dump($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file);
 		if(!file_exists($file_path)){
-			echo"Error!File.Does.Not.Exist";
-			return("Error!File.Does.Not.Exist");
+			return json_encode(array("Error" => "File Does Not Exist","File" => null,"Url" => null, "Remove" => null));
 		}
 		else{
 			$client = new Google_Client();
@@ -106,12 +105,11 @@ function toprakDriveUpload($job) {
 
 			$url = "www.drive.google.com/#folders/$folderid";
 			var_dump($url);
-			$return = json_encode(array("Error" => 0,"File" => $file,"Url" => $url));
-			return $return;
+			return json_encode(array("Error" => 0,"File" => $file,"Url" => $url, "Remove" => $fileService->getId()));
 		}
 	}
 	catch(Exception $e){
-		return json_encode(array("Error" => 1,"File" => null,"Url" => null));
+		return json_encode(array("Error" => $e,"File" => null,"Url" => null, "Remove" => null));
 	}
 }
 function toprakDriveRemove($job) {
