@@ -12,7 +12,6 @@ class Drive extends XUP {
 		if(empty($formid) || empty($qid) || empty($this->value)) {
 			return "Error1";
 		}
-		// $con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$sql = "SELECT * FROM widget_access_keys  WHERE formId =".addslashes($formid)." AND questionId = ".addslashes($qid)." AND value = '$this->value'";
 		$result = $this->query($sql);
 		if ($result->num_rows > 0) {
@@ -27,7 +26,6 @@ class Drive extends XUP {
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
 		}
-		// $con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$formid = addslashes($formid);
 		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".addslashes($formid).",".addslashes($qid).",'".addslashes($this->value)."','".$key."')";
 		$result = $this->query($sql);
@@ -53,7 +51,6 @@ class Drive extends XUP {
 		return $this->value . ":✔";
 	}
 	public function get($formid,$qid){
-		// $con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");
 		$sql = "SELECT `key` FROM `widget_access_keys` WHERE formId = ".addslashes($formid)." AND questionId = ".addslashes($qid)." AND value = '".$this->value."'";
 		$result = $this->query($sql);
 		if ($result->num_rows > 0) {
