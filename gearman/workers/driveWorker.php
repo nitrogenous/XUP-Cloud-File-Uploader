@@ -33,7 +33,6 @@ function toprakDriveUpload($job) {
 		$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
 		$file_path = $base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file;
 		var_dump($params,"\n\n\n");
-		// var_dump($base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file);
 		if(!file_exists($file_path)){
 			return json_encode(array("Error" => "File Does Not Exist","File" => null,"Url" => null, "Remove" => null));
 		}
@@ -113,5 +112,13 @@ function toprakDriveUpload($job) {
 	}
 }
 function toprakDriveRemove($job) {
-	// $params = (array)json_decode($job->workload());
+	try{
+		$params = (array)json_decode($job->workload());
+		foreach ($params as $param) {
+			if(empty($param)){
+				return json_encode(array("Error") => "Please Check Input Variables");
+			}
+		}
+		$key = $params[$key];
+	}
 }
