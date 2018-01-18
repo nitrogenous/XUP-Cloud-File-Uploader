@@ -72,7 +72,18 @@
                             formdata.append("action", "save");
                             formdata.append("value","dropbox");
                             formdata.append("formid", form_id);
-                            document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
+                            jQuery.ajax({
+                                    type: "POST",
+                                    url: "database.php",
+                                    enctype: "multipart/form-data",
+                                    data: formdata,
+                                    async: false,
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    success: function(sccss){
+                                    }
+                                });
                             AuthWindow.close();
                         }) 
                     }
