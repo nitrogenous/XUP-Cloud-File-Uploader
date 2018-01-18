@@ -284,9 +284,6 @@
                     }
                 });
         }   
-        function removeFiles(form_id,folder){
-            ajaxRequest("removeFiles.php",{formid: form_id,folder: folder},false);
-        }
         function ajaxRequest(url,formdata,async){
             var result = null;
             jQuery.ajax({
@@ -403,7 +400,6 @@
                 head.appendChild(style);
             }
             measurement.remove();
-
             document.getElementById("xup").appendChild(uploadItem);
             document.getElementById(uploadItem.id).appendChild(imageSection);
             document.getElementById(imageSection.id).appendChild(img);
