@@ -16,7 +16,7 @@ function toprakDbxUpload($job) {
 		var_dump($params);
 		foreach ($params as $param) {
 			if(empty($param)){
-				return json_encode(array("Error" => "File Does Not Exist","File" => null,"Url" => null, "Remove" => null));
+				return json_encode(array("Error" => "File Does Not Exist","File" => null,'Folder' => null,"Url" => null, "Remove" => null));
 			}
 		}
 		$token = (string)$params["key"];
@@ -40,11 +40,11 @@ function toprakDbxUpload($job) {
 			fclose($stream);	
 			$url = "www.dropbox.com/home/$formid/$folder/questionid$qid";
 			var_dump($url);
-			return json_encode(array("Error" => 0,"File" => $file, "Url" => $url, "Remove" => $path));	
+			return json_encode(array("Error" => 0,"File" => $file,'Folder' => null, "Url" => $url, "Remove" => $path));	
 		}
 	}
 	catch(Exception $e){
-		return json_encode(array("Error" => $e,"File" => null,"Url" => null,"Remove" => null));
+		return json_encode(array("Error" => $e,"File" => null,'Folder' => null,"Url" => null,"Remove" => null));
 	}
 }
 function toprakDbxRemove($job){

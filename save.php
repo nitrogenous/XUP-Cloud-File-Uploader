@@ -12,7 +12,7 @@ else{
 }
 $qid = injection($_POST["qid"]);
 $path = DIRECTORY_SEPARATOR . "tmp"; 
-$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder."-".$key,"questionid".$qid));
+$file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder,"questionid".$qid));
 
 if(realpath($file_path) !== true)
 {

@@ -34,7 +34,7 @@
             <input type="hidden" id="dropbox">
             <input type="hidden" id="uploaded">
             <input type="hidden" id="folderKey">
-            <input type="hidden" id="url" value="false">
+            <input type="hidden" id="url" value="">
         </div>
         </form>
     <div id="text"></div>
@@ -116,15 +116,15 @@
                         }
                         function updateSigninStatus(isSignedIn) {
                             if (isSignedIn) {
-                                console.log("signed");
+                                // console.log("signed");
                             }
                             addEventListener
                             {
-                                console.log("error");
+                                // console.log("error");
                             }
                         }
                         function handleAuthClick() {
-                            console.log("handleAuthClick");
+                            // console.log("handleAuthClick");
                             gapi.auth2.getAuthInstance().signIn();
                             gapi.auth2.getAuthInstance().grantOfflineAccess().then(function(code){
                                 key = JSON.stringify(code);
@@ -185,21 +185,33 @@
 
                     for(var x = 0;x < input.files.length; x++){
                         var file = input.files[x];
+                        upload(form_id,qid,file,filekey,x);
 
-                        // console.log("hll");
-                       upload(form_id,qid,file,filekey,x);
                     }
-                    $("#url").change(function(){  
+                   $("#url").change(function(e){
                         returnSubmit(JSON.stringify(document.getElementById("url").value),true);
-                    })
+                   })
                     // var folder = document.getElementById("folder").value;
                     // removeFiles(form_id,folder);                                   
                 });
 
                 JFCustomWidget.subscribe("submit",function(){
+                    var children = document.getElementById("xup").children;
+                    console.log(children);
+                    console.log(children.length);
+
+                    for(let i = 0; i <= children.length - 1;  i++){
+                        if(children[i].id.indexOf("uploadItem") == -1){
+                            if(i == (children.length-1)){
+                                console.log(children[i].id);
+                                document.getElementById("url").value = null;
+                                returnSubmit(null,false);
+                            }
+                        }
+                    }
                     var folder = document.getElementById("folder").value;
-                    if(document.getElementById("url").value != "false"){
-                        removeFiles(form_id,folder);                                   
+                    if(!empty(document.getElementById("url").value)){
+                        // removeFiles(form_id,folder);                                   
                         returnSubmit(JSON.stringify(document.getElementById("url").value),true);
                     }
                     else{
@@ -225,40 +237,43 @@
                     formdata.append("key",document.getElementById("aws").value);
                     var progressBar = "progressBar-"+id;
                     save(formdata,filekey,progressBar).done(function(result){
-                          if(empty(document.getElementById("folder").value)){
+                        if(empty(document.getElementById("folder").value)){
                             document.getElementById("folder").value = result; 
                             folder = JSON.parse(document.getElementById("folder").value);
                             document.getElementById("folder").value = folder["folder"];
                         }
                         let qid = JFCustomWidget.getWidgetSetting("qid");
                         folder = document.getElementById("folder").value;
+                        var callback = null;
                         var folderKey = document.getElementById("folderKey").value;
-                        var url = JSON.parse(sendJob(qid,file.name,formid,folder+"-"+filekey,folderKey,document.getElementById("aws").value)); //key,
-                        console.log(url);
-                        dropbox = JSON.parse(url.Dropbox);
+                        callBack = JSON.parse(sendJob(qid,file.name,formid,folder,folderKey,getAwsKeys())); //key,
+                        // debugger;
+                        if(empty(document.getElementById('folderKey').value)){
+                            let folderId = JSON.parse(callBack.Drive);
+                            folderId = folderId.Folder;
+                            document.getElementById("folderKey").value = folderId;
+                        }
+                        console.log(callBack);
+                        dropbox = JSON.parse(callBack.Dropbox);
                         dropboxUrl = dropbox.Url;
                         dropboxRemove = dropbox.Remove;
                         console.log(dropboxUrl +"\n"+dropboxRemove);
-                        drive = JSON.parse(url.Drive);
+                        drive = JSON.parse(callBack.Drive);
                         driveUrl = drive.Url;
                         driveRemove = drive.Remove;
                         console.log(driveUrl +"\n"+driveRemove);
-                        amazon = JSON.parse(url.AmazonWebServices);
+                        amazon = JSON.parse(callBack.AmazonWebServices);
                         amazonUrl = amazon.Url;
                         amazonRemove = amazon.Remove;
                         console.log(amazonUrl +"\n"+amazonRemove);
 
-                        var remove = JSON.parse(JSON.stringify({"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove}));
-                        // url.forEach(function(e){
-                        //     remove.push(e);
-                        // })
-                        document.getElementById("url").value =  url;   
+                        document.getElementById("url").value = "Dropbox:" + dropboxUrl +"<br>Drive:" + driveUrl + "<br>Amazon Web Services:" + amazonUrl;
+                        var remove = JSON.parse(JSON.stringify({"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove})); 
                         document.getElementById("remove-"+id).value = JSON.stringify({"formid": formid,"qid": qid,"Remove":remove});  
                         $("#url").trigger("change");
                     }).fail(function(){
                         console.log("An Error Occured");
                     });
-                   
                     return true;
                 }
                 function save(formdata,filekey,progressId){
@@ -415,7 +430,6 @@
                     document.getElementById(progressSection.id).appendChild(progressBar);
                     document.getElementById(uploadItem.id).appendChild(remove);
                     // document.getElementById(remove.id).appendChild(removeImage);
-                   // console.log($(".progressSection progress::-webkit-progress-value ").css("background-color"));
                    $("#"+remove.id).click(function(e){
                         e.preventDefault();
                         var params = JSON.parse(document.getElementById(remove.id).value);
@@ -427,7 +441,15 @@
                         formdata.append("formid", params.formid);
                         formdata.append("qid", params.qid);
                         formdata.append("remove", path);
+                        formdata.append("aws",getAwsKeys());
                         ajaxRequest("database.php",formdata,true);
+                        var elements = document.getElementById("xup").children;
+                        var totalItemHeights = (elements.length - 1) - 80;
+                        if(totalItemHeights <= 500){
+                            var height = totalItemHeights;
+                            setFrameSize(height);
+                        }
+                        $("#"+uploadItem.id).remove();
                    })
                     return id;
                 }
@@ -435,7 +457,7 @@
                     return filename.split('.').pop();
                 }
                 function setFrameSize(height){
-                    if(height < 510){
+                    if(height < 530){
                         var size ={}; 
                         size.width = 500; 
                         size.height =  height; 
@@ -444,7 +466,7 @@
                     else{
                         var size ={}; 
                         size.width = 500; 
-                        size.height =  510; 
+                        size.height =  530; 
                         JFCustomWidget.requestFrameResize(size);
                     }
                     return true;

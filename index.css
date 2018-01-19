@@ -62,7 +62,7 @@
   color: #4a85ef;
   border: 1px solid #4a85ef;
   background-color: #ecececad;
-  box-shadow: 0 0 5px 2px gray;
+  
 }
 .uploadItem{
   font-size: 15px;
@@ -110,7 +110,7 @@
   max-width: 200px;
   text-align: left;
   overflow: hidden;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   padding-bottom: 1px;
   white-space: nowrap;
   transition: 0.3s ease;
@@ -145,7 +145,7 @@
   margin-right: 4px;
   margin-top: 16.5px;
   border-radius: 50%;
-  padding: 1px;
+  padding: 2.5px;
   line-height: 23px;
   vertical-align: top;
   transition: 0.5s ease;
