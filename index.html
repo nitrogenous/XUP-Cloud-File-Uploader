@@ -53,15 +53,15 @@
                 var status;
                 formdata.append("formid", form_id);
                 formdata.append("qid",qid);
-                formdata.append("action", "check");
-                document.getElementById("hidden").value = ajaxRequest("check.php",formdata,false);
+                formdata.append("action", "select");
+                document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
                 var status = JSON.parse(document.getElementById("hidden").value); 
                 console.log(status);
                 if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
-                    if(!status.Dropbox){
+                    if(empty(status.Dropbox)){
                         document.getElementById("dropbox").value = false;
                         var client_id = "9pdfdpjr2pnqzmo";
-                        var dbx = new Dropbox({clientId: client_id});
+                        var dbx = new Dropbox.Dropbox({clientId: client_id});
                         var authUrl = dbx.getAuthenticationUrl("https://toprak.jotform.pro/Adapter/oauth.html"); 
                         var AuthWindow = window.open(authUrl,"AuthWindow",'location=0,status=0,width=800,height=400');
                         $("#key").change(function(){
@@ -69,7 +69,7 @@
                             var formdata = new FormData();
                             formdata.append("key",key);
                             formdata.append("qid",qid);
-                            formdata.append("action", "save");
+                            formdata.append("action", "insert");
                             formdata.append("value","dropbox");
                             formdata.append("formid", form_id);
                             jQuery.ajax({
@@ -92,7 +92,7 @@
                     } 
                 }
                 if((clouds.toLowerCase()).indexOf("drive") !=  -1){
-                    if(status.Drive != true){
+                    if(empty(status.Drive)){
                         document.getElementById("drive").value = false;
                         this.onload=function(){};handleClientLoad();
                         var key = "AIzaSyAbodyJck6jBlV4oV9A3-E6xdMvf3JsdDg";
@@ -219,7 +219,7 @@
                     }
                 })
                 function empty(input) {
-                    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined)  {
+                    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined || input == "null")  {
                         return true;
                     }
                     else {
@@ -437,7 +437,7 @@
                         path = JSON.stringify(path);
                         console.log(path);
                         var formdata = new FormData();
-                        formdata.append("action","remove");
+                        formdata.append("action","deleteFile");
                         formdata.append("formid", params.formid);
                         formdata.append("qid", params.qid);
                         formdata.append("remove", path);
