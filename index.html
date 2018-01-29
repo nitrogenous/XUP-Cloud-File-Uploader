@@ -57,7 +57,6 @@
                 document.getElementById("hidden").value = ajaxRequest("check.php",formdata,false);
                 var status = JSON.parse(document.getElementById("hidden").value); 
                 console.log(status);
-                console.log(clouds);
                 if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
                     if(!status.Dropbox){
                         document.getElementById("dropbox").value = false;
