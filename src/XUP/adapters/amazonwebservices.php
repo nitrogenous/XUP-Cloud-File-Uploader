@@ -8,30 +8,29 @@ class AmazonWebServices extends XUP {
 	function __construct() {	
 		$this->value = strtolower((new \ReflectionClass($this))->getShortName());
 	}
-	public function check($formid,$qid) {
-		return null;
-		
+	public function test() {
+		return $this->value . ":✔";
 	}
-	public function save($formid,$qid,$key) {
+	public function select($formid,$qid) {
 		return null;
 	}
-	public function remove($params) {
-		$params = (array) json_decode($params);
-		$job = json_encode(array("key" => $params["aws"],"remove" => $params["remove"]));
-		$client = new \GearmanClient();
-		$client->addServer("127.0.0.1","4730");
-		return $client->doBackground("toprakAWSRemove",$job);
+	public function insert($formid,$qid,$key) {
+		return null;
 	}
 	public function upload($params) {
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
 		return $client->doNormal("toprakAWS",$params);
 	}
-	public function test() {
-		return $this->value . ":✔";
-	}
-	public function get($formid,$qid){
+	public function deleteKey($params){
 		return null;
+	}
+	public function deleteFile($params) {
+		$params = (array) json_decode($params);
+		$job = json_encode(array("key" => $params["aws"],"remove" => $params["remove"]));
+		$client = new \GearmanClient();
+		$client->addServer("127.0.0.1","4730");
+		return $client->doBackground("toprakAWSRemove",$job);
 	}
 	public function tokens($formid,$qid,$auth) {
 		return null;
@@ -41,8 +40,5 @@ class AmazonWebServices extends XUP {
 		$result = mysqli_query($con,$query);
 		mysqli_close($con);
 		return $result;
-	}
-	public function removeKey($params){
-		return null;
 	}
 }
