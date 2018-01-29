@@ -24,13 +24,14 @@ class Drive extends XUP {
 			}
 		}
 		else{
-			return false;
+			return null;
 		};
 	}
 	public function insert($formid,$qid,$key) {
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
 		}
+		$key = $this->tokens($formid,$qid,$key);
 		$formid = addslashes($formid);
 		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".addslashes($formid).",".addslashes($qid).",'".addslashes($this->value)."','".$key."')";
 		$result = $this->query($sql);
@@ -80,7 +81,7 @@ class Drive extends XUP {
 		$client->authenticate($code);
 		$resp = $client->getAccessToken($code);
 		$tokens = json_encode(array("access_token" => $resp["access_token"],"refresh_token" => $resp["refresh_token"]));
-		$this->save($formid,$qid,$tokens);
+		return $tokens;
 	}
 	public function query($query){
 		$con = mysqli_connect("127.0.0.1","toprak","toprak","toprak_jotform3");

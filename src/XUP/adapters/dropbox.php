@@ -25,7 +25,7 @@ class Dropbox extends XUP {
 			}
 		}
 		else{
-			return false;
+			return null;
 		}
 	}
 	public function insert($formid,$qid,$key) {
