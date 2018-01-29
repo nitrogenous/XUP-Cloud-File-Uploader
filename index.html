@@ -15,7 +15,6 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'UA-112392850-1');
     </script>
     <title>XUP File Uploader</title>
@@ -50,13 +49,15 @@
                 const form_id = formId["formID"];
                 const qid = JFCustomWidget.getWidgetSetting("qid");
                 const clouds = JFCustomWidget.getWidgetSetting("clouds");
+                console.log(JFCustomWidget.getWidgetSetting("clouds"));
                 var status;
                 formdata.append("formid", form_id);
                 formdata.append("qid",qid);
                 formdata.append("action", "check");
-                document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
+                document.getElementById("hidden").value = ajaxRequest("check.php",formdata,false);
                 var status = JSON.parse(document.getElementById("hidden").value); 
                 console.log(status);
+                console.log(clouds);
                 if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
                     if(!status.Dropbox){
                         document.getElementById("dropbox").value = false;
