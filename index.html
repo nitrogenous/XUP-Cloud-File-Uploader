@@ -54,7 +54,9 @@
                 formdata.append("formid", form_id);
                 formdata.append("qid",qid);
                 formdata.append("action", "select");
+                formdata.append("clouds",clouds);
                 document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
+                console.log(document.getElementById("hidden").value);
                 var status = JSON.parse(document.getElementById("hidden").value); 
                 console.log(status);
                 if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
@@ -71,6 +73,7 @@
                             formdata.append("qid",qid);
                             formdata.append("action", "insert");
                             formdata.append("value","dropbox");
+                            formdata.append("clouds","Dropbox");
                             formdata.append("formid", form_id);
                             jQuery.ajax({
                                     type: "POST",
@@ -133,8 +136,8 @@
                                 formdata.append("value","drive");
                                 formdata.append("key",key);
                                 formdata.append("formid", form_id);
-                                formdata.append("clouds", clouds);
-                                formdata.append("action", "tokens");
+                                formdata.append("clouds", "Drive");
+                                formdata.append("action", "insert");
                                 jQuery.ajax({
                                     type: "POST",
                                     url: "database.php",
@@ -331,7 +334,7 @@
                     formdata.append("formid",formid);
                     formdata.append("action","upload");
                     formdata.append("folderKey",folderKey);
-                    var response = ajaxRequest("database.php",formdata,false);
+                    var response = ajaxRequest("file.php",formdata,false);
                     return response;
                 }
                 function getAwsKeys(){
@@ -442,7 +445,7 @@
                         formdata.append("qid", params.qid);
                         formdata.append("remove", path);
                         formdata.append("aws",getAwsKeys());
-                        ajaxRequest("database.php",formdata,true);
+                        ajaxRequest("file.php",formdata,true);
                         var elements = document.getElementById("xup").children;
                         var totalItemHeights = (elements.length - 1) - 80;
                         if(totalItemHeights <= 500){
