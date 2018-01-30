@@ -63,6 +63,7 @@ class ComposerStaticInit58ec4f22089c35fbeb3ffd744c748ae8
         ),
         'A' => 
         array (
+            'Aws\\Resource\\' => 13,
             'Aws\\' => 4,
         ),
     );
@@ -139,6 +140,10 @@ class ComposerStaticInit58ec4f22089c35fbeb3ffd744c748ae8
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Aws\\Resource\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aws/aws-sdk-php-resources/src',
         ),
         'Aws\\' => 
         array (

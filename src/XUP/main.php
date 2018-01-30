@@ -2,38 +2,42 @@
 
 namespace XUP\Uploader;
 
-
 class XUP
 {		
 	function __construct() {
 		return null;
 	}
 
-	public function check($formid,$qid) {
+	public function test() {
+		return "class:✔"; 
+	}
+
+	public function select($formid,$qid) {
 		return null;
 	}
 
-	public function save($formid,$qid,$key) {
+	public function insert($formid,$qid,$key) {
 		return null;
 	}	
 
-	public function remove($formid,$qid) {
+	public function upload($params) {
 		return null;
 	}
 
-	public function upload($formid,$folder,$qid,$file) {
+	public function deleteKey($params) {
 		return null;
 	}
 
-	public function test() {
-		return "class:✔";
-	}
-
-	public function get($formid,$qid){
+	public function deleteFile($params){
 		return null;
 	}
 
 	public function tokens($formid,$qid,$auth){
 		return null;
 	}
+	
+	public function query($query){
+		return null;
+	}
+
 }

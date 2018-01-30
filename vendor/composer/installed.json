@@ -1232,5 +1232,57 @@
             }
         ],
         "description": "Flysystem adapter for Google Drive"
+    },
+    {
+        "name": "aws/aws-sdk-php-resources",
+        "version": "0.3.0",
+        "version_normalized": "0.3.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/awslabs/aws-sdk-php-resources.git",
+            "reference": "8131944849a1f1e24e9708d9129f1671689a80c9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/awslabs/aws-sdk-php-resources/zipball/8131944849a1f1e24e9708d9129f1671689a80c9",
+            "reference": "8131944849a1f1e24e9708d9129f1671689a80c9",
+            "shasum": ""
+        },
+        "require": {
+            "aws/aws-sdk-php": "~3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0"
+        },
+        "time": "2015-06-20T20:55:44+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Aws\\Resource\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Amazon Web Services",
+                "homepage": "http://aws.amazon.com"
+            }
+        ],
+        "description": "A resource-oriented API for interacting with AWS services",
+        "homepage": "http://aws.amazon.com/sdkforphp",
+        "keywords": [
+            "amazon",
+            "aws",
+            "cloud",
+            "dynamodb",
+            "ec2",
+            "glacier",
+            "s3",
+            "sdk"
+        ]
     }
 ]
