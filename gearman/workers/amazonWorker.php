@@ -1,9 +1,5 @@
 <?php
-require_once(DIRECTORY_SEPARATOR."www".DIRECTORY_SEPARATOR."v3".DIRECTORY_SEPARATOR."toprak".DIRECTORY_SEPARATOR."Adapter". DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
-// require_once '/www/v3/toprak/lib/init.php';
-
-use Aws\S3\S3Client;
-use Aws\Common\Credentials\Credentials;
+require_once(__DIR__.DIRECTORY_SEPARATOR."includes.php");
 
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");

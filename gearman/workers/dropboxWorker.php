@@ -1,9 +1,4 @@
 <?php
-require_once(DIRECTORY_SEPARATOR."www".DIRECTORY_SEPARATOR."v3".DIRECTORY_SEPARATOR."toprak".DIRECTORY_SEPARATOR."Adapter". DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
-use  League\Flysystem\Filesystem;
-use Spatie\Dropbox\Client;
-use Spatie\FlysystemDropbox\DropboxAdapter;
-
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");
 $worker->addFunction("toprakDBX", "toprakDbxUpload");

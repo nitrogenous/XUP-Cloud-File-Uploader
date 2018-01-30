@@ -1,5 +1,5 @@
 <?php 
-require_once(__DIR__.DIRECTORY_SEPARATOR."functions.php");
+require_once(__DIR__.DIRECTORY_SEPARATOR."includes.php");
 
 if($_POST["action"] == "save"){
 	function fileNameExist($path,$filename){
@@ -100,10 +100,7 @@ if($_POST["action"] == "save"){
 
 }
 
-use XUP\Uploader\Main;
-use XUP\Uploader\Drive;
-use XUP\Uploader\Dropbox;
-use XUP\Uploader\AmazonWebServices;
+
 $output = array();
 $services = array("Drive","Dropbox","AmazonWebServices");
 $action = $_POST["action"];
@@ -114,7 +111,7 @@ foreach ($services as $service) {
 }
 exit(json_encode($output));
 
-function upload($adapter,$post) {
+function upload($adapter,$post) {		
 	$params = json_encode(array("formid" => injection($post["formid"]),"folder"=>injection($post["folder"]),"qid" => injection($post["qid"]), "key" => $post["key"], "file" => injection($post["file"]),"folderKey" => injection($post["folderKey"])));
 	return $adapter->upload($params);
 }

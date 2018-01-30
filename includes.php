@@ -3,6 +3,19 @@ require_once(__DIR__.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."XUP".DIRECTO
 require_once(__DIR__.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."XUP".DIRECTORY_SEPARATOR."adapters".DIRECTORY_SEPARATOR."drive.php");
 require_once(__DIR__.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."XUP".DIRECTORY_SEPARATOR."adapters".DIRECTORY_SEPARATOR."dropbox.php");
 require_once(__DIR__.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."XUP".DIRECTORY_SEPARATOR."adapters".DIRECTORY_SEPARATOR."amazonwebservices.php");
+require_once(DIRECTORY_SEPARATOR."www".DIRECTORY_SEPARATOR."v3".DIRECTORY_SEPARATOR."toprak".DIRECTORY_SEPARATOR."Adapter". DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php");
+
+use Aws\S3\S3Client;
+use XUP\Uploader\Main;
+use XUP\Uploader\Drive;
+use XUP\Uploader\Dropbox;
+use Spatie\Dropbox\Client;
+use  League\Flysystem\Filesystem;
+use XUP\Uploader\AmazonWebServices;
+use Aws\Common\Credentials\Credentials;
+use Spatie\FlysystemDropbox\DropboxAdapter;
+
+
 function injection($str) {
 	$bad = array(
 		'<!--', '-->',
@@ -71,7 +84,7 @@ function type($str){
 	}
 	return true; 
 }
-	
+
 function mime($str){
 	$neverAllow = array(
 		"application/octet-stream",
