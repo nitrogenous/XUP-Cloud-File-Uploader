@@ -2,6 +2,13 @@
 $formid = injection($_POST["formid"]);
 $key = injection($_POST["filekey"]);
 $folder = null;
+if(realpath("/tmp/$formid") !== true){
+	if(file_exists("/tmp/$formid") !== true){
+		$oldumask = umask(0);//kalkacak
+		mkdir("/tmp/$formid",0777,true);//644
+		umask($oldumask);//kalkacak
+	}
+}
 if(file_exists(DIRECTORY_SEPARATOR."tmp".DIRECTORY_SEPARATOR."$formid".DIRECTORY_SEPARATOR."$key.txt")){
 	$folder = getFolder($formid,$key);
 }
@@ -14,10 +21,8 @@ $qid = injection($_POST["qid"]);
 $path = DIRECTORY_SEPARATOR . "tmp"; 
 $file_path = implode(DIRECTORY_SEPARATOR, array($path,$formid,$folder,"questionid".$qid));
 
-if(realpath($file_path) !== true)
-{
-	if(file_exists($file_path) !== true)
-	{
+if(realpath($file_path) !== true){
+	if(file_exists($file_path) !== true){
 		$oldumask = umask(0);//kalkacak
 		mkdir($file_path,0777,true);//644
 		umask($oldumask);//kalkacak
@@ -27,8 +32,7 @@ foreach ($_FILES as $key => $value) {
 	$file_name = injection($_FILES[$key]["name"]);
 	$array = explode('.', $file_name);
 	$extension = end($array);
-	if(type($extension) != true)
-	{
+	if(type($extension) != true){
 		exit(json_encode(array("succes"=>false,"error"=>"type")));
 	}
 	
@@ -64,8 +68,7 @@ function fileNameExist($path,$filename){
 	return $filename;
 }
 
-function injection($str)
-{
+function injection($str){
 	$bad = array(
 		'<!--', '-->',
 		"'", '"',
@@ -99,16 +102,14 @@ function injection($str)
 	do{
 		$old = $str;
 		$str = str_replace($bad, ' ', $str);
-		if(stripos($str, '4647'))
-		{
+		if(stripos($str, '4647')){
 			$str = str_replace('4647', '', $str);
 		}
 	}
 	while ($old !== $str);
 	return $str;
 }
-function type($str)
-{
+function type($str){
 	$neverAllow =  array(
 		'php', 
 		'pl', 
@@ -136,8 +137,7 @@ function type($str)
 	}
 	return true; 
 }
-function mime($str)
-{
+function mime($str){
 	$neverAllow = array(
 		"application/octet-stream",
 		"application/javascript",

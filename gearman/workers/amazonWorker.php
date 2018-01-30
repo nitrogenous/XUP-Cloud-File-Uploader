@@ -14,6 +14,14 @@ while ($worker->work());
 function toprakAwsUpload($job) {
 	try{
 		$params = (array)json_decode($job->workload());
+		var_dump($params);
+		$params["folderKey"] = "isAbsolutelyNotNull";
+		foreach ($params as $param => $value) {
+			if(empty($value) || $value == "null" || $value == "{}"){
+				var_dump($param." is null!");
+				return json_encode(array("Error" => $param." is null","File" => null,"Url" => null));
+			}
+		}
 		$formid = $params["formid"];
 		$folder = $params["folder"];
 		$qid = $params["qid"];
@@ -21,9 +29,6 @@ function toprakAwsUpload($job) {
 		$keys = (array)json_decode($params["key"]);
 		var_dump($params);
 		var_dump($keys);
-		if(empty($keys)){
-			return json_encode(array("Error" => "Key Does Not Exist","File" => null,'Folder' => null,"Url" => null, "Remove" => null));		
-		}
 		var_dump($params);
 		$access = $keys["access"];
 		$secret = $keys["secret"];
@@ -66,6 +71,12 @@ function toprakAwsUpload($job) {
 }
 function toprakAwsRemove($job){
 		try{
+			foreach ($params as $param => $value) {
+				if(empty($value) || $value == "null" || $value == "{}"){
+					var_dump($param." is null!");
+					return json_encode(array("Error" => $param." is null","File" => null,"Url" => null));
+				}
+			}
 			$params = (array)json_decode($job->workload());
 			var_dump($params);
 			$keys = (array)json_decode($params["key"]);

@@ -18,12 +18,22 @@ function toprakDriveUpload($job) {
 	try{		
 	$params = (array)json_decode($job->workload());
 	var_dump($params);
-		// foreach ($params as $param) {
-		// 	if(empty($param)){
-		// 		return json_encode(array("Error" => 2,"File" => null,"Url" => null));
-		// 	}
-		// }
+		foreach ($params as $param => $value) {
+			if(empty($value) || $value == "null" || $value == "{}" || $value == ""){
+				if($params["folderKey"] == null){
+
+				}
+				else{
+					var_dump($param." is null!");
+					return json_encode(array("Error" => $param." is null","File" => null,"Url" => null));
+				}
+			}
+		}
 		$tokens = (array)json_decode($params["key"]);
+		if(empty($tokens["access_token"]) || empty($tokens["refresh_token"])){
+			var_dump("Tokens are null!");
+			return json_encode(array("Error" => "Tokens Are Null","File" => null,"Url" => null));
+		}
 		$formid = $params["formid"];
 		$file = $params["file"];
 		$qid = $params["qid"];
@@ -32,7 +42,6 @@ function toprakDriveUpload($job) {
 		$base_path = DIRECTORY_SEPARATOR . "tmp";
 		$path =  $folder . DIRECTORY_SEPARATOR. "questionid".$qid;
 		$file_path = $base_path.DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR .$path.DIRECTORY_SEPARATOR.$file;
-		var_dump($params,"\n\n\n");
 		if(!file_exists($file_path)){
 			return json_encode(array("Error" => "File Does Not Exist","File" => null,'Folder' => null,"Url" => null, "Remove" => null));
 		}
@@ -44,10 +53,11 @@ function toprakDriveUpload($job) {
 			$client->setApplicationName("XUP_File_Uploader");
 			$client->setAccessToken((string)$tokens["access_token"]);
 			if($client->isAccessTokenExpired()) {
-				$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
 				$drive = new Drive();
-				$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));	
-				echo "\nKey Updated\n\n";
+				$refresh = $client->refreshToken((string)$tokens["refresh_token"]);
+				$keys = json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"]));
+				var_dump($drive->insert($formid,$qid,$keys));	
+				echo "\nKey Updated\n \n";
 			}	 
 			$service = new Google_Service_Drive($client);
 			$pagetoken = null;
@@ -113,9 +123,10 @@ function toprakDriveRemove($job) {
 	try{
 		$params = (array)json_decode($job->workload());
 		var_dump($params);
-		foreach ($params as $param) {
-			if(empty($param)){
-				return json_encode(array("Error" => "Please Check Input Variables"));
+		foreach ($params as $param => $value) {
+			if(empty($value) || $value == "null" || $value == "{}"){
+				var_dump($param." is null!");
+				return json_encode(array("Error" => $param." is null","File" => null,"Url" => null));
 			}
 		}
 		$tokens = (array)json_decode($params["key"]);
@@ -132,7 +143,7 @@ function toprakDriveRemove($job) {
 		if($client->isAccessTokenExpired()){
 			$refresh = $client->refreshToken($refreshKey);
 			$drive = new Drive();
-			$drive->save($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));	
+			$drive->insert($formid,$qid,json_encode(array("access_token" => (string)$refresh["access_token"],"refresh_token" => (string)$tokens["refresh_token"])));	
 			echo "\nKey Updated\n\n";
 		}
 		$service = new Google_Service_Drive($client);

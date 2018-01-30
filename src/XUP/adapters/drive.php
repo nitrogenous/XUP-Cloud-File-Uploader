@@ -31,8 +31,9 @@ class Drive extends XUP {
 		if(empty($formid) || empty($qid) || empty($key) || empty($this->value)) {
 			return "Error";
 		}
-		$key = $this->tokens($formid,$qid,$key);
-		$formid = addslashes($formid);
+		if($this->select(addslashes($formid),addslashes($qid)) == null){
+			$key = $this->tokens($formid,$qid,$key);
+		}
 		$sql = "REPLACE INTO widget_access_keys (`formId`,`questionId`,`value`,`key`) VALUES (".addslashes($formid).",".addslashes($qid).",'".addslashes($this->value)."','".$key."')";
 		$result = $this->query($sql);
 		if ($result == true) {
@@ -45,7 +46,7 @@ class Drive extends XUP {
 	}
 	public function upload($params) {
 		$params = (array)json_decode($params);
-		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->get($params["formid"],$params["qid"]), "file" =>  $params["file"], "folderKey" => $params["folderKey"]));
+		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->select($params["formid"],$params["qid"]), "file" =>  $params["file"], "folderKey" => $params["folderKey"]));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
 		return $client->doNormal("toprakDrive",$job);
@@ -55,7 +56,7 @@ class Drive extends XUP {
 	}
 	public function deleteFile($params) {
 		$params = (array)json_decode($params);
-		$job = json_encode(array("key" => $this->get($params["formid"],$params["qid"]),"remove" => $params["remove"]));
+		$job = json_encode(array("key" => $this->select($params["formid"],$params["qid"]),"remove" => $params["remove"]));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");
 		return $client->doBackground("toprakDriveRemove",$job);

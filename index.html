@@ -161,7 +161,6 @@
                     if((clouds.toLowerCase()).indexOf("amazonwebservices") != -1){
                         if(empty(getAwsKeys())){
                             document.getElementById("upload").disable = true;
-                            // document.getElementById("text").innerHTML = "<h3>Please check your AWS integration!</h3>";
                             document.getElementById("aws").value = getAwsKeys();
                         }
                         else{
@@ -169,14 +168,6 @@
                             document.getElementById("aws").value = null;
                         }
                     }
-                    // if(!document.getElementById(e.toLowerCase()).value){
-                    //     // document.getElementById("add").style.display = "none";
-                    //     document.getElementById("text").innerHTML = "Please check your integrations";
-                    // }
-                    // else{
-                    //     // document.getElementById("add").style.display = "inline-flex";
-                    //     document.getElementById("text").innerHTML = "";   
-                    // }
                 })
                 $("#upload").change(function(e) {
                     e.preventDefault();
@@ -202,7 +193,6 @@
                     var children = document.getElementById("xup").children;
                     console.log(children);
                     console.log(children.length);
-
                     for(let i = 0; i <= children.length - 1;  i++){
                         if(children[i].id.indexOf("uploadItem") == -1){
                             if(i == (children.length-1)){
@@ -222,7 +212,7 @@
                     }
                 })
                 function empty(input) {
-                    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined || input == "null")  {
+                    if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined || input == "null" || input == "{}")  {
                         return true;
                     }
                     else {
@@ -237,6 +227,7 @@
                     formdata.append("file", file); 
                     formdata.append("formid",formid);
                     formdata.append("filekey",filekey);
+                    formdata.append("action","save");
                     formdata.append("key",document.getElementById("aws").value);
                     var progressBar = "progressBar-"+id;
                     save(formdata,filekey,progressBar).done(function(result){
@@ -249,7 +240,7 @@
                         folder = document.getElementById("folder").value;
                         var callback = null;
                         var folderKey = document.getElementById("folderKey").value;
-                        callBack = JSON.parse(sendJob(qid,file.name,formid,folder,folderKey,getAwsKeys())); //key,
+                        callBack = JSON.parse(sendJob(qid,file.name,formid,folder,folderKey, getAwsKeys()));
                         // debugger;
                         if(empty(document.getElementById('folderKey').value)){
                             let folderId = JSON.parse(callBack.Drive);
@@ -259,20 +250,23 @@
                         console.log(callBack);
                         dropbox = JSON.parse(callBack.Dropbox);
                         dropboxUrl = dropbox.Url;
+                        dropboxError = dropbox.Error;
                         dropboxRemove = dropbox.Remove;
-                        console.log(dropboxUrl +"\n"+dropboxRemove);
+                        console.log("----DBX----\n" + dropboxError +"\n"+ dropboxUrl +"\n"+ dropboxRemove+"\n----DBX----");
                         drive = JSON.parse(callBack.Drive);
                         driveUrl = drive.Url;
+                        driveError = drive.Error;
                         driveRemove = drive.Remove;
-                        console.log(driveUrl +"\n"+driveRemove);
+                        console.log("----GDR----\n"+driveError +"\n"+ driveUrl +"\n"+ driveRemove+"\n----GDR----");
                         amazon = JSON.parse(callBack.AmazonWebServices);
                         amazonUrl = amazon.Url;
+                        amazonError = amazon.Error;
                         amazonRemove = amazon.Remove;
-                        console.log(amazonUrl +"\n"+amazonRemove);
+                        console.log("----AWS----\n"+amazonError +"\n"+ amazonUrl +"\n"+ amazonRemove+"\n----AWS----");
 
                         document.getElementById("url").value = "Dropbox:" + dropboxUrl +"<br>Drive:" + driveUrl + "<br>Amazon Web Services:" + amazonUrl;
                         var remove = JSON.parse(JSON.stringify({"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove})); 
-                        document.getElementById("remove-"+id).value = JSON.stringify({"formid": formid,"qid": qid,"Remove":remove});  
+                        document.getElementById("remove-"+id).value = JSON.stringify({"formid": formid,"qid": qid,"Remove":remove});
                         $("#url").trigger("change");
                     }).fail(function(){
                         console.log("An Error Occured");
@@ -282,7 +276,7 @@
                 function save(formdata,filekey,progressId){
                     return jQuery.ajax({
                             type: "POST",
-                            url: "save.php",
+                            url: "file.php",
                             enctype: "multipart/form-data",
                             data: formdata,
                             cache: false,

@@ -44,7 +44,7 @@ class Dropbox extends XUP {
 	}
 	public function upload($params) {
 		$params = (array)json_decode($params);
-		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->get($params["formid"],$params["qid"]), "file" =>  $params["file"]));
+		$job = json_encode(array("formid" => $params["formid"],"folder"=> $params["folder"],"qid" =>  $params["qid"], "key" => $this->select($params["formid"],$params["qid"]), "file" =>  $params["file"]));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");	
 		return $client->doNormal("toprakDBX",$job);
@@ -54,7 +54,7 @@ class Dropbox extends XUP {
 	}	
 	public function deleteFile($params) {
 		$params = (array)json_decode($params);
-		$job = json_encode(array("key" => $this->get($params["formid"],$params["qid"]),"remove" => $params["remove"]));
+		$job = json_encode(array("key" => $this->select($params["formid"],$params["qid"]),"remove" => $params["remove"]));
 		$client = new \GearmanClient();
 		$client->addServer("127.0.0.1","4730");
 		return $client->doBackground("toprakDBXRemove",$job);	

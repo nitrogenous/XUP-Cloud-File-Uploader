@@ -16,7 +16,8 @@ function toprakDbxUpload($job) {
 		var_dump($params);
 		foreach ($params as $param) {
 			if(empty($param)){
-				return json_encode(array("Error" => "File Does Not Exist","File" => null,'Folder' => null,"Url" => null, "Remove" => null));
+				echo($param." is null!");
+				return json_encode(array("Error" => $param." is null","File" => null,"Url" => null));
 			}
 		}
 		$token = (string)$params["key"];
@@ -50,12 +51,12 @@ function toprakDbxUpload($job) {
 function toprakDbxRemove($job){
 	try{
 		$params = (array)json_decode($job->workload());
-		foreach ($params as $param) {
-			if(empty($param)){
-				return json_encode(array("Error" => "Please Check Input Variables"));
-				}
+		foreach ($params as $param => $value) {
+			if(empty($value) || $value == "null" || $value == "{}"){
+				var_dump($param." is null!");
+				return json_encode(array("Error" => $param." is null","File" => null,"Url" => null));
 			}
-		
+		}
 		$token = $params["key"];
 		$remove = (array)json_decode($params["remove"]);
 		$remove = $remove["Dropbox"];
