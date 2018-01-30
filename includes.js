@@ -115,22 +115,21 @@ JFCustomWidget.subscribe("ready", function (formId) {
     dropboxAuth(status,clouds,form_id,qid);
     driveAuth(status,clouds,form_id,qid);
 
+    // cloudsArray = clouds.split(",");
+    // cloudsArray.shift();
+    // cloudsArray.forEach(function(e){
+    //     if((clouds.toLowerCase()).indexOf("amazonwebservices") != -1){
+    //         if(empty(getAwsKeys())){
+    //             document.getElementById("upload").disable = true;
+    //             document.getElementById("aws").value = getAwsKeys();
+    //         }
+    //         else{
+    //             document.getElementById("text").innerHTML = "";
+    //             document.getElementById("aws").value = null;
+    //         }
+    //     }
+    // })
 
-
-    cloudsArray = clouds.split(",");
-    cloudsArray.shift();
-    cloudsArray.forEach(function(e){
-        if((clouds.toLowerCase()).indexOf("amazonwebservices") != -1){
-            if(empty(getAwsKeys())){
-                document.getElementById("upload").disable = true;
-                document.getElementById("aws").value = getAwsKeys();
-            }
-            else{
-                document.getElementById("text").innerHTML = "";
-                document.getElementById("aws").value = null;
-            }
-        }
-    })
     $("#upload").change(function(e) {
         e.preventDefault();
         var input = document.getElementById("upload");  
@@ -138,7 +137,6 @@ JFCustomWidget.subscribe("ready", function (formId) {
         var totalItemHeights = (input.files.length) * 90;
         var height = currentHeight + totalItemHeights;
         setFrameSize(height);
-
         for(var x = 0;x < input.files.length; x++){
             var file = input.files[x];
             upload(form_id,qid,file,filekey,x);
@@ -203,7 +201,6 @@ JFCustomWidget.subscribe("ready", function (formId) {
             var callback = null;
             var folderKey = document.getElementById("folderKey").value;
             callBack = JSON.parse(sendJob(qid,file.name,formid,folder,folderKey, getAwsKeys()));
-            // debugger;
             if(empty(document.getElementById('folderKey').value)){
                 let folderId = JSON.parse(callBack.Drive);
                 folderId = folderId.Folder;
