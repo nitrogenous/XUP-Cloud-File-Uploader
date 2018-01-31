@@ -69,12 +69,7 @@
             formdata.append("clouds",clouds);
             document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
         }
-        // function setFrameSize(width,height){
-        //     var size ={}; 
-        //     size.width = width; 
-        //     size.height = height; 
-        //     JFCustomWidget.requestFrameResize(size); 
-        // }
+
         function dropboxAuth(status,clouds){
             if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
                 if(empty(status.Dropbox)){
