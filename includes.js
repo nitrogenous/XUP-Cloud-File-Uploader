@@ -307,7 +307,7 @@
             result.valid = valid;
             JFCustomWidget.sendSubmit(result);
         }
-        function createDiv(id,file = null,fileExtension = null){
+        function createDiv(id,file = null,fileExtension = null){ //Creating div
 
             var uploadItem = document.createElement("div");
             var imageSection = document.createElement("div");
@@ -366,7 +366,7 @@
             document.getElementById(progressSection.id).appendChild(progressBar);
             document.getElementById(uploadItem.id).appendChild(remove);
 
-           $("#"+remove.id).click(function(e){
+           $("#"+remove.id).click(function(e){ //If user click X button this is removing file from clouds and destroying div
                 e.preventDefault();
                 var params = JSON.parse(document.getElementById(remove.id).value);
                 var path = params.Remove;
@@ -410,7 +410,7 @@
         function submitFunc(){
             fieldCheck();
         }  
-        function fieldCheck(){
+        function fieldCheck(){ //If field has no file user can't skip question (is required) and submit form
             var children = empty(document.getElementById("xup")) ? 0 : document.getElementById("xup").children;
             for(let i = 0; i <= children.length - 1;  i++){
                 if(children[i].id.indexOf("uploadItem") == -1){
