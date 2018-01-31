@@ -49,8 +49,8 @@
         JFCustomWidget.subscribe("submit", submitFunc);
 
 
-
-        function startUpload(elementId){
+		
+		function startUpload(elementId){
             var input = document.getElementById(elementId);  
             var currentHeight = window.innerHeight;
             var totalItemHeights = (input.files.length) * 90;
