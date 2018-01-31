@@ -42,7 +42,7 @@
             startUpload("upload"); //Starts upload selected files
            $("#url").change(function(e){ //Listening url item for file url's
                 returnSubmit(JSON.stringify(document.getElementById("url").value),true); //Giving feedback about field to formm
-           })
+           });
             // var folder = document.getElementById("folder").value;
             // removeFiles(form_id,folder);                                   
         });
@@ -69,7 +69,6 @@
             formdata.append("clouds",clouds);
             document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
         }
-
         function dropboxAuth(status,clouds){
             if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
                 if(empty(status.Dropbox)){
@@ -142,7 +141,7 @@
                             formdata.append("clouds", "Drive");
                             formdata.append("action", "insert");
                             ajaxRequest("database.php",formdata,false);
-                        })
+                        });
                     }
                 }
             }
@@ -252,7 +251,7 @@
                 success: function(sccss){
                     result = sccss;
                 }
-            })
+            });
             return result;
         }
         function sendJob(qid,file,formid,folder,folderKey,key){
@@ -426,4 +425,4 @@
             }
         }
     });
-})
+});
