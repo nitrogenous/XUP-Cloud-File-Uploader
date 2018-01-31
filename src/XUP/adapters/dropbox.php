@@ -1,4 +1,5 @@
 <?php
+
 namespace XUP\Uploader;
 
 class Dropbox extends XUP {

@@ -1,4 +1,16 @@
 <?php
+require_once("/www/v3/toprak/Adapter/includes.php");
+
+use \Aws\S3\S3Client;
+use \XUP\Uploader\Main;
+use \XUP\Uploader\Drive;
+use \XUP\Uploader\Dropbox;
+use \Spatie\Dropbox\Client;
+use \League\Flysystem\Filesystem;
+use \XUP\Uploader\AmazonWebServices;
+use \Aws\Common\Credentials\Credentials;
+use \Spatie\FlysystemDropbox\DropboxAdapter;
+
 $worker = new GearmanWorker();
 $worker->addServer("127.0.0.1", "4730");
 $worker->addFunction("toprakDBX", "toprakDbxUpload");
