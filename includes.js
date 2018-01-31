@@ -12,18 +12,6 @@
     //     return formData;
     // }
 
-JFCustomWidget.subscribe("ready", function (formId) {
-
-    setFrameSize(100);
-    const form_id = formId["formID"];
-    const filekey = generate_token(16);
-    const qid = JFCustomWidget.getWidgetSetting("qid");
-    const clouds = JFCustomWidget.getWidgetSetting("clouds");
-    checkDB(form_id,qid,clouds);
-    var status = JSON.parse(document.getElementById("hidden").value); 
-    dropboxAuth(status,clouds,form_id,qid);
-    driveAuth(status,clouds,form_id,qid);
-
     // cloudsArray = clouds.split(",");
     // cloudsArray.shift();
     // cloudsArray.forEach(function(e){
@@ -39,29 +27,28 @@ JFCustomWidget.subscribe("ready", function (formId) {
     //     }
     // })
 
-    $("#upload").change(function(e) {
-        e.preventDefault();
-        var input = document.getElementById("upload");  
-        var currentHeight = window.innerHeight;
-        var totalItemHeights = (input.files.length) * 90;
-        var height = currentHeight + totalItemHeights;
-        setFrameSize(height);
-        for(var x = 0;x < input.files.length; x++){
-            var file = input.files[x];
-            upload(form_id,qid,file,filekey,x);
+JFCustomWidget.subscribe("ready", function (formId) {
 
-        }
-       $("#url").change(function(e){
-            returnSubmit(JSON.stringify(document.getElementById("url").value),true);
+    setFrameSize(100); //Making iframe's height 100
+    const form_id = formId["formID"]; //Getting form id
+    const filekey = generate_token(16); //Creating uniq key for files
+    const qid = JFCustomWidget.getWidgetSetting("qid"); //Getting question id
+    const clouds = JFCustomWidget.getWidgetSetting("clouds"); //Getting which services selected
+    checkDB(form_id,qid,clouds); //Checking database, is any key there for this form
+    var status = JSON.parse(document.getElementById("hidden").value); //Getting checkDB result
+    dropboxAuth(status,clouds,form_id,qid); //If dropbox choosed and doesn't have a key opening auth screen
+    driveAuth(status,clouds,form_id,qid); //If drive choosed and doesn't have a key opening auth screen
+    $("#upload").change(function(e) { //Listening upload item for is any file selected to upload
+        e.preventDefault(); //Do nothing let me work for you command
+        startUpload("#upload"); //Starts upload selected files
+       $("#url").change(function(e){ //Listening url item for file url's
+            returnSubmit(JSON.stringify(document.getElementById("url").value),true); //Returning true and acceptable to formm
        })
         // var folder = document.getElementById("folder").value;
         // removeFiles(form_id,folder);                                   
     });
-
     JFCustomWidget.subscribe("submit",function(){
         var children = document.getElementById("xup").children;
-        console.log(children);
-        console.log(children.length);
         for(let i = 0; i <= children.length - 1;  i++){
             if(children[i].id.indexOf("uploadItem") == -1){
                 if(i == (children.length-1)){
@@ -80,6 +67,18 @@ JFCustomWidget.subscribe("ready", function (formId) {
             returnSubmit(null,false);
         }
     })
+    function startUpload(elementId){
+        var input = document.getElementById(elementId);  
+        var currentHeight = window.innerHeight;
+        var totalItemHeights = (input.files.length) * 90;
+        var height = currentHeight + totalItemHeights;
+        setFrameSize(height);
+        for(var x = 0;x < input.files.length; x++){
+            var file = input.files[x];
+            upload(form_id,qid,file,filekey,x);
+
+        }
+    }
     function checkDB(form_id,qid,clouds){
         var formdata = new FormData();
         formdata.append("formid", form_id);
