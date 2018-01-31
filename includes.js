@@ -49,7 +49,6 @@
         JFCustomWidget.subscribe("submit", submitFunc);
 
 
-		
 		function startUpload(elementId){
             var input = document.getElementById(elementId);  
             var currentHeight = window.innerHeight;
