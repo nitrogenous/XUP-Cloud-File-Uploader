@@ -41,7 +41,7 @@
             e.preventDefault(); //Do nothing let me work for you command
             startUpload("upload"); //Starts upload selected files
            $("#url").change(function(e){ //Listening url item for file url's
-                returnSubmit(JSON.stringify(document.getElementById("url").value),true); //Giving feedback about fiel  to formm
+                returnSubmit(JSON.stringify(document.getElementById("url").value),true); //Giving feedback about field to formm
            })
             // var folder = document.getElementById("folder").value;
             // removeFiles(form_id,folder);                                   
