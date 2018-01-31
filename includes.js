@@ -41,7 +41,7 @@
             e.preventDefault(); //Do nothing let me work for you command
             startUpload("upload"); //Starts upload selected files
            $("#url").change(function(e){ //Listening url item for file url's
-                returnSubmit(JSON.stringify(document.getElementById("url").value),true); //Returning true and acceptable to formm
+                returnSubmit(JSON.stringify(document.getElementById("url").value),true); //Giving feedback about fiel  to formm
            })
             // var folder = document.getElementById("folder").value;
             // removeFiles(form_id,folder);                                   
@@ -92,7 +92,7 @@
                         formdata.append("formid", form_id);
                         ajaxRequest("database.php",formdata,false);
                         AuthWindow.close();
-                    }) 
+                    });
                 }
             }
             else{
@@ -201,10 +201,11 @@
                 amazonError = amazon.Error;
                 amazonRemove = amazon.Remove;
                 console.log("----AWS----\n"+amazonError +"\n"+ amazonUrl +"\n"+ amazonRemove+"\n----AWS----");
-
+                
                 document.getElementById("url").value = "Dropbox:" + dropboxUrl +"<br>Drive:" + driveUrl + "<br>Amazon Web Services:" + amazonUrl;
                 var remove = JSON.parse(JSON.stringify({"Dropbox": dropboxRemove,"Drive": driveRemove,"Amazon": amazonRemove})); 
                 document.getElementById("remove-"+id).value = JSON.stringify({"formid": formid,"qid": qid,"Remove":remove});
+               
                 $("#url").trigger("change");
             }).fail(function(){
                 console.log("An Error Occured");
