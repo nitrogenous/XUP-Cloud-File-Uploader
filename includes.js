@@ -1,17 +1,4 @@
  $(document).ready(function(){
-    // JFCustomWidget.subscribe("ready", asdasd);
-    // function asdasd(argument) {
-    //     qweqwe(form_id);
-    // }
-
-    // function formData(array){
-    //     var formdata = new FormData();
-    //     array.forEach(function(element){
-    //         formdata.append(Object.keys(element), element);
-    //     })
-    //     return formData;
-    // }
-
     // cloudsArray = clouds.split(",");
     // cloudsArray.shift();
     // cloudsArray.forEach(function(e){
@@ -26,7 +13,6 @@
     //         }
     //     }
     // })
-
     JFCustomWidget.subscribe("ready", function (formId) {
         setFrameSize(100); //Making iframe's height 100
         const form_id = formId["formID"]; //Getting form id
@@ -46,7 +32,7 @@
             // var folder = document.getElementById("folder").value;
             // removeFiles(form_id,folder);                                   
         });
-        JFCustomWidget.subscribe("submit", submitFunc);
+        JFCustomWidget.subscribe("submit", submitFunc);//When he clicked next or submit button, checking the field
 
 
 		function startUpload(elementId){
@@ -147,12 +133,7 @@
             }
         }
         function empty(input) {
-            if(input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined || input == "null" || input == "{}")  {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined || input == "null" || input == "{}" ? true : false;
         }
         function upload(formid,qid,file,filekey,progressName){
             var folder = null;
@@ -387,19 +368,10 @@
             return filename.split('.').pop();
         }
         function setFrameSize(height,width = 500){
-            if(height < 530){
-                var size ={}; 
-                size.width = width; 
-                size.height =  height; 
-                JFCustomWidget.requestFrameResize(size); 
-            }
-            else{
-                var size ={}; 
-                size.width = width; 
-                size.height =  530; 
-                JFCustomWidget.requestFrameResize(size);
-            }
-            return true;
+            var size ={}; 
+            size.width = width; 
+            size.height =  height<530 ? height : 530; 
+            JFCustomWidget.requestFrameResize(size); 
         }
         function submitFunc(){
             fieldCheck();
