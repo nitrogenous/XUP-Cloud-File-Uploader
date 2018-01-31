@@ -47,6 +47,9 @@
             // removeFiles(form_id,folder);                                   
         });
         JFCustomWidget.subscribe("submit", submitFunc);
+
+
+
         function startUpload(elementId){
             var input = document.getElementById(elementId);  
             var currentHeight = window.innerHeight;
@@ -332,6 +335,7 @@
             remove.classList.add("remove");
             remove.id = "remove-"+id;
             remove.innerHTML = '✕';
+            remove.setAttribute("onclick"," removeUploaded(this.id,event)");
 
             var measurement = document.createElement("span");
             document.getElementById("xup").appendChild(measurement);
@@ -364,28 +368,32 @@
             document.getElementById(progressSection.id).appendChild(progressBar);
             document.getElementById(uploadItem.id).appendChild(remove);
 
-           $("#"+remove.id).click(function removeUploaded(e){
-                e.preventDefault();
-                var params = JSON.parse(document.getElementById(remove.id).value);
-                var path = params.Remove;
-                path = JSON.stringify(path);
-                console.log(path);
-                var formdata = new FormData();
-                formdata.append("action","deleteFile");
-                formdata.append("formid", params.formid);
-                formdata.append("qid", params.qid);
-                formdata.append("remove", path);
-                formdata.append("aws",getAwsKeys());
-                ajaxRequest("file.php",formdata,true);
-                var elements = document.getElementById("xup").children;
-                var totalItemHeights = (elements.length - 1) - 80;
-                if(totalItemHeights <= 500){
-                    var height = totalItemHeights;
-                    setFrameSize(height);
-                }
-                $("#"+uploadItem.id).remove();
-           });
+           // $("#"+remove.id).consolelick(removeUploaded(this.id,event){
+               
             return id;
+        }
+        function removeUploaded(removeid,e){
+                e.preventDefault();
+                console.log(removeid);
+                // var params = JSON.parse(document.getElementById(remove.id).value);
+                // var path = params.Remove;
+                // path = JSON.stringify(path);
+                // console.log(path);
+                // var formdata = new FormData();
+                // formdata.append("action","deleteFile");
+                // formdata.append("formid", params.formid);
+                // formdata.append("qid", params.qid);
+                // formdata.append("remove", path);
+                // formdata.append("aws",getAwsKeys());
+                // ajaxRequest("file.php",formdata,true);
+                // var elements = document.getElementById("xup").children;
+                // var totalItemHeights = (elements.length - 1) - 80;
+                // if(totalItemHeights <= 500){
+                //     var height = totalItemHeights;
+                //     setFrameSize(height);
+                // }
+
+
         }
         function getFileExtension(filename){
             return filename.split('.').pop();
