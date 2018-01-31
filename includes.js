@@ -314,7 +314,6 @@
             var progressFile = document.createElement("div");
             var progressBar = document.createElement("progress");
             var remove = document.createElement("button");
-            // var removeImage = document.createElement("img");
 
             uploadItem.id = "uploadItem-"+id;
             uploadItem.classList.add("uploadItem");
@@ -332,8 +331,6 @@
             remove.classList.add("remove");
             remove.id = "remove-"+id;
             remove.innerHTML = '✕';
-            // removeImage.setAttribute("alt","remove-img");
-            // removeImage.setAttribute("src","https://i.hizliresim.com/Pl4V09.png");
 
             var measurement = document.createElement("span");
             document.getElementById("xup").appendChild(measurement);
@@ -356,6 +353,7 @@
                 head.appendChild(style);
             }
             measurement.remove();
+            
             document.getElementById("xup").appendChild(uploadItem);
             document.getElementById(uploadItem.id).appendChild(imageSection);
             document.getElementById(imageSection.id).appendChild(img);
@@ -364,8 +362,8 @@
             document.getElementById(progressSection.id).appendChild(progressFile);
             document.getElementById(progressSection.id).appendChild(progressBar);
             document.getElementById(uploadItem.id).appendChild(remove);
-            // document.getElementById(remove.id).appendChild(removeImage);
-           $("#"+remove.id).click(function(e){
+
+           $("#"+remove.id).click(function removeUploaded(e){
                 e.preventDefault();
                 var params = JSON.parse(document.getElementById(remove.id).value);
                 var path = params.Remove;
@@ -385,22 +383,22 @@
                     setFrameSize(height);
                 }
                 $("#"+uploadItem.id).remove();
-           })
+           });
             return id;
         }
         function getFileExtension(filename){
             return filename.split('.').pop();
         }
-        function setFrameSize(height){
+        function setFrameSize(height,width = 500){
             if(height < 530){
                 var size ={}; 
-                size.width = 500; 
+                size.width = width; 
                 size.height =  height; 
                 JFCustomWidget.requestFrameResize(size); 
             }
             else{
                 var size ={}; 
-                size.width = 500; 
+                size.width = width; 
                 size.height =  530; 
                 JFCustomWidget.requestFrameResize(size);
             }
