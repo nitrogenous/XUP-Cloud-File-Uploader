@@ -51,7 +51,7 @@ if($_POST["action"] == "save"){
 		$folder = getFolder($formid,$key);
 	}
 	else{
-		$folder = date("h-ia d-m-Y");
+		$folder = date("h-ia d-m-Y"); //Submisson date
 		saveFolder($formid,$key,$folder);
 		$folder = $folder."-".$key;
 	}
