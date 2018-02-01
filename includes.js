@@ -18,7 +18,7 @@
             e.preventDefault(); 
             startUpload("upload");
            $("#url").change(function(e){ 
-                returnSubmit(JSON.stringify(document.getElementById("url").value),true); 
+                returnSubmit(JSON.stringify(document.getElementById("url").value),true);
            });
             // var folder = document.getElementById("folder").value;
             // removeFiles(form_id,folder);                                   
@@ -30,15 +30,15 @@
         *   @param {String} elementId - Id of select button
         */
 		function startUpload(elementId){
-            var input = document.getElementById(elementId);  
+            var input = document.getElementById(elementId); 
             var currentHeight = window.innerHeight;
             var totalItemHeights = (input.files.length) * 90;
             var height = currentHeight + totalItemHeights;
+            document.getElementById("height").value = empty(height) ? 0 : height;
             setFrameSize(height);
             for(var x = 0;x < input.files.length; x++){
                 var file = input.files[x];
                 upload(form_id,qid,file,filekey,x);
-
             }
         }
         /**
@@ -380,12 +380,16 @@
                 formdata.append("remove", path);
                 formdata.append("aws",getAwsKeys());
                 ajaxRequest("file.php",formdata,true);
-                var elements = document.getElementById("xup").children;
-                var totalItemHeights = (elements.length - 1) - 80;
-                if(totalItemHeights <= 500){
-                    var height = totalItemHeights;
-                    setFrameSize(height);
-                }
+                // var oldHeight = empty(document.getElementById("height").value) ? 0 : document.getElementById("height").value;
+                // var newHeight = oldHeight - 90;
+                // if((newHeight < 530) && (newHeight > 100)){
+                //     setFrameSize(newHeight);
+                // }
+                var elements = empty(document.getElementById("xup").children) ? 0 : document.getElementById("xup").children.length - 3;
+                var currentHeight = elements * 90;
+                console.log(elements + "\n" + currentHeight);
+                var newHeight = currentHeight-80>530 ? 530 : currentHeight - 90;
+                setFrameSize(currentHeight);
                 $("#"+uploadItem.id).remove();
            });
             return id;
@@ -396,7 +400,7 @@
         function setFrameSize(height,width = 500){
             var size ={}; 
             size.width = width>500 ? 500 : width; 
-            size.height =  height<530 ? height : 530;   //Used if statement because height max value have to be 530
+            size.height =  height<530 ? height>100 ? height : 100 : 530;   //Used if statement because height max value have to be 530
             JFCustomWidget.requestFrameResize(size); 
         }
         function submitFunc(){
@@ -418,12 +422,17 @@
             }
             var folder = document.getElementById("folder").value;
             if(!empty(document.getElementById("url").value)){
-                // removeFiles(form_id,folder);                                   
+                // removeFiles(form_id,folder);                            
+                var folder = document.getElementById("folder").value;
+                removeFiles(form_id,folder);                                         
                 returnSubmit(JSON.stringify(document.getElementById("url").value),true);
             }
             else{
                 returnSubmit(null,false);
             }
         }
-    });
-});
+        function responsiveSize(height,width = 500){
+
+        }
+    });//JFCustomWdiget.Subscribe
+});//Document.Ready
