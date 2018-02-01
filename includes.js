@@ -1,40 +1,34 @@
+/** 
+*   @author Toprak Koc
+*    @constructor
+*/
  $(document).ready(function(){
-    // cloudsArray = clouds.split(",");
-    // cloudsArray.shift();
-    // cloudsArray.forEach(function(e){
-    //     if((clouds.toLowerCase()).indexOf("amazonwebservices") != -1){
-    //         if(empty(getAwsKeys())){
-    //             document.getElementById("upload").disable = true;
-    //             document.getElementById("aws").value = getAwsKeys();
-    //         }
-    //         else{
-    //             document.getElementById("text").innerHTML = "";
-    //             document.getElementById("aws").value = null;
-    //         }
-    //     }
-    // })
     JFCustomWidget.subscribe("ready", function (formId) {
-        setFrameSize(100); //Making iframe's height 100
-        const form_id = formId["formID"]; //Getting form id
-        const filekey = generate_token(16); //Creating uniq key for files
-        const qid = JFCustomWidget.getWidgetSetting("qid"); //Getting question id
-        const clouds = JFCustomWidget.getWidgetSetting("clouds"); //Getting which services selected
-        checkDB(form_id,qid,clouds); //Checking database, is any key there for this form
-        var status = JSON.parse(document.getElementById("hidden").value); //Getting checkDB result
-        dropboxAuth(status,clouds,form_id,qid); //If dropbox choosed and doesn't have a key opening auth screen
-        driveAuth(status,clouds,form_id,qid); //If drive choosed and doesn't have a key opening auth screen
-        $("#upload").change(function(e) { //Listening upload item for is any file selected to upload
-            e.preventDefault(); //Do nothing let me work for you command
-            startUpload("upload"); //Starts upload selected files
-           $("#url").change(function(e){ //Listening url item for file url's
-                returnSubmit(JSON.stringify(document.getElementById("url").value),true); //Giving feedback about field to formm
+        setFrameSize(100);
+        const form_id = formId["formID"]; 
+        const filekey = generate_token(16); 
+        const qid = JFCustomWidget.getWidgetSetting("qid");
+        const clouds = JFCustomWidget.getWidgetSetting("clouds");
+        checkDB(form_id,qid,clouds); 
+        var status = JSON.parse(document.getElementById("hidden").value);
+        dropboxAuth(status,clouds,form_id,qid); 
+        driveAuth(status,clouds,form_id,qid); 
+        // mahmutla takılıyoruz
+        $("#upload").change(function(e) { 
+            e.preventDefault(); 
+            startUpload("upload");
+           $("#url").change(function(e){ 
+                returnSubmit(JSON.stringify(document.getElementById("url").value),true); 
            });
             // var folder = document.getElementById("folder").value;
             // removeFiles(form_id,folder);                                   
         });
-        JFCustomWidget.subscribe("submit", submitFunc);//When he clicked next or submit button, checking the field
+        JFCustomWidget.subscribe("submit", submitFunc);
 
-
+        /**
+        *   Starts Upload Jobs 
+        *   @param {String} elementId - Id of select button
+        */
 		function startUpload(elementId){
             var input = document.getElementById(elementId);  
             var currentHeight = window.innerHeight;
@@ -47,6 +41,12 @@
 
             }
         }
+        /**
+        *   Checks Database for Any Saved Keys
+        *   @param {String} form_id - Id of form
+        *   @param {String} qid - Question Id
+        *   @param {String} clouds - Selected Cloud Services
+        */
         function checkDB(form_id,qid,clouds){
             var formdata = new FormData();
             formdata.append("formid", form_id);
@@ -55,10 +55,15 @@
             formdata.append("clouds",clouds);
             document.getElementById("hidden").value = ajaxRequest("database.php",formdata,false);
         }
+        /**
+        *   Authorizing Dropbox and Saving Keys
+        *   @param {Object} status - checkDB Result
+        *   @param {String} clouds - Selected Cloud Services
+        */
         function dropboxAuth(status,clouds){
             if((clouds.toLowerCase()).indexOf("dropbox") != -1){ 
                 if(empty(status.Dropbox)){
-                    document.getElementById("dropbox").value = false;
+                    // document.getElementById("dropbox").value = false;
                     var client_id = "9pdfdpjr2pnqzmo";
                     var dbx = new Dropbox.Dropbox({clientId: client_id});
                     var authUrl = dbx.getAuthenticationUrl("https://toprak.jotform.pro/Adapter/oauth.html"); 
@@ -81,10 +86,17 @@
                 document.getElementById("dropbox").value = true;                        
             } 
         }
+        /**
+        *   Authorizing Drive and Saving Keys
+        *   @param {Object} status - CheckDB Result
+        *   @param {String} clouds - Selected Cloud Services
+        *   @param {String} form_id - Id of Form
+        *   @param {String} qid - Question Id
+        */
         function driveAuth(status,clouds,form_id,qid){
             if((clouds.toLowerCase()).indexOf("drive") !=  -1){
                 if(empty(status.Drive)){
-                    document.getElementById("drive").value = false;
+                    // document.getElementById("drive").value = false;
                     this.onload=function(){};handleClientLoad();
                     var key = "AIzaSyAbodyJck6jBlV4oV9A3-E6xdMvf3JsdDg";
                     var client = "424058548993-sbd0hd1dflne6507emj91gad1pf9bebc.apps.googleusercontent.com";
@@ -135,6 +147,14 @@
         function empty(input) {
             return input == "" || input == 0 || input == "0" || input == null || input == false || input == undefined || input == "null" || input == "{}" ? true : false;
         }
+        /**
+        *   Saving selected files to tmp folder then starts uploading to cloud services
+        *   @param {String} formid - Id of Form
+        *   @param {String} qid - Question Id
+        *   @param {File} file - Selected File
+        *   @param {String} filekey - File key is like a form id its uniq and for multiple uploads
+        *   @param {String} progressName - Progressbar's Name
+        */
         function upload(formid,qid,file,filekey,progressName){
             var folder = null;
             var formdata = new FormData();
@@ -282,6 +302,12 @@
             result.valid = valid;
             JFCustomWidget.sendSubmit(result);
         }
+        /**
+        *   Creating UI elements for selected file
+        *   @param {String} id - Uniq id for elements
+        *   @param {String} file - File name for remove func 
+        *   @param {String} fileExtension - File Extension for UI Elements
+        */
         function createDiv(id,file = null,fileExtension = null){ //Creating div
 
             var uploadItem = document.createElement("div");
@@ -341,7 +367,7 @@
             document.getElementById(progressSection.id).appendChild(progressBar);
             document.getElementById(uploadItem.id).appendChild(remove);
 
-           $("#"+remove.id).click(function(e){ //If user click X button this is removing file from clouds and destroying div
+           $("#"+remove.id).click(function(e){ //If user click remove (X) button this is removing file from clouds and destroying div
                 e.preventDefault();
                 var params = JSON.parse(document.getElementById(remove.id).value);
                 var path = params.Remove;
@@ -369,14 +395,17 @@
         }
         function setFrameSize(height,width = 500){
             var size ={}; 
-            size.width = width; 
-            size.height =  height<530 ? height : 530; 
+            size.width = width>500 ? 500 : width; 
+            size.height =  height<530 ? height : 530;   //Used if statement because height max value have to be 530
             JFCustomWidget.requestFrameResize(size); 
         }
         function submitFunc(){
             fieldCheck();
         }  
-        function fieldCheck(){ //If field has no file user can't skip question (is required) and submit form
+        /**
+            If field has no file user can't skip the question (if is required) and submit the form
+        */
+        function fieldCheck(){
             var children = empty(document.getElementById("xup")) ? 0 : document.getElementById("xup").children;
             for(let i = 0; i <= children.length - 1;  i++){
                 if(children[i].id.indexOf("uploadItem") == -1){
