@@ -61,6 +61,9 @@ class Drive extends XUP {
 		$client->addServer("127.0.0.1","4730");
 		return $client->doBackground("toprakDriveRemove",$job);
 	}
+	/**
+		Drive api doesnt gives directly access token and refresh token so this function getting them with auth key
+	*/
 	public function tokens($formid,$qid,$auth) {
 		require_once '/www/v3/toprak/Adapter/vendor/autoload.php';
 		$code = explode('"',$auth);
