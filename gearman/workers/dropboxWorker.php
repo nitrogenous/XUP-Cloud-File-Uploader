@@ -36,8 +36,7 @@ function toprakDbxUpload($job) {
 		$path = DIRECTORY_SEPARATOR . $formid . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR. "questionid".$qid . DIRECTORY_SEPARATOR . $file;
 		// var_dump($path);
 		if(!file_exists($base_path.$path)){
-			echo"Error!File.Does.Not.Exist";
-			return("Error!File.Does.Not.Exist");
+			return json_encode(array("Error" => "File Does Not Exist","File" => null,'Folder' => null, "Url" => null, "Remove" => null));	
 		}
 		else{	
 			$client = new Client($token);
