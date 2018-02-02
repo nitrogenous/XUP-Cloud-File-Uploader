@@ -30,7 +30,6 @@
         *   @param {String} elementId - Id of select button
         */
         function startUpload(elementId){
-            mahmut();
             var input = document.getElementById(elementId); 
             var currentHeight = window.innerHeight;
             var totalItemHeights = (input.files.length) * 90;
