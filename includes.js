@@ -29,12 +29,12 @@
         *   Starts Upload Jobs 
         *   @param {String} elementId - Id of select button
         */
-		function startUpload(elementId){
+        function startUpload(elementId){
+            mahmut();
             var input = document.getElementById(elementId); 
             var currentHeight = window.innerHeight;
             var totalItemHeights = (input.files.length) * 90;
             var height = currentHeight + totalItemHeights;
-            document.getElementById("height").value = empty(height) ? 0 : height;
             setFrameSize(height);
             for(var x = 0;x < input.files.length; x++){
                 var file = input.files[x];
@@ -345,7 +345,7 @@
                 progressFile.classList.add("progressFile-Long");
                 var indentValue = document.getElementById(measurement.id).offsetWidth-190;
                 var css = '#progressFile-'+id+':hover{ text-indent:-'+indentValue+'px; }';
-                head = document.head || document.getElementsByTagName('head')[0],
+                head = document.head || document.getElementsByTagName('head')[0];
                 style = document.createElement('style');
                 style.type = 'text/css';
                 if (style.styleSheet){
@@ -353,7 +353,6 @@
                 } else {
                   style.appendChild(document.createTextNode(css));
                 }
-
                 head.appendChild(style);
             }
             measurement.remove();
@@ -431,8 +430,23 @@
                 returnSubmit(null,false);
             }
         }
-        function responsiveSize(height,width = 500){
-
-        }
+        window.onerror = function(err,url,line) {
+            document.getElementById("add").disabled = true;
+            document.getElementById("upload").disabled = true;
+            setFrameSize(300);
+            var error = document.createElement("div");
+            error.innerHTML = err; //+ "<br>" + url + "<br>" + line;
+            document.getElementById("xup").appendChild(error);
+            head = document.head || document.getElementsByTagName('head')[0];
+            var css = ".addFile{ visibility: hidden}";
+            style = document.createElement("style");
+            style.type = "text/css";
+            if (style.styleSheet){
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+            head.appendChild(style);
+        };
     });//JFCustomWdiget.Subscribe
 });//Document.Ready
