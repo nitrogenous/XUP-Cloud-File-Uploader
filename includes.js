@@ -24,7 +24,6 @@
             // removeFiles(form_id,folder);                                   
         });
         JFCustomWidget.subscribe("submit", submitFunc);
-
         /**
         *   Starts Upload Jobs 
         *   @param {String} elementId - Id of select button
