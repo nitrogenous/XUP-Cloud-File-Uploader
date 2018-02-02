@@ -1,45 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy">
-    <script src="jquery-3.2.1.min.js"></script>
-    <link rel="stylesheet" href="index.css">
-    <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
-    <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
-    <script src="utils.js"></script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112392850-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-112392850-1');
-    </script>
-    <script src="includes.js">
-
-        
-    </script>
-    <title>XUP File Uploader</title>
-</head>
-<body>
-    <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
-        <label for="upload" id="add" class="addFile">Add a File</label>
-        <input type="file" name="upload[]" id="upload" multiple>
-        <div id="hiddenInputs">
-            <input type="hidden" id="aws">
-            <input type="hidden" id="key">
-            <input type="hidden" id="drive">
-            <input type="hidden" id="folder">
-            <input type="hidden" id="hidden">
-            <input type="hidden" id="dropbox">
-            <input type="hidden" id="uploaded">
-            <input type="hidden" id="folderKey">
-            <input type="hidden" id="url" value="">
-        </div>
-        </form>
-    <div id="text"></div>
-    <script async defer src="https://apis.google.com/js/api.js">
-    <!-- </script> -->
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Security-Policy">
+        <script src="jquery-3.2.1.min.js"></script>
+        <link rel="stylesheet" href="index.css">
+        <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
+        <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
+        <script src="utils.js"></script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112392850-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-112392850-1');
+        </script>
+        <title>XUP File Uploader</title>
+    </head>
+    <body>
+        <form action="database.php" method="POST" enctype="multipart/form-data" id="xup" >
+            <label for="upload" id="add" class="addFile">Add a File</label>
+            <input type="file" name="upload[]" id="upload" multiple>
+            <div id="hiddenInputs">
+                <input type="hidden" id="aws">
+                <input type="hidden" id="key">
+                <input type="hidden" id="drive">
+                <input type="hidden" id="folder">
+                <input type="hidden" id="hidden">
+                <input type="hidden" id="dropbox">
+                <input type="hidden" id="uploaded">
+                <input type="hidden" id="folderKey">
+                <input type="hidden" id="url" value="">
+            </div>
+            </form>
+        <script src="includes.js">    
+        </script>
+        <div id="text"></div>
+        <script async defer src="https://apis.google.com/js/api.js">
+        </script>
+    </body>
 </html> 
