@@ -407,6 +407,7 @@
             If field has no file user can't skip the question (if is required) and submit the form
         */
         function fieldCheck(){
+            debugger;
             var children = empty(document.getElementById("xup")) ? 0 : document.getElementById("xup").children;
             for(let i = 0; i <= children.length - 1;  i++){
                 if(children[i].id.indexOf("uploadItem") == -1){
@@ -421,13 +422,13 @@
             if(!empty(document.getElementById("url").value)){
                 // removeFiles(form_id,folder);                            
                 var folder = document.getElementById("folder").value;
-                removeFiles(form_id,folder);                                         
                 returnSubmit(JSON.stringify(document.getElementById("url").value),true);
             }
             else{
                 returnSubmit(null,false);
             }
         }
+        function removeFiles(){}
         window.onerror = function(err,url,line) {
             document.getElementById("add").disabled = true;
             document.getElementById("upload").disabled = true;
